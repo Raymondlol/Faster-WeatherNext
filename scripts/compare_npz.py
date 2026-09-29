@@ -12,7 +12,7 @@ import sys
 
 import numpy as np
 
-STRIDE = 5  # 721 x 1440 -> 145 x 288 points per field
+STRIDE = 7  # 721 x 1440 -> 103 x 206 points per field; 101 fields fit in a 10 MB attachment
 
 
 def load(path):
