@@ -4,16 +4,18 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "faster-weathernext"
-version = "0.1.0"
+version = "0.1.1"
 description = "Run WeatherNext 2 at full 0.25-degree resolution on consumer GPUs (8 GB+), exactly and faster. Unofficial."
 readme = "README.md"
 license = "Apache-2.0"
 requires-python = ">=3.12"
 authors = [{ name = "Raymond Huang" }]
 dependencies = [
-  # Validated versions (docs/validation.md). The patch relies on weathernext internals: keep pinned.
-  "jax==0.11.2",
-  "weathernext @ git+https://github.com/google-deepmind/weathernext.git@f2f2c5117d2f864e2d5e7c2f9f220db5e1049dd3",
+  # Validated with JAX 0.11.2 (docs/validation.md); compat.check() warns on other versions.
+  "jax>=0.11.2,<0.12",
+  # `weathernext` itself is deliberately not a dependency: it is not on PyPI, and a git URL here
+  # conflicts with environments that already pin it (e.g. earth2studio). Install it with the
+  # [weathernext] extra or bring your own; compat.check() verifies the internals at enable().
   "numpy>=2.1",
   "scipy",
   "pandas",
@@ -25,8 +27,10 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-cuda12 = ["jax[cuda12]==0.11.2"]
-cuda13 = ["jax[cuda13]==0.11.2"]
+cuda12 = ["jax[cuda12]>=0.11.2,<0.12"]
+cuda13 = ["jax[cuda13]>=0.11.2,<0.12"]
+# The official code at the validated commit (2026-09-04, version 0.3.1.dev).
+weathernext = ["weathernext @ git+https://github.com/google-deepmind/weathernext.git@f2f2c5117d2f864e2d5e7c2f9f220db5e1049dd3"]
 test = ["pytest"]
 
 [project.scripts]

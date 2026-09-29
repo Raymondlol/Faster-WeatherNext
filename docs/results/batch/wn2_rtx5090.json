@@ -1,0 +1,197 @@
+{
+ "case": "wn2",
+ "model": "WeatherNext2",
+ "device": "NVIDIA GeForce RTX 5090",
+ "jax": "0.11.2",
+ "faster_weathernext": "0.1.1",
+ "precisions": {
+  "highest": {
+   "runs": {
+    "fwn/b2": {
+     "temp_gib": 8.28476618975401,
+     "step_s": 3.3978993892669678,
+     "compile_s": 67.55044960975647,
+     "batch": 2,
+     "rows": [
+      0,
+      1
+     ],
+     "patched": true,
+     "attention": "pallas"
+    },
+    "fwn/b1_0": {
+     "temp_gib": 4.142409555613995,
+     "step_s": 1.5022311210632324,
+     "compile_s": 78.73780941963196,
+     "batch": 1,
+     "rows": [
+      0
+     ],
+     "patched": true,
+     "attention": "pallas"
+    },
+    "fwn/b1_1": {
+     "temp_gib": 4.142409555613995,
+     "step_s": 1.4990959167480469,
+     "compile_s": 49.34316825866699,
+     "batch": 1,
+     "rows": [
+      1
+     ],
+     "patched": true,
+     "attention": "pallas"
+    }
+   },
+   "checks": {
+    "fwn_b2[0] vs fwn_b1_0": {
+     "min_corr": 0.999999999912887,
+     "max_rel_rms": 1.3199446092044641e-05,
+     "median_rel_rms": 1.913291271994275e-06,
+     "nan_masks_equal": true,
+     "n_fields": 103,
+     "worst": [
+      {
+       "field": "vertical_velocity@50",
+       "corr": 0.999999999912887,
+       "rel_rms": 1.3199446092044641e-05,
+       "nan_mask_equal": true
+      },
+      {
+       "field": "vertical_velocity@200",
+       "corr": 0.9999999999182184,
+       "rel_rms": 1.2789648476897378e-05,
+       "nan_mask_equal": true
+      },
+      {
+       "field": "vertical_velocity@100",
+       "corr": 0.9999999999185984,
+       "rel_rms": 1.2759484358232609e-05,
+       "nan_mask_equal": true
+      }
+     ]
+    },
+    "fwn_b2[1] vs fwn_b1_1": {
+     "min_corr": 0.9999999998914471,
+     "max_rel_rms": 1.4734625458947631e-05,
+     "median_rel_rms": 2.274683153125867e-06,
+     "nan_masks_equal": true,
+     "n_fields": 103,
+     "worst": [
+      {
+       "field": "vertical_velocity@200",
+       "corr": 0.9999999998914471,
+       "rel_rms": 1.4734625458947631e-05,
+       "nan_mask_equal": true
+      },
+      {
+       "field": "vertical_velocity@250",
+       "corr": 0.9999999998925342,
+       "rel_rms": 1.4660696620622092e-05,
+       "nan_mask_equal": true
+      },
+      {
+       "field": "vertical_velocity@50",
+       "corr": 0.9999999998956146,
+       "rel_rms": 1.4451029702218029e-05,
+       "nan_mask_equal": true
+      }
+     ]
+    }
+   }
+  },
+  "default": {
+   "runs": {
+    "fwn/b2": {
+     "temp_gib": 8.284765236079693,
+     "step_s": 2.2166907787323,
+     "compile_s": 56.9181182384491,
+     "batch": 2,
+     "rows": [
+      0,
+      1
+     ],
+     "patched": true,
+     "attention": "pallas"
+    },
+    "fwn/b1_0": {
+     "temp_gib": 3.7908062860369682,
+     "step_s": 0.7793481349945068,
+     "compile_s": 64.74393224716187,
+     "batch": 1,
+     "rows": [
+      0
+     ],
+     "patched": true,
+     "attention": "pallas"
+    },
+    "fwn/b1_1": {
+     "temp_gib": 3.7908062860369682,
+     "step_s": 0.7774178981781006,
+     "compile_s": 65.32404041290283,
+     "batch": 1,
+     "rows": [
+      1
+     ],
+     "patched": true,
+     "attention": "pallas"
+    }
+   },
+   "checks": {
+    "fwn_b2[0] vs fwn_b1_0": {
+     "min_corr": 0.9997648399528926,
+     "max_rel_rms": 0.02168560654938272,
+     "median_rel_rms": 0.0030025233843394617,
+     "nan_masks_equal": true,
+     "n_fields": 103,
+     "worst": [
+      {
+       "field": "vertical_velocity@200",
+       "corr": 0.9997648399528926,
+       "rel_rms": 0.02168560654938272,
+       "nan_mask_equal": true
+      },
+      {
+       "field": "vertical_velocity@250",
+       "corr": 0.9997922224624286,
+       "rel_rms": 0.020384852053135342,
+       "nan_mask_equal": true
+      },
+      {
+       "field": "vertical_velocity@300",
+       "corr": 0.9998011133568262,
+       "rel_rms": 0.019944297836891625,
+       "nan_mask_equal": true
+      }
+     ]
+    },
+    "fwn_b2[1] vs fwn_b1_1": {
+     "min_corr": 0.9998836888741758,
+     "max_rel_rms": 0.015251698116641283,
+     "median_rel_rms": 0.0022739729425001916,
+     "nan_masks_equal": true,
+     "n_fields": 103,
+     "worst": [
+      {
+       "field": "vertical_velocity@250",
+       "corr": 0.9998836888741758,
+       "rel_rms": 0.015251698116641283,
+       "nan_mask_equal": true
+      },
+      {
+       "field": "vertical_velocity@600",
+       "corr": 0.9998850062850626,
+       "rel_rms": 0.015164993209020471,
+       "nan_mask_equal": true
+      },
+      {
+       "field": "vertical_velocity@300",
+       "corr": 0.9998859693176634,
+       "rel_rms": 0.015101291492832734,
+       "nan_mask_equal": true
+      }
+     ]
+    }
+   }
+  }
+ }
+}

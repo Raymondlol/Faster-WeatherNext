@@ -24,8 +24,12 @@ protects that claim.
    `hk.switch`/`hk.scan` branches is inlined as a literal **per branch** (this once put
    24 × 113 MB of masks into the executable, outside JAX's memory pool). Create such arrays
    once and pass them through `jax.lax.optimization_barrier` so they become one traced operand.
-4. **Pinned versions.** JAX 0.11.2 and weathernext commit `f2f2c51` (see `pyproject.toml`,
-   `src/faster_weathernext/compat.py`). Bumping either requires the full validation matrix
+4. **Validated versions.** JAX 0.11.2 and weathernext commit `f2f2c51` (`compat.TESTED_*`;
+   `compat.check()` warns on other JAX versions and verifies the weathernext internals it
+   patches). `pyproject.toml` allows `jax>=0.11.2,<0.12` and does **not** depend on
+   `weathernext` (not on PyPI; a git URL there conflicts with environments that pin it, such
+   as earth2studio, which pins `9c034db`, docs-only away from f2f2c51). The `[weathernext]`
+   extra installs the validated commit. Raising `TESTED_*` requires the full validation matrix
    (docs/validation.md): equivalence at both precisions, a multi-step rollout comparison, and
    the multi-GPU canary (sm_80/86/89/120 + a Turing card for the XLA fallback).
 5. **No claims without evidence.** Numbers in README/docs must come from a logged run

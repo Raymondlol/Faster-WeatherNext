@@ -8,6 +8,22 @@ import warnings
 TESTED_JAX = "0.11.2"
 TESTED_WEATHERNEXT_COMMIT = "f2f2c51"  # github.com/google-deepmind/weathernext, 2026-09-04
 
+
+def weathernext_version() -> str:
+  """'<version> (<git commit>)' of the installed weathernext, or 'not installed'."""
+  import importlib.metadata as md
+  import json
+  try:
+    dist = md.distribution("weathernext")
+  except md.PackageNotFoundError:
+    return "not installed"
+  commit = ""
+  try:
+    commit = json.loads(dist.read_text("direct_url.json") or "{}").get("vcs_info", {}).get("commit_id", "")[:7]
+  except (ValueError, AttributeError):
+    pass
+  return f"{dist.version}" + (f" ({commit})" if commit else "")
+
 # (module, attribute[, required parameters of the callable]) the patch reads or replaces.
 _REQUIRED = [
     ("weathernext.utils.sparse_transformer", "Transformer",

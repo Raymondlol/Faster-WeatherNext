@@ -1,0 +1,7 @@
+highest  reference  temp 20.79 GiB  step  9.10s  compile   49s  attention=xla
+highest  faster_weathernext temp  4.14 GiB  step  1.51s  compile   65s  attention=pallas
+highest  faster-weathernext vs reference: min corr 0.9999999998  max rel RMS 2.00e-05  median 2.13e-06  NaN masks equal True  (101 fields)
+default  reference  temp 20.79 GiB  step  5.47s  compile   48s  attention=xla
+default  faster_weathernext temp  4.02 GiB  step  0.78s  compile   54s  attention=pallas
+default  faster-weathernext vs reference: min corr 0.9999878357  max rel RMS 4.93e-03  median 5.16e-04  NaN masks equal True  (101 fields)
+wrote /home/raymxnd/.cache/fwn-batch/equivalence_v0.1.1.json

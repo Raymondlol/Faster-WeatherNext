@@ -8,7 +8,7 @@ attention, ...), not what they compute; checkpoints and parameter names are unch
 Not an official Google product.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 
 def enable(force: bool = False, **options):

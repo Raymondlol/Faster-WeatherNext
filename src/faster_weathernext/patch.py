@@ -570,9 +570,18 @@ class ChunkedDenseEncoder(_ORIG["Encoder"]):
       for name, (x, dims, coords) in flat.items():
         b = jax.lax.dynamic_slice_in_dim(x, i * block, block, axis=-1)
         mapping[name] = xarray_jax.DataArray(b.reshape(b.shape[:-1] + (1, block)), dims=dims, coords=coords)
-      return stock_call(mapping, norm_conditioning)
+      out = stock_call(mapping, norm_conditioning)  # [batch, 1 (lat), block (lon), latent]
+      # Points-major per block, so the stacked result already has the [points, batch, latent] layout
+      # the grid->mesh GNN consumes. Stacking [nb, batch, 1, block, latent] and reordering the whole
+      # grid afterwards is free at batch 1 (size-1 axes) but a second 6 GiB copy at batch 2.
+      return jnp.moveaxis(out.reshape(out.shape[0], block, out.shape[-1]), 0, 1)  # [block, batch, latent]
 
-    return _merge_point_blocks(hk.map(one_block, jnp.arange(nb)), 1, n_lat, n_lon, n)
+    stacked = hk.map(one_block, jnp.arange(nb))  # [nb, block, batch, latent]
+    points = stacked.reshape((nb * block,) + stacked.shape[2:])[:n]
+    batch, latent = points.shape[1], points.shape[2]
+    # Back to the [batch, lat, lon, latent] contract; the model flattens it to points-major again
+    # right after, and the two transposes cancel in XLA.
+    return jnp.moveaxis(points, 0, 1).reshape(batch, n_lat, n_lon, latent)
 
 
 class ChunkedDenseDecoder(_ORIG["Decoder"]):

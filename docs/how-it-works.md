@@ -35,7 +35,10 @@ within segment sums may differ by rounding).
 
 **2. Encoder / decoder in blocks.** Both are pointwise over grid points, so they run on blocks
 of 32,768 lat-major points; inputs that only vary along one grid axis (e.g. time-of-day over
-longitude) are broadcast first.
+longitude) are broadcast first. The encoder emits each block points-major (`[block, batch,
+latent]`), so the stacked result already has the layout the grid→mesh GNN consumes. Stacking in
+grid layout and reordering afterwards costs nothing at batch 1 (only size-1 axes move) but
+materialised a second whole-grid copy at batch 2 (13.2 instead of 8.3 GiB temp; v0.1.1).
 
 **3. Transformer as a loop.** The 24 blocks run as `hk.scan` over the layer index with
 `hk.switch` selecting `block_XX`. Unrolled, XLA's heap allocator fragments across layers

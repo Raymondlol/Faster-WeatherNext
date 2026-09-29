@@ -1,0 +1,31 @@
+  return tuple(xarray.concat(parts, dim="batch") for parts in zip(*examples))
+[highest]
+  WeatherNextCyclones_Mini fwn b=1 highest  temp  0.61 GiB step  0.10s compile   24s
+  WeatherNextCyclones_Mini fwn b=1 highest  temp  0.61 GiB step  0.09s compile    4s
+  WeatherNextCyclones_Mini fwn b=2 highest  temp  1.28 GiB step  0.18s compile   23s
+  WeatherNextCyclones_Mini official b=1 highest  temp  2.65 GiB step  0.16s compile   13s
+  WeatherNextCyclones_Mini official b=1 highest  temp  2.65 GiB step  0.16s compile    5s
+  WeatherNextCyclones_Mini official b=2 highest  temp  3.21 GiB step  0.31s compile   17s
+  fwn_b2[0] vs fwn_b1_0                min corr 0.9999999993  max rel RMS 3.79e-05  median 1.66e-06  NaN masks equal True
+  fwn_b2[1] vs fwn_b1_1                min corr 0.9999999999  max rel RMS 1.03e-05  median 1.59e-06  NaN masks equal True
+  fwn_b1_0 vs official_b1_0            min corr 0.9999999984  max rel RMS 5.70e-05  median 3.02e-06  NaN masks equal True
+  fwn_b1_1 vs official_b1_1            min corr 0.9999999998  max rel RMS 2.04e-05  median 2.80e-06  NaN masks equal True
+  fwn_b2 vs official_b2                min corr 0.9999999998  max rel RMS 2.20e-05  median 2.88e-06  NaN masks equal True
+  official_b2[0] vs official_b1_0      min corr 0.9999999998  max rel RMS 2.08e-05  median 2.38e-06  NaN masks equal True
+  official_b2[1] vs official_b1_1      min corr 0.9999999998  max rel RMS 1.78e-05  median 2.23e-06  NaN masks equal True
+[default]
+  WeatherNextCyclones_Mini fwn b=1 default  temp  0.58 GiB step  0.06s compile   11s
+  WeatherNextCyclones_Mini fwn b=1 default  temp  0.58 GiB step  0.06s compile    4s
+  WeatherNextCyclones_Mini fwn b=2 default  temp  1.53 GiB step  0.11s compile   12s
+  WeatherNextCyclones_Mini official b=1 default  temp  1.54 GiB step  0.13s compile    9s
+  WeatherNextCyclones_Mini official b=1 default  temp  1.54 GiB step  0.13s compile    5s
+  WeatherNextCyclones_Mini official b=2 default  temp  3.21 GiB step  0.26s compile   11s
+  fwn_b2[0] vs fwn_b1_0                min corr 0.9999391482  max rel RMS 1.10e-02  median 1.28e-03  NaN masks equal True
+  fwn_b2[1] vs fwn_b1_1                min corr 0.9999236368  max rel RMS 1.24e-02  median 1.49e-03  NaN masks equal True
+  fwn_b1_0 vs official_b1_0            min corr 0.9999186352  max rel RMS 1.28e-02  median 1.05e-03  NaN masks equal True
+  fwn_b1_1 vs official_b1_1            min corr 0.9999794549  max rel RMS 6.41e-03  median 9.36e-04  NaN masks equal True
+  fwn_b2 vs official_b2                min corr 0.9999697022  max rel RMS 7.79e-03  median 9.47e-04  NaN masks equal True
+  official_b2[0] vs official_b1_0      min corr 0.9999106193  max rel RMS 1.34e-02  median 1.34e-03  NaN masks equal True
+  official_b2[1] vs official_b1_1      min corr 0.9998854651  max rel RMS 1.51e-02  median 1.47e-03  NaN masks equal True
+wrote /home/raymxnd/.cache/fwn-batch/batch_mini.json
+exit=0

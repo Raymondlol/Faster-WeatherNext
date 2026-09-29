@@ -42,9 +42,9 @@ Same model · same checkpoints · same results · **6.4 GiB instead of 34 GiB** 
 ## Quick start
 
 ```bash
-pip install "faster-weathernext[cuda12] @ git+https://github.com/Raymondlol/Faster-WeatherNext.git@v0.1.0"
+pip install "faster-weathernext[cuda12,weathernext] @ git+https://github.com/Raymondlol/Faster-WeatherNext.git@v0.1.1"
 ```
-<sub>Python 3.12. Use `[cuda13]` with a CUDA 13 driver. Weights (~735 MB per checkpoint) come from Google's public bucket, initial conditions from ECMWF open data on AWS; both are cached in `~/.cache/faster-weathernext`.</sub>
+<sub>Python 3.12. Use `[cuda13]` with a CUDA 13 driver. The `[weathernext]` extra installs the official code at the validated commit; leave it out if `weathernext` is already installed (e.g. with earth2studio). Weights (~735 MB per checkpoint) come from Google's public bucket, initial conditions from ECMWF open data on AWS; both are cached in `~/.cache/faster-weathernext`.</sub>
 
 ```bash
 fwn info        # your GPU, memory, attention path, compatibility check
@@ -109,6 +109,8 @@ Yes — and we checked it harder than "the numbers look close".
 
 **Real forecasts.** We re-ran nor'easter hindcasts from four start times with all four WeatherNext 2 checkpoints and the same noise seeds. In a chaotic atmosphere any rounding difference grows over time — but it stays far below the forecast's own uncertainty (the spread between ensemble members), and forecast skill against ECMWF analyses is unchanged (within 0.8 %, while two halves of the same ensemble typically differ by 2.5 %).
 
+**Also checked:** the Mini model and batch size 2 against the official GPU path (fp32: max relative RMS difference 5.7 × 10⁻⁵), and stock vs patched inside NVIDIA earth2studio's wrapper (2.4 × 10⁻⁵).
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/figures/chaos_dark.svg">
   <img src="docs/figures/chaos_light.svg" width="85%" alt="RMS sea-level pressure difference versus lead time: the difference between faster-weathernext and the reference stays 181x below the member spread at 6 h, 11x at 72 h and 7x at 150 h.">
@@ -164,6 +166,12 @@ Tested on NVIDIA only. On AMD ROCm the slower XLA attention path is selected aut
 <summary><b>How does this relate to other ports?</b></summary>
 
 [NVIDIA earth2studio](https://github.com/NVIDIA/earth2studio) wraps WeatherNext 2 with the official GPU attention (80 GB GPUs). [kashif/weathernext2](https://huggingface.co/kashif/weathernext2) ports it to PyTorch / 🤗 `transformers`; its model card states ~50 GB per ensemble member at 0.25°. faster-weathernext keeps the official JAX code and changes only how it runs.
+</details>
+
+<details>
+<summary><b>Can I use it with earth2studio?</b></summary>
+
+Yes. Install `faster-weathernext` (without the `[weathernext]` extra) into the earth2studio environment and call `faster_weathernext.enable()` before `WeatherNext2Cyclones.load_model(...)`; the wrapper's own jitted forward then runs through the patched modules. Checked against the unpatched wrapper on the Mini model, and at 0.25° on a 32 GB GPU: [docs/validation.md](docs/validation.md#6-inside-earth2studio).
 </details>
 
 <details>

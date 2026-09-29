@@ -41,8 +41,9 @@ def cmd_info(args):
   from faster_weathernext import compat
   dev = jax.devices()[0]
   stats = dev.memory_stats() or {}
-  print(f"faster-weathernext {faster_weathernext.__version__} | jax {jax.__version__} | device {dev.device_kind} "
-        f"(compute capability {getattr(dev, 'compute_capability', '?')})")
+  print(f"faster-weathernext {faster_weathernext.__version__} | jax {jax.__version__} | "
+        f"weathernext {compat.weathernext_version()} (validated at {compat.TESTED_WEATHERNEXT_COMMIT}) | "
+        f"device {dev.device_kind} (compute capability {getattr(dev, 'compute_capability', '?')})")
   print(f"JAX memory pool: {stats.get('bytes_limit', 0) / 2**30:.2f} GiB "
         f"(XLA_PYTHON_CLIENT_MEM_FRACTION={os.environ.get('XLA_PYTHON_CLIENT_MEM_FRACTION')}); "
         "a 0.25° step needs ~6.4 GiB")

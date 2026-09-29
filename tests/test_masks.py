@@ -73,6 +73,21 @@ def test_num_blocks_divides_when_possible():
   assert _num_blocks(n, 32768) == -(-n // 32768)
 
 
+def test_merge_point_blocks_inverts_blocking():
+  import jax.numpy as jnp
+  from faster_weathernext.patch import _merge_point_blocks
+  n_lat, n_lon, batch, feat, nb = 7, 11, 2, 3, 4
+  n = n_lat * n_lon
+  block = -(-n // nb)  # 20: the last block is padded
+  x = np.arange(batch * n * feat, dtype=np.float32).reshape(batch, n_lat, n_lon, feat)
+  # Lat-major point blocks as the blocked encoder/decoder produce them: [nb, batch, 1 (lat), block (lon), feat].
+  flat = x.reshape(batch, n, feat)
+  padded = np.concatenate([flat, np.zeros((batch, nb * block - n, feat), np.float32)], axis=1)
+  blocks = padded.reshape(batch, nb, 1, block, feat).transpose(1, 0, 2, 3, 4)
+  out = _merge_point_blocks(jnp.asarray(blocks), 1, n_lat, n_lon, n)
+  np.testing.assert_array_equal(np.asarray(out), x)
+
+
 def test_enable_disable_restores_modules():
   import faster_weathernext
   from weathernext.utils import deep_gnn, sparse_transformer as st, xarray_dense

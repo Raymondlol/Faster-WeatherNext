@@ -1,0 +1,20 @@
+  return tuple(xarray.concat(parts, dim="batch") for parts in zip(*examples))
+[highest]
+  compiled b=2: temp 8.28 GiB
+  WeatherNext2 fwn b=2 highest  temp  8.28 GiB step  3.40s compile   68s
+  compiled b=1: temp 4.14 GiB
+  WeatherNext2 fwn b=1 highest  temp  4.14 GiB step  1.50s compile   79s
+  compiled b=1: temp 4.14 GiB
+  WeatherNext2 fwn b=1 highest  temp  4.14 GiB step  1.50s compile   49s
+  fwn_b2[0] vs fwn_b1_0                min corr 0.9999999999  max rel RMS 1.32e-05  median 1.91e-06  NaN masks equal True
+  fwn_b2[1] vs fwn_b1_1                min corr 0.9999999999  max rel RMS 1.47e-05  median 2.27e-06  NaN masks equal True
+[default]
+  compiled b=2: temp 8.28 GiB
+  WeatherNext2 fwn b=2 default  temp  8.28 GiB step  2.22s compile   57s
+  compiled b=1: temp 3.79 GiB
+  WeatherNext2 fwn b=1 default  temp  3.79 GiB step  0.78s compile   65s
+  compiled b=1: temp 3.79 GiB
+  WeatherNext2 fwn b=1 default  temp  3.79 GiB step  0.78s compile   65s
+  fwn_b2[0] vs fwn_b1_0                min corr 0.9997648400  max rel RMS 2.17e-02  median 3.00e-03  NaN masks equal True
+  fwn_b2[1] vs fwn_b1_1                min corr 0.9998836889  max rel RMS 1.53e-02  median 2.27e-03  NaN masks equal True
+wrote /home/raymxnd/.cache/fwn-batch/batch_wn2.json

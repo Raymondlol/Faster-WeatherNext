@@ -34,11 +34,14 @@ def load_params(model: str = "WeatherNext2", checkpoint: int = 1, weights_dir: s
     return ckpt_lib.load(f, fgn.CheckPoint).params
 
 
-def build(model: str = "WeatherNext2"):
+def build(model: str = "WeatherNext2", *, attention_type: str = "chunked_mha", mask_type: str | None = None):
   """(task, forward) with forward(params, rng, inputs, targets_template, forcings) -> predictions.
 
   Call faster_weathernext.enable() first. As in the official demo notebook, the training-time ensemble
-  wrapper (WithSampleDim) is dropped: one call = one ensemble member.
+  wrapper (WithSampleDim) is dropped: one call = one ensemble member (the batch dimension is free).
+  `attention_type` / `mask_type` are the official transformer settings; with the patch enabled any
+  attention type runs through faster-weathernext's kernel. The official GPU path is
+  `attention_type="triblockdiag_mha"` with the patch disabled (used by the validation scripts).
   """
   import haiku as hk
   import jax
@@ -46,8 +49,11 @@ def build(model: str = "WeatherNext2"):
   from weathernext.weathernext2 import fgn
 
   config = fiddle_config_io.get_fiddle_config_by_name(f"weathernext2/configs/{model}")
-  config.predictor_kwargs["noisy_function_kwargs"]["mesh_model_ctor"].keywords[
-      "transformer_kwargs"]["attention_type"] = "chunked_mha"
+  transformer_kwargs = config.predictor_kwargs["noisy_function_kwargs"]["mesh_model_ctor"].keywords[
+      "transformer_kwargs"]
+  transformer_kwargs["attention_type"] = attention_type
+  if mask_type is not None:
+    transformer_kwargs["mask_type"] = mask_type
   cfg = fgn.PredictorConfig(task=config.task, predictor_constructor=config.predictor_constructor,
                             predictor_kwargs=config.predictor_kwargs,
                             predictor_wrappers=config.predictor_wrappers[:-1])

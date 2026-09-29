@@ -121,13 +121,85 @@ An earlier build without the fused attention kernel ran at 18.5 s/step on the sa
 did not honour fp32 in that run. For strict fp32 use `--no-autotune` (5/5 matching A100 runs)
 and for reproducible runs `--autotune-cache`. Files: [`results/a100_repeats/`](results/a100_repeats/).
 
+## 5. Mini model and batch size > 1 (v0.1.1)
+
+`scripts/verify_batch.py`, RTX 5090. The FGN noise is drawn inside the model once per forward,
+so element *i* of a batch never sees the same noise as a batch-1 run; the script swaps the noise
+generator (for every path alike) for one that inserts fixed rows of a deterministic table, which
+makes elements comparable. Two different initialisations per batch.
+
+**WeatherNextCyclones_Mini (1°)**: the official GPU path (`triblockdiag_mha`, patch disabled) vs
+faster-weathernext, Google's 1° sample (inits 2024-10-07 00Z and 06Z), all 84 output fields
+× levels. The official path fits, so this is a direct comparison at both batch sizes:
+
+| precision | comparison | min corr | max rel RMS | median rel RMS |
+|---|---|---|---|---|
+| highest | fwn vs official, batch 1 (two inits) | 0.9999999984 | 5.7e-5, 2.0e-5 | 3.0e-6 |
+| highest | fwn vs official, batch 2 | 0.9999999998 | 2.2e-5 | 2.9e-6 |
+| highest | official batch 2 element *i* vs official batch 1 | 0.9999999998 | 2.1e-5, 1.8e-5 | 2.3e-6 |
+| highest | fwn batch 2 element *i* vs fwn batch 1 | 0.9999999993 | 3.8e-5, 1.0e-5 | 1.6e-6 |
+| default | all of the above | 0.99989–0.99998 | 0.6–1.5e-2 | 0.9–1.5e-3 |
+
+At fp32 the patch is within the official path's own batch-1-vs-batch-2 rounding; at TF32 every
+pair, including official-vs-official, differs at the 1e-2 level (Mini's vertical velocity is the
+worst field throughout). Temp memory / step, `highest`: official 2.65 GiB / 0.16 s (batch 1),
+3.21 GiB / 0.31 s (batch 2); faster-weathernext 0.61 GiB / 0.10 s and 1.28 GiB / 0.18 s.
+Files: [`results/batch/mini_rtx5090.json`](results/batch/mini_rtx5090.json).
+
+**WeatherNext2 (0.25°)**: the official path at batch 2 needs ~68 GiB, so faster-weathernext is
+compared with itself, element by element (IFS inits 2026-09-25 00Z and 09-24 00Z):
+
+| precision | comparison | min corr | max rel RMS | median rel RMS |
+|---|---|---|---|---|
+| highest | batch 2 element 0 vs batch 1 (init 09-25) | 0.9999999999 | 1.3e-5 | 1.9e-6 |
+| highest | batch 2 element 1 vs batch 1 (init 09-24) | 0.9999999999 | 1.5e-5 | 2.3e-6 |
+| default | batch 2 element 0 vs batch 1 | 0.99976 | 2.2e-2 | 3.0e-3 |
+| default | batch 2 element 1 vs batch 1 | 0.99988 | 1.5e-2 | 2.3e-3 |
+
+The TF32 rows are batch-size sensitivity of TF32 kernels, not of the patch: on Mini the official
+path differs from its own batch-2 run by 1.3–1.5e-2 (table above); the worst fields are again
+vertical velocity. Temp memory / step: batch 1 4.14 GiB / 1.50 s (`highest`), 3.79 GiB / 0.78 s
+(default); batch 2 8.28 GiB / 3.40 s and 8.28 GiB / 2.22 s. So on an RTX 5090 batch 2 buys no
+throughput (2.22 s for two members vs 2 × 0.78 s); it is a convenience for callers that batch
+ensemble members. In 0.1.0, batch 2 needed 13.24 GiB temp: the blocked encoder's output was
+stacked in grid layout and reordered afterwards, free at batch 1 but a second whole-grid copy at
+batch 2 ([`results/batch/wn2_batch2_memory_fix.txt`](results/batch/wn2_batch2_memory_fix.txt)).
+Files: [`results/batch/wn2_rtx5090.json`](results/batch/wn2_rtx5090.json). After that change,
+the batch-1 equivalence of §2 was re-run: `highest` 2.0e-5, default 4.9e-3 max rel RMS
+([`results/equivalence_rtx5090_v0.1.1.json`](results/equivalence_rtx5090_v0.1.1.json)).
+
+## 6. Inside earth2studio
+
+`scripts/earth2studio_check.py`: NVIDIA earth2studio's `WeatherNext2CyclonesMini` /
+`WeatherNext2Cyclones` wrappers (earth2studio main at 89be5bc, its own `weathernext` pin
+9c034db, JAX 0.11.2), fed Google's sample in the wrapper's tensor layout, stock vs
+`faster_weathernext.enable()` called before `load_model` (separate processes, same seed).
+faster-weathernext 0.1.1 installs into that environment without changing JAX or `weathernext`
+(0.1.0 could not: its `weathernext` git URL conflicted with earth2studio's pin).
+
+| wrapper | batch | precision | min corr | max rel RMS | median rel RMS | JAX peak stock → patched | step stock → patched |
+|---|---|---|---|---|---|---|---|
+| WeatherNext2CyclonesMini | 1 | highest | 0.9999999997 | 2.4e-5 | 2.0e-6 | 1.60 → 0.83 GiB | 0.26 → 0.19 s |
+| WeatherNext2CyclonesMini | 1 | default (TF32) | 0.99996 | 9.3e-3 | 9.4e-4 | 1.57 → 0.75 GiB | 0.23 → 0.16 s |
+| WeatherNext2CyclonesMini | 2 | default (TF32) | 0.99996 | 9.3e-3 | 9.0e-4 | 3.30 → 1.44 GiB | 0.39 → 0.25 s |
+| WeatherNext2Cyclones (0.25°) | 1 | default (TF32) | stock needs ~34 GiB: not runnable on this 32 GB GPU | — → 5.22 GiB | — → 1.52 s |
+
+The 0.25° wrapper run with the patch produced the full (84 variables, 721 × 1440) output with the
+same NaN pattern as the Mini runs (SST over land, 0.40 %); its numerics are covered by §1–§2 and
+§5 (same modules, same code path as the wrapper: `fgn.construct_predictor` with the ensemble
+wrapper dropped).
+
+"step" is the wrapper's whole `model(x, coords)` call (xarray conversion and TISR included), so
+Mini times are dominated by host work. `highest` was set with `JAX_DEFAULT_MATMUL_PRECISION=highest`
+for both processes. Files: [`results/earth2studio/`](results/earth2studio/).
+
 ## Limitations
 
 - Single-step equivalence (§1, §2) used one initialisation (2024-10-07) and the
   WeatherNextCyclones checkpoint (same architecture as WeatherNext 2; the public sample data
   lacks the 100 m winds WeatherNext 2 needs). WeatherNext 2 itself was validated through the
-  rollouts in §3.
-- WeatherNextCyclones_Mini and batch sizes > 1 (several members per call) are untested.
+  rollouts in §3 and the batch checks in §5.
+- Batch sizes > 1 were checked at 2 (§5, §6); larger batches only change memory.
 - Without a fixed autotune cache, results are not bitwise reproducible between runs (§4 note).
 - TPU (`splash_mha`) numerics were not compared; TPU matmuls use bf16 passes by default and
   differ from any of the GPU paths above.

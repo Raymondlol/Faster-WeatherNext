@@ -1,0 +1,12 @@
+0.25° WeatherNext2, faster-weathernext, RTX 5090, JAX 0.11.2, precision highest, compile only
+(compiled.memory_analysis().temp_size_in_bytes; XLA memory-usage report for the largest allocations).
+
+v0.1.0 layout (blocked encoder stacked as [nb, batch, 1, block, latent], then reordered):
+  b1 temp 4.14 GiB   largest allocation 2.97 GiB shared by 13 values:
+                     5×f32[32,1,1,32445,768], 8×f32[32,32445,1,768]   (one whole-grid buffer)
+  b2 temp 13.24 GiB  two 5.94 GiB allocations: 5×f32[32,2,1,32445,768] and 8×f32[32,32445,2,768]
+                     (the size-1-axis move is free at batch 1 and a whole-grid transpose at batch 2)
+
+v0.1.1 layout (each block emitted points-major, stacked as [nb, block, batch, latent]):
+  b1 temp 4.14 GiB
+  b2 temp 8.28 GiB   (= 2 × batch 1)
