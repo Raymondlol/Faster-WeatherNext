@@ -42,7 +42,7 @@ Same model · same checkpoints · same results · **6.4 GiB instead of 34 GiB** 
 ## Quick start
 
 ```bash
-pip install "faster-weathernext[cuda12] @ git+https://github.com/Raymondlol/Faster-WeatherNext.git"
+pip install "faster-weathernext[cuda12] @ git+https://github.com/Raymondlol/Faster-WeatherNext.git@v0.1.0"
 ```
 <sub>Python 3.12. Use `[cuda13]` with a CUDA 13 driver. Weights (~735 MB per checkpoint) come from Google's public bucket, initial conditions from ECMWF open data on AWS; both are cached in `~/.cache/faster-weathernext`.</sub>
 

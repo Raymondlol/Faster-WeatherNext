@@ -143,3 +143,5 @@ and for reproducible runs `--autotune-cache`. Files: [`results/a100_repeats/`](r
   speed from §2 (RTX 5090, default precision).
 - `figures/chaos_*.svg`: MSLP rows of [`results/noreaster/noreaster_p2_vs_p0.csv`](results/noreaster/noreaster_p2_vs_p0.csv)
   (median over the four initialisations).
+- `figures/social_preview.png`: the repository's link-preview card (1280×640); the +12 h frame of
+  `noreaster_comparison.gif` under the title.
