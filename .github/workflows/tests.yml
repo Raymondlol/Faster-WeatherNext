@@ -6,15 +6,16 @@ on:
 
 jobs:
   cpu:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: astral-sh/setup-uv@v6
-        with:
-          python-version: "3.12"
+      # Install into a venv: the runner's system Python is externally managed (PEP 668).
       - name: Install (CPU JAX)
-        run: uv pip install --system -e ".[test]"
+        run: |
+          uv venv --python 3.12
+          uv pip install -e ".[test]"
       - name: Unit tests (mask layouts, tiling, Pallas kernel in interpret mode, patch install)
         env:
           JAX_PLATFORMS: cpu
-        run: pytest -q
+        run: .venv/bin/python -m pytest -q
