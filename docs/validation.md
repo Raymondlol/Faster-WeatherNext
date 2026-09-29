@@ -193,6 +193,55 @@ wrapper dropped).
 Mini times are dominated by host work. `highest` was set with `JAX_DEFAULT_MATMUL_PRECISION=highest`
 for both processes. Files: [`results/earth2studio/`](results/earth2studio/).
 
+## 7. Intel XPU / Arc GPUs (OpenXLA via oneAPI)
+
+Intel GPUs (such as Arc B-series / Battlemage) run via Intel's OpenXLA PJRT plugin (`jax-oneapi-plugin`). Because Intel GPUs do not use NVIDIA CUDA / Triton Pallas kernels, `faster-weathernext` automatically dispatches to the pure XLA chunked attention implementation (`attention_impl() == "xla"`).
+
+### Installation & Environment Setup
+
+1. **System Prerequisites**:
+   - Intel graphics compute runtime / Level-Zero (`intel-opencl-icd`, `level-zero`).
+   - Intel oneAPI Base Toolkit (or Deep Learning Essentials, e.g. 2025.1+):
+     ```bash
+     source /opt/intel/oneapi/setvars.sh
+     # or specifically:
+     source /opt/intel/oneapi/2025.1/oneapi-vars.sh
+     ```
+     Verify with `sycl-ls` that the Level-Zero GPU target is present.
+
+2. **Python Environment (Python 3.12 recommended)**:
+   Install `faster-weathernext` with the `[oneapi]` extra:
+   ```bash
+   pip install -e ".[oneapi,weathernext]"
+   ```
+   Or install the validated JAX oneAPI packages directly:
+   ```bash
+   pip install "jax==0.11.2" "jaxlib==0.11.2" "jax-oneapi-plugin==0.11.2" "jax-oneapi-pjrt==0.11.2"
+   ```
+
+3. **Verify Device**:
+   ```bash
+   fwn info
+   ```
+   Example output on Intel Arc B580 (12 GB GDDR6):
+   ```
+   Platform 'oneapi' is experimental and not all JAX functionality may be correctly supported!
+   faster-weathernext 0.1.1 | jax 0.11.2 | weathernext 0.3.1.dev0 (f2f2c51) (validated at f2f2c51) | device Intel(R) Arc(TM) B580 Graphics (compute capability unknown)
+   JAX memory pool: 10.20 GiB (XLA_PYTHON_CLIENT_MEM_FRACTION=0.9); a 0.25° step needs ~6.4 GiB
+   weathernext compatibility: OK
+   attention implementation: xla
+   ```
+
+### Attention Microbenchmark
+
+One WN2 layer's masked mesh attention (40,962 nodes, 6 heads × 128 dim, 32-hop mask, `scripts/attn_bench.py`):
+
+| GPU | arch | memory | attention | precision | ms/layer | s/step (x24 layers) |
+|---|---|---|---|---|---|---|
+| Intel Arc B580 | Xe2 (Battlemage) | 12 GB (10.2 GiB pool) | xla | default | 684.1 ms | 16.42 s |
+
+All unit tests pass (`pytest -q`).
+
 ## Limitations
 
 - Single-step equivalence (§1, §2) used one initialisation (2024-10-07) and the

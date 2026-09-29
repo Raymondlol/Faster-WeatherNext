@@ -159,7 +159,7 @@ JAX reserves 75 % of GPU memory by default, which is too little on an 8 GB card.
 <details>
 <summary><b>AMD, Intel or Apple GPUs?</b></summary>
 
-Tested on NVIDIA only. On AMD ROCm the slower XLA attention path is selected automatically; it should work but is untested. Intel and Apple GPUs lack a maintained JAX backend.
+Tested on NVIDIA and Intel GPUs. On AMD ROCm and Intel XPUs, the pure XLA chunked attention path is selected automatically. Intel GPUs (e.g. Arc B580) run via Intel's OpenXLA PJRT plugin (`jax-oneapi-plugin`); see [docs/validation.md](docs/validation.md#7-intel-xpu--arc-gpus-openxla-via-oneapi) for setup instructions and benchmark results. Apple GPUs lack a maintained JAX backend.
 </details>
 
 <details>
