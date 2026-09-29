@@ -1,0 +1,25 @@
+{
+ "label": "a100_rep2",
+ "env": {
+  "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+  "XLA_FLAGS": "--xla_gpu_dump_autotune_results_to=/data/results/a100rep01/autotune_rep2.txt"
+ },
+ "ok": true,
+ "device": "NVIDIA A100-SXM4-80GB",
+ "jax": "0.11.2",
+ "compute_capability": "8.0",
+ "grid_chunk": 32768,
+ "edge_chunk": 65536,
+ "attn_impl": "pallas",
+ "reorder": true,
+ "pool_gib": 59.439453125,
+ "highest_first_call_s": 160.06911873817444,
+ "highest_n_fields": 101,
+ "step_s": [
+  144.20164322853088
+ ],
+ "finite": [
+  true
+ ],
+ "peak_gib": 5.937268018722534
+}

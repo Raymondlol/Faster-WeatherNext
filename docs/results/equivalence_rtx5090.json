@@ -1,0 +1,85 @@
+{
+ "device": "NVIDIA GeForce RTX 5090",
+ "jax": "0.11.2",
+ "faster_weathernext": "0.1.0",
+ "cases": {
+  "highest/reference": {
+   "temp_gib": 20.793040931224823,
+   "step_s": 8.915941953659058,
+   "compile_s": 48.78223752975464,
+   "attention": "xla"
+  },
+  "highest/faster_weathernext": {
+   "temp_gib": 4.1423928663134575,
+   "step_s": 1.4952967166900635,
+   "compile_s": 64.44149398803711,
+   "attention": "pallas",
+   "vs_reference": {
+    "min_corr": 0.9999999997983788,
+    "max_rel_rms": 2.008971271222132e-05,
+    "median_rel_rms": 2.122720920460462e-06,
+    "nan_masks_equal": true,
+    "n_fields": 101,
+    "worst": [
+     {
+      "field": "vertical_velocity@50",
+      "corr": 0.9999999997983788,
+      "rel_rms": 2.008971271222132e-05,
+      "nan_mask_equal": true
+     },
+     {
+      "field": "vertical_velocity@100",
+      "corr": 0.9999999998694831,
+      "rel_rms": 1.6165273805309563e-05,
+      "nan_mask_equal": true
+     },
+     {
+      "field": "vertical_velocity@150",
+      "corr": 0.999999999885152,
+      "rel_rms": 1.515705824729391e-05,
+      "nan_mask_equal": true
+     }
+    ]
+   }
+  },
+  "default/reference": {
+   "temp_gib": 20.793040931224823,
+   "step_s": 5.455335378646851,
+   "compile_s": 48.07741641998291,
+   "attention": "xla"
+  },
+  "default/faster_weathernext": {
+   "temp_gib": 3.790805570781231,
+   "step_s": 0.7765007019042969,
+   "compile_s": 58.021475076675415,
+   "attention": "pallas",
+   "vs_reference": {
+    "min_corr": 0.9999886403353647,
+    "max_rel_rms": 0.004767134867851739,
+    "median_rel_rms": 0.000504269785074231,
+    "nan_masks_equal": true,
+    "n_fields": 101,
+    "worst": [
+     {
+      "field": "vertical_velocity@50",
+      "corr": 0.9999886403353647,
+      "rel_rms": 0.004767134867851739,
+      "nan_mask_equal": true
+     },
+     {
+      "field": "vertical_velocity@100",
+      "corr": 0.9999931102571675,
+      "rel_rms": 0.003712075008609215,
+      "nan_mask_equal": true
+     },
+     {
+      "field": "vertical_velocity@150",
+      "corr": 0.9999934719112671,
+      "rel_rms": 0.003613494578445911,
+      "nan_mask_equal": true
+     }
+    ]
+   }
+  }
+ }
+}

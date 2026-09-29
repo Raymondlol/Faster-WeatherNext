@@ -1,0 +1,28 @@
+{
+ "label": "t4_cap8",
+ "env": {
+  "XLA_PYTHON_CLIENT_MEM_FRACTION": "0.4720"
+ },
+ "ok": true,
+ "device": "Tesla T4",
+ "jax": "0.11.2",
+ "compute_capability": "7.5",
+ "grid_chunk": 32768,
+ "edge_chunk": 65536,
+ "attn_impl": "xla",
+ "reorder": true,
+ "pool_gib": 6.87890625,
+ "step_s": [
+  186.0677888393402,
+  43.60585904121399,
+  43.88761878013611,
+  44.057859897613525
+ ],
+ "finite": [
+  true,
+  true,
+  true,
+  true
+ ],
+ "peak_gib": 6.296581983566284
+}

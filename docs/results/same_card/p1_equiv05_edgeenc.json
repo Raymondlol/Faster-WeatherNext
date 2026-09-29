@@ -1,0 +1,324 @@
+{
+ "device": "NVIDIA GeForce RTX 5090",
+ "jax": "0.11.2",
+ "cases": {
+  "highest/ref": {
+   "temp_gib": 20.793040931224823,
+   "step_s": 8.886145830154419,
+   "compile_s": 48.22564721107483,
+   "peak_gib": 23.03089141845703
+  },
+  "highest/c1024": {
+   "temp_gib": 4.614438757300377,
+   "step_s": 3.95246958732605,
+   "compile_s": 66.76869440078735,
+   "peak_gib": 23.03089141845703,
+   "vs_ref": {
+    "min_corr": 0.9999999997888768,
+    "max_rel_rms": 2.0549966961129934e-05,
+    "median_rel_rms": 2.329001792865815e-06,
+    "max_rel_max": 0.0025457026656270903,
+    "nan_masks_equal": true,
+    "n_fields": 101
+   },
+   "worst_fields": [
+    {
+     "field": "vertical_velocity@50",
+     "corr": 0.9999999997888768,
+     "rel_rms": 2.0549966961129934e-05,
+     "rel_max": 0.0004298576220351548,
+     "nan_mask_equal": true
+    },
+    {
+     "field": "vertical_velocity@100",
+     "corr": 0.9999999998590747,
+     "rel_rms": 1.67893712886106e-05,
+     "rel_max": 0.0006783566371670156,
+     "nan_mask_equal": true
+    },
+    {
+     "field": "vertical_velocity@150",
+     "corr": 0.9999999998610727,
+     "rel_rms": 1.6669473158694208e-05,
+     "rel_max": 0.0017393615956503771,
+     "nan_mask_equal": true
+    },
+    {
+     "field": "vertical_velocity@400",
+     "corr": 0.99999999986793,
+     "rel_rms": 1.625340281917141e-05,
+     "rel_max": 0.0025457026656270903,
+     "nan_mask_equal": true
+    },
+    {
+     "field": "vertical_velocity@200",
+     "corr": 0.9999999998712559,
+     "rel_rms": 1.604867110994121e-05,
+     "rel_max": 0.001392820682018455,
+     "nan_mask_equal": true
+    }
+   ]
+  },
+  "highest/c512": {
+   "temp_gib": 4.142432913184166,
+   "step_s": 3.8243248462677,
+   "compile_s": 51.16241002082825,
+   "peak_gib": 23.03089141845703,
+   "vs_ref": {
+    "min_corr": 0.9999999997847385,
+    "max_rel_rms": 2.0749014014824387e-05,
+    "median_rel_rms": 2.3461664713031058e-06,
+    "max_rel_max": 0.002640707799811465,
+    "nan_masks_equal": true,
+    "n_fields": 101
+   },
+   "worst_fields": [
+    {
+     "field": "vertical_velocity@50",
+     "corr": 0.9999999997847385,
+     "rel_rms": 2.0749014014824387e-05,
+     "rel_max": 0.00042499813719194313,
+     "nan_mask_equal": true
+    },
+    {
+     "field": "vertical_velocity@100",
+     "corr": 0.999999999854157,
+     "rel_rms": 1.708107699173758e-05,
+     "rel_max": 0.0007731207438761878,
+     "nan_mask_equal": true
+    },
+    {
+     "field": "vertical_velocity@150",
+     "corr": 0.9999999998560851,
+     "rel_rms": 1.6966504054038434e-05,
+     "rel_max": 0.001568232318410439,
+     "nan_mask_equal": true
+    },
+    {
+     "field": "vertical_velocity@200",
+     "corr": 0.9999999998618835,
+     "rel_rms": 1.6622515920052513e-05,
+     "rel_max": 0.0015119474617332083,
+     "nan_mask_equal": true
+    },
+    {
+     "field": "vertical_velocity@400",
+     "corr": 0.9999999998623178,
+     "rel_rms": 1.6594225167527555e-05,
+     "rel_max": 0.002640707799811465,
+     "nan_mask_equal": true
+    }
+   ]
+  },
+  "highest/c256": {
+   "temp_gib": 4.142432913184166,
+   "step_s": 4.188308000564575,
+   "compile_s": 48.963661909103394,
+   "peak_gib": 23.03089141845703,
+   "vs_ref": {
+    "min_corr": 0.9999999997854294,
+    "max_rel_rms": 2.0716565022018437e-05,
+    "median_rel_rms": 2.4105805573686757e-06,
+    "max_rel_max": 0.0029762838746343846,
+    "nan_masks_equal": true,
+    "n_fields": 101
+   },
+   "worst_fields": [
+    {
+     "field": "vertical_velocity@50",
+     "corr": 0.9999999997854294,
+     "rel_rms": 2.0716565022018437e-05,
+     "rel_max": 0.0005296838479100656,
+     "nan_mask_equal": true
+    },
+    {
+     "field": "vertical_velocity@150",
+     "corr": 0.9999999998511567,
+     "rel_rms": 1.7254408824504877e-05,
+     "rel_max": 0.001613051891020899,
+     "nan_mask_equal": true
+    },
+    {
+     "field": "vertical_velocity@100",
+     "corr": 0.9999999998519012,
+     "rel_rms": 1.7212166358552687e-05,
+     "rel_max": 0.0009163388960972897,
+     "nan_mask_equal": true
+    },
+    {
+     "field": "vertical_velocity@400",
+     "corr": 0.9999999998545471,
+     "rel_rms": 1.7056022379461596e-05,
+     "rel_max": 0.0029762838746343846,
+     "nan_mask_equal": true
+    },
+    {
+     "field": "vertical_velocity@500",
+     "corr": 0.9999999998597994,
+     "rel_rms": 1.6745757941690035e-05,
+     "rel_max": 0.0028501276075098255,
+     "nan_mask_equal": true
+    }
+   ]
+  },
+  "default/ref": {
+   "temp_gib": 20.793040931224823,
+   "step_s": 5.410580158233643,
+   "compile_s": 47.2097864151001,
+   "peak_gib": 23.03089141845703
+  },
+  "default/c1024": {
+   "temp_gib": 4.181198343634605,
+   "step_s": 2.7929000854492188,
+   "compile_s": 55.413374185562134,
+   "peak_gib": 23.03089141845703,
+   "vs_ref": {
+    "min_corr": 0.9999880247453723,
+    "max_rel_rms": 0.004893977114189502,
+    "median_rel_rms": 0.0005115838994078679,
+    "max_rel_max": 0.31803416438671883,
+    "nan_masks_equal": true,
+    "n_fields": 101
+   },
+   "worst_fields": [
+    {
+     "field": "vertical_velocity@50",
+     "corr": 0.9999880247453723,
+     "rel_rms": 0.004893977114189502,
+     "rel_max": 0.1169195160372982,
+     "nan_mask_equal": true
+    },
+    {
+     "field": "vertical_velocity@100",
+     "corr": 0.9999928159848742,
+     "rel_rms": 0.003790720210335002,
+     "rel_max": 0.10181197594242643,
+     "nan_mask_equal": true
+    },
+    {
+     "field": "vertical_velocity@150",
+     "corr": 0.9999933016662506,
+     "rel_rms": 0.003660240147218997,
+     "rel_max": 0.08373327468324651,
+     "nan_mask_equal": true
+    },
+    {
+     "field": "vertical_velocity@200",
+     "corr": 0.9999935119064722,
+     "rel_rms": 0.0036024169642380833,
+     "rel_max": 0.15479775443734373,
+     "nan_mask_equal": true
+    },
+    {
+     "field": "vertical_velocity@300",
+     "corr": 0.9999941358062703,
+     "rel_rms": 0.00342472101602778,
+     "rel_max": 0.22256707968530573,
+     "nan_mask_equal": true
+    }
+   ]
+  },
+  "default/c512": {
+   "temp_gib": 4.015939936041832,
+   "step_s": 2.8933169841766357,
+   "compile_s": 47.35089826583862,
+   "peak_gib": 23.03089141845703,
+   "vs_ref": {
+    "min_corr": 0.9999886153345688,
+    "max_rel_rms": 0.004772006220342417,
+    "median_rel_rms": 0.0005128173412016087,
+    "max_rel_max": 0.233431102581649,
+    "nan_masks_equal": true,
+    "n_fields": 101
+   },
+   "worst_fields": [
+    {
+     "field": "vertical_velocity@50",
+     "corr": 0.9999886153345688,
+     "rel_rms": 0.004772006220342417,
+     "rel_max": 0.07746292805459927,
+     "nan_mask_equal": true
+    },
+    {
+     "field": "vertical_velocity@100",
+     "corr": 0.9999927507872765,
+     "rel_rms": 0.0038078713362286014,
+     "rel_max": 0.09012568101937768,
+     "nan_mask_equal": true
+    },
+    {
+     "field": "vertical_velocity@150",
+     "corr": 0.9999933315684808,
+     "rel_rms": 0.003651972916052523,
+     "rel_max": 0.1138216956888151,
+     "nan_mask_equal": true
+    },
+    {
+     "field": "vertical_velocity@200",
+     "corr": 0.9999936117061413,
+     "rel_rms": 0.0035746076717171945,
+     "rel_max": 0.15788321364166827,
+     "nan_mask_equal": true
+    },
+    {
+     "field": "vertical_velocity@400",
+     "corr": 0.9999941364367669,
+     "rel_rms": 0.0034248134582073207,
+     "rel_max": 0.21146809176647163,
+     "nan_mask_equal": true
+    }
+   ]
+  },
+  "default/c256": {
+   "temp_gib": 4.015939936041832,
+   "step_s": 3.240145683288574,
+   "compile_s": 47.09699058532715,
+   "peak_gib": 23.03089141845703,
+   "vs_ref": {
+    "min_corr": 0.9999880910918701,
+    "max_rel_rms": 0.00488043819769427,
+    "median_rel_rms": 0.0005125869073796646,
+    "max_rel_max": 0.23121584824588562,
+    "nan_masks_equal": true,
+    "n_fields": 101
+   },
+   "worst_fields": [
+    {
+     "field": "vertical_velocity@50",
+     "corr": 0.9999880910918701,
+     "rel_rms": 0.00488043819769427,
+     "rel_max": 0.08057024759422243,
+     "nan_mask_equal": true
+    },
+    {
+     "field": "vertical_velocity@100",
+     "corr": 0.9999926522912185,
+     "rel_rms": 0.0038336678625766458,
+     "rel_max": 0.13585253505648098,
+     "nan_mask_equal": true
+    },
+    {
+     "field": "vertical_velocity@150",
+     "corr": 0.9999931983588023,
+     "rel_rms": 0.0036882624750388076,
+     "rel_max": 0.18193350281119328,
+     "nan_mask_equal": true
+    },
+    {
+     "field": "vertical_velocity@200",
+     "corr": 0.9999934222440935,
+     "rel_rms": 0.003627304674754469,
+     "rel_max": 0.22025959313191112,
+     "nan_mask_equal": true
+    },
+    {
+     "field": "vertical_velocity@300",
+     "corr": 0.9999939176359127,
+     "rel_rms": 0.003487978359978433,
+     "rel_max": 0.23121584824588562,
+     "nan_mask_equal": true
+    }
+   ]
+  }
+ }
+}

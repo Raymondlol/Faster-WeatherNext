@@ -1,0 +1,20 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  cpu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+      - name: Install (CPU JAX)
+        run: uv pip install --system -e ".[test]"
+      - name: Unit tests (mask layouts, tiling, Pallas kernel in interpret mode, patch install)
+        env:
+          JAX_PLATFORMS: cpu
+        run: pytest -q

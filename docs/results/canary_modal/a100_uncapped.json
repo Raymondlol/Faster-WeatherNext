@@ -1,0 +1,30 @@
+{
+ "label": "a100_uncapped",
+ "env": {
+  "XLA_PYTHON_CLIENT_PREALLOCATE": "false"
+ },
+ "ok": true,
+ "device": "NVIDIA A100-SXM4-40GB",
+ "jax": "0.11.2",
+ "compute_capability": "8.0",
+ "grid_chunk": 32768,
+ "edge_chunk": 65536,
+ "attn_impl": "pallas",
+ "reorder": true,
+ "pool_gib": 29.62109375,
+ "highest_first_call_s": 138.6262228488922,
+ "highest_n_fields": 101,
+ "step_s": [
+  125.85800194740295,
+  1.1729919910430908,
+  1.1146247386932373,
+  1.1192176342010498
+ ],
+ "finite": [
+  true,
+  true,
+  true,
+  true
+ ],
+ "peak_gib": 6.1756885051727295
+}

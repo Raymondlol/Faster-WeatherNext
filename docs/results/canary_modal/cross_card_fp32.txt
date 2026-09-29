@@ -1,0 +1,51 @@
+# fp32-highest one-step outputs (every 4th grid point, 101 fields) vs RTX 5090 (same code: Pallas path)
+== a100 (canary02)
+101 fields  min corr 0.999913072406  max rel RMS 1.32e-02  median rel RMS 6.21e-04  NaN masks equal: True
+  cyclone_usa_rmw_disc             corr 0.9999130724  rel RMS 1.32e-02
+  vertical_velocity@50             corr 0.9999802977  rel RMS 6.28e-03
+  vertical_velocity@100            corr 0.9999813394  rel RMS 6.11e-03
+== a10g (canary02)
+101 fields  min corr 0.999999999869  max rel RMS 1.62e-05  median rel RMS 1.67e-06  NaN masks equal: True
+  vertical_velocity@50             corr 0.9999999999  rel RMS 1.62e-05
+  vertical_velocity@100            corr 0.9999999999  rel RMS 1.24e-05
+  vertical_velocity@200            corr 0.9999999999  rel RMS 1.20e-05
+== l4 (canary02)
+101 fields  min corr 0.999999999847  max rel RMS 1.75e-05  median rel RMS 1.85e-06  NaN masks equal: True
+  vertical_velocity@50             corr 0.9999999998  rel RMS 1.75e-05
+  vertical_velocity@100            corr 0.9999999999  rel RMS 1.37e-05
+  vertical_velocity@200            corr 0.9999999999  rel RMS 1.30e-05
+== t4 (canary02)
+101 fields  min corr 0.999999995352  max rel RMS 9.64e-05  median rel RMS 1.08e-05  NaN masks equal: True
+  vertical_velocity@50             corr 0.9999999954  rel RMS 9.64e-05
+  vertical_velocity@100            corr 0.9999999972  rel RMS 7.50e-05
+  vertical_velocity@150            corr 0.9999999974  rel RMS 7.19e-05
+== a100 repeat 0 (a100rep01)
+101 fields  min corr 0.999999999849  max rel RMS 1.74e-05  median rel RMS 1.83e-06  NaN masks equal: True
+  vertical_velocity@50             corr 0.9999999998  rel RMS 1.74e-05
+  cyclone_exists_gaussian_unit_mode corr 0.9999999999  rel RMS 1.40e-05
+  vertical_velocity@100            corr 0.9999999999  rel RMS 1.35e-05
+== a100 repeat 1 (a100rep01)
+101 fields  min corr 0.999999999844  max rel RMS 1.77e-05  median rel RMS 1.82e-06  NaN masks equal: True
+  vertical_velocity@50             corr 0.9999999998  rel RMS 1.77e-05
+  vertical_velocity@100            corr 0.9999999999  rel RMS 1.36e-05
+  vertical_velocity@200            corr 0.9999999999  rel RMS 1.30e-05
+== a100 repeat 2 (a100rep01)
+101 fields  min corr 0.999999999834  max rel RMS 1.94e-05  median rel RMS 1.85e-06  NaN masks equal: True
+  cyclone_exists_gaussian_unit_mode corr 0.9999999998  rel RMS 1.94e-05
+  vertical_velocity@50             corr 0.9999999999  rel RMS 1.72e-05
+  vertical_velocity@100            corr 0.9999999999  rel RMS 1.37e-05
+== a100 autotune at0 (a100probe01)
+101 fields  min corr 0.999999999845  max rel RMS 1.76e-05  median rel RMS 1.83e-06  NaN masks equal: True
+  vertical_velocity@50             corr 0.9999999998  rel RMS 1.76e-05
+  vertical_velocity@100            corr 0.9999999999  rel RMS 1.36e-05
+  vertical_velocity@150            corr 0.9999999999  rel RMS 1.29e-05
+== a100 autotune at4 (a100probe01)
+101 fields  min corr 0.999999999868  max rel RMS 1.63e-05  median rel RMS 1.72e-06  NaN masks equal: True
+  vertical_velocity@50             corr 0.9999999999  rel RMS 1.63e-05
+  vertical_velocity@100            corr 0.9999999999  rel RMS 1.26e-05
+  vertical_velocity@150            corr 0.9999999999  rel RMS 1.20e-05
+== t4 vs rtx5090 XLA path (both XLA attention)
+101 fields  min corr 0.999999995312  max rel RMS 9.69e-05  median rel RMS 1.09e-05  NaN masks equal: True
+  vertical_velocity@50             corr 0.9999999953  rel RMS 9.69e-05
+  vertical_velocity@100            corr 0.9999999972  rel RMS 7.55e-05
+  vertical_velocity@150            corr 0.9999999974  rel RMS 7.22e-05

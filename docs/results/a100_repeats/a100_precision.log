@@ -1,0 +1,146 @@
+✓ Initialized. View run at 
+https://modal.com/apps/<workspace>/main/<app-id>
+Building image im-9pINz72XR4J91FO7Kz3WjN
+
+=> Step 0: FROM base
+
+=> Step 1: RUN python -m pip install 'jax[cuda12]==0.11.2' scipy
+Looking in indexes: http://pypi-mirror.modal.local:5555/simple
+Collecting jax==0.11.2 (from jax[cuda12]==0.11.2)
+  Downloading http://pypi-mirror.modal.local:5555/simple/jax/jax-0.11.2-py3-none-any.whl.metadata (13 kB)
+Collecting scipy
+  Downloading http://pypi-mirror.modal.local:5555/simple/scipy/scipy-1.18.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (62 kB)
+Collecting jaxlib<=0.11.2,>=0.11.2 (from jax==0.11.2->jax[cuda12]==0.11.2)
+  Downloading http://pypi-mirror.modal.local:5555/simple/jaxlib/jaxlib-0.11.2-cp312-cp312-manylinux_2_27_x86_64.whl.metadata (1.3 kB)
+Collecting ml_dtypes>=0.5.0 (from jax==0.11.2->jax[cuda12]==0.11.2)
+  Downloading http://pypi-mirror.modal.local:5555/simple/ml-dtypes/ml_dtypes-0.6.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (8.8 kB)
+Collecting numpy>=2.1 (from jax==0.11.2->jax[cuda12]==0.11.2)
+  Downloading http://pypi-mirror.modal.local:5555/simple/numpy/numpy-2.5.3-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (6.6 kB)
+Collecting opt_einsum (from jax==0.11.2->jax[cuda12]==0.11.2)
+  Downloading http://pypi-mirror.modal.local:5555/simple/opt-einsum/opt_einsum-3.4.0-py3-none-any.whl.metadata (6.3 kB)
+Collecting jax-cuda12-plugin<=0.11.2,>=0.11.2 (from jax-cuda12-plugin[with-cuda]<=0.11.2,>=0.11.2; extra == "cuda12"->jax[cuda12]==0.11.2)
+  Downloading http://pypi-mirror.modal.local:5555/simple/jax-cuda12-plugin/jax_cuda12_plugin-0.11.2-cp312-cp312-manylinux_2_27_x86_64.whl.metadata (2.0 kB)
+Collecting jax-cuda12-pjrt==0.11.2 (from jax-cuda12-plugin<=0.11.2,>=0.11.2->jax-cuda12-plugin[with-cuda]<=0.11.2,>=0.11.2; extra == "cuda12"->jax[cuda12]==0.11.2)
+  Downloading http://pypi-mirror.modal.local:5555/simple/jax-cuda12-pjrt/jax_cuda12_pjrt-0.11.2-py3-none-manylinux_2_27_x86_64.whl.metadata (580 bytes)
+Collecting nvidia-cublas-cu12>=12.1.3.1 (from jax-cuda12-plugin[with-cuda]<=0.11.2,>=0.11.2; extra == "cuda12"->jax[cuda12]==0.11.2)
+  Downloading http://pypi-mirror.modal.local:5555/simple/nvidia-cublas-cu12/nvidia_cublas_cu12-12.9.2.10-py3-none-manylinux_2_27_x86_64.whl.metadata (1.8 kB)
+Collecting nvidia-cuda-cupti-cu12>=12.1.105 (from jax-cuda12-plugin[with-cuda]<=0.11.2,>=0.11.2; extra == "cuda12"->jax[cuda12]==0.11.2)
+  Downloading http://pypi-mirror.modal.local:5555/simple/nvidia-cuda-cupti-cu12/nvidia_cuda_cupti_cu12-12.9.79-py3-none-manylinux_2_25_x86_64.whl.metadata (1.8 kB)
+Collecting nvidia-cuda-nvcc-cu12>=12.6.85 (from jax-cuda12-plugin[with-cuda]<=0.11.2,>=0.11.2; extra == "cuda12"->jax[cuda12]==0.11.2)
+  Downloading http://pypi-mirror.modal.local:5555/simple/nvidia-cuda-nvcc-cu12/nvidia_cuda_nvcc_cu12-12.9.86-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl.metadata (1.7 kB)
+Collecting nvidia-cuda-runtime-cu12>=12.1.105 (from jax-cuda12-plugin[with-cuda]<=0.11.2,>=0.11.2; extra == "cuda12"->jax[cuda12]==0.11.2)
+  Downloading http://pypi-mirror.modal.local:5555/simple/nvidia-cuda-runtime-cu12/nvidia_cuda_runtime_cu12-12.9.79-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (1.7 kB)
+Collecting nvidia-cudnn-cu12<10.0,>=9.10.2.21 (from jax-cuda12-plugin[with-cuda]<=0.11.2,>=0.11.2; extra == "cuda12"->jax[cuda12]==0.11.2)
+  Downloading http://pypi-mirror.modal.local:5555/simple/nvidia-cudnn-cu12/nvidia_cudnn_cu12-9.26.0.51-py3-none-manylinux_2_27_x86_64.whl.metadata (1.9 kB)
+Collecting nvidia-cufft-cu12>=11.0.2.54 (from jax-cuda12-plugin[with-cuda]<=0.11.2,>=0.11.2; extra == "cuda12"->jax[cuda12]==0.11.2)
+  Downloading http://pypi-mirror.modal.local:5555/simple/nvidia-cufft-cu12/nvidia_cufft_cu12-11.4.1.4-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (1.8 kB)
+Collecting nvidia-cusolver-cu12>=11.4.5.107 (from jax-cuda12-plugin[with-cuda]<=0.11.2,>=0.11.2; extra == "cuda12"->jax[cuda12]==0.11.2)
+  Downloading http://pypi-mirror.modal.local:5555/simple/nvidia-cusolver-cu12/nvidia_cusolver_cu12-11.7.5.82-py3-none-manylinux_2_27_x86_64.whl.metadata (1.9 kB)
+Collecting nvidia-cusparse-cu12>=12.1.0.106 (from jax-cuda12-plugin[with-cuda]<=0.11.2,>=0.11.2; extra == "cuda12"->jax[cuda12]==0.11.2)
+  Downloading http://pypi-mirror.modal.local:5555/simple/nvidia-cusparse-cu12/nvidia_cusparse_cu12-12.5.10.65-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (1.8 kB)
+Collecting nvidia-nccl-cu12>=2.18.1 (from jax-cuda12-plugin[with-cuda]<=0.11.2,>=0.11.2; extra == "cuda12"->jax[cuda12]==0.11.2)
+  Downloading http://pypi-mirror.modal.local:5555/simple/nvidia-nccl-cu12/nvidia_nccl_cu12-2.32.3-py3-none-manylinux_2_27_x86_64.whl.metadata (2.1 kB)
+Collecting nvidia-nvjitlink-cu12>=12.1.105 (from jax-cuda12-plugin[with-cuda]<=0.11.2,>=0.11.2; extra == "cuda12"->jax[cuda12]==0.11.2)
+  Downloading http://pypi-mirror.modal.local:5555/simple/nvidia-nvjitlink-cu12/nvidia_nvjitlink_cu12-12.9.86-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl.metadata (1.7 kB)
+Collecting nvidia-cuda-nvrtc-cu12>=12.1.55 (from jax-cuda12-plugin[with-cuda]<=0.11.2,>=0.11.2; extra == "cuda12"->jax[cuda12]==0.11.2)
+  Downloading http://pypi-mirror.modal.local:5555/simple/nvidia-cuda-nvrtc-cu12/nvidia_cuda_nvrtc_cu12-12.9.86-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl.metadata (1.7 kB)
+Collecting nvidia-nvshmem-cu12>=3.2.5 (from jax-cuda12-plugin[with-cuda]<=0.11.2,>=0.11.2; extra == "cuda12"->jax[cuda12]==0.11.2)
+  Downloading http://pypi-mirror.modal.local:5555/simple/nvidia-nvshmem-cu12/nvidia_nvshmem_cu12-3.8.0-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.2 kB)
+Collecting nvidia-cuda-cccl-cu12 (from nvidia-nvshmem-cu12>=3.2.5->jax-cuda12-plugin[with-cuda]<=0.11.2,>=0.11.2; extra == "cuda12"->jax[cuda12]==0.11.2)
+  Downloading http://pypi-mirror.modal.local:5555/simple/nvidia-cuda-cccl-cu12/nvidia_cuda_cccl_cu12-12.9.27-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (1.7 kB)
+Downloading http://pypi-mirror.modal.local:5555/simple/jax/jax-0.11.2-py3-none-any.whl (3.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.3/3.3 MB 421.0 MB/s eta 0:00:00
+Downloading http://pypi-mirror.modal.local:5555/simple/jax-cuda12-plugin/jax_cuda12_plugin-0.11.2-cp312-cp312-manylinux_2_27_x86_64.whl (8.6 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.6/8.6 MB 448.8 MB/s eta 0:00:00
+Downloading http://pypi-mirror.modal.local:5555/simple/jax-cuda12-pjrt/jax_cuda12_pjrt-0.11.2-py3-none-manylinux_2_27_x86_64.whl (188.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 188.2/188.2 MB 430.4 MB/s eta 0:00:00
+Downloading http://pypi-mirror.modal.local:5555/simple/jaxlib/jaxlib-0.11.2-cp312-cp312-manylinux_2_27_x86_64.whl (89.9 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 89.9/89.9 MB 453.6 MB/s eta 0:00:00
+Downloading http://pypi-mirror.modal.local:5555/simple/nvidia-cudnn-cu12/nvidia_cudnn_cu12-9.26.0.51-py3-none-manylinux_2_27_x86_64.whl (770.5 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 770.5/770.5 MB 531.9 MB/s eta 0:00:00
+Downloading http://pypi-mirror.modal.local:5555/simple/scipy/scipy-1.18.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (35.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 35.3/35.3 MB 550.2 MB/s eta 0:00:00
+Downloading http://pypi-mirror.modal.local:5555/simple/numpy/numpy-2.5.3-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.7 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.7/16.7 MB 563.3 MB/s eta 0:00:00
+Downloading http://pypi-mirror.modal.local:5555/simple/ml-dtypes/ml_dtypes-0.6.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (409 kB)
+Downloading http://pypi-mirror.modal.local:5555/simple/nvidia-cublas-cu12/nvidia_cublas_cu12-12.9.2.10-py3-none-manylinux_2_27_x86_64.whl (581.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 581.2/581.2 MB 532.4 MB/s eta 0:00:00
+Downloading http://pypi-mirror.modal.local:5555/simple/nvidia-cuda-cupti-cu12/nvidia_cuda_cupti_cu12-12.9.79-py3-none-manylinux_2_25_x86_64.whl (10.8 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.8/10.8 MB 555.0 MB/s eta 0:00:00
+Downloading http://pypi-mirror.modal.local:5555/simple/nvidia-cuda-nvcc-cu12/nvidia_cuda_nvcc_cu12-12.9.86-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl (40.5 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 40.5/40.5 MB 532.3 MB/s eta 0:00:00
+Downloading http://pypi-mirror.modal.local:5555/simple/nvidia-cuda-nvrtc-cu12/nvidia_cuda_nvrtc_cu12-12.9.86-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl (89.6 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 89.6/89.6 MB 530.9 MB/s eta 0:00:00
+Downloading http://pypi-mirror.modal.local:5555/simple/nvidia-cuda-runtime-cu12/nvidia_cuda_runtime_cu12-12.9.79-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (3.5 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.5/3.5 MB 597.4 MB/s eta 0:00:00
+Downloading http://pypi-mirror.modal.local:5555/simple/nvidia-cufft-cu12/nvidia_cufft_cu12-11.4.1.4-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (200.9 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 200.9/200.9 MB 533.1 MB/s eta 0:00:00
+Downloading http://pypi-mirror.modal.local:5555/simple/nvidia-cusolver-cu12/nvidia_cusolver_cu12-11.7.5.82-py3-none-manylinux_2_27_x86_64.whl (338.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 338.1/338.1 MB 539.4 MB/s eta 0:00:00
+Downloading http://pypi-mirror.modal.local:5555/simple/nvidia-cusparse-cu12/nvidia_cusparse_cu12-12.5.10.65-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (366.5 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 366.5/366.5 MB 535.7 MB/s eta 0:00:00
+Downloading http://pypi-mirror.modal.local:5555/simple/nvidia-nccl-cu12/nvidia_nccl_cu12-2.32.3-py3-none-manylinux_2_27_x86_64.whl (351.5 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 351.5/351.5 MB 536.0 MB/s eta 0:00:00
+Downloading http://pypi-mirror.modal.local:5555/simple/nvidia-nvjitlink-cu12/nvidia_nvjitlink_cu12-12.9.86-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl (39.7 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 39.7/39.7 MB 537.6 MB/s eta 0:00:00
+Downloading http://pypi-mirror.modal.local:5555/simple/nvidia-nvshmem-cu12/nvidia_nvshmem_cu12-3.8.0-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (280.8 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 280.8/280.8 MB 531.8 MB/s eta 0:00:00
+Downloading http://pypi-mirror.modal.local:5555/simple/nvidia-cuda-cccl-cu12/nvidia_cuda_cccl_cu12-12.9.27-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (3.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.2/3.2 MB 594.9 MB/s eta 0:00:00
+Downloading http://pypi-mirror.modal.local:5555/simple/opt-einsum/opt_einsum-3.4.0-py3-none-any.whl (71 kB)
+Installing collected packages: jax-cuda12-pjrt, opt_einsum, nvidia-nvjitlink-cu12, nvidia-nccl-cu12, nvidia-cuda-runtime-cu12, nvidia-cuda-nvrtc-cu12, nvidia-cuda-nvcc-cu12, nvidia-cuda-cupti-cu12, nvidia-cuda-cccl-cu12, numpy, jax-cuda12-plugin, scipy, nvidia-nvshmem-cu12, nvidia-cusparse-cu12, nvidia-cufft-cu12, nvidia-cublas-cu12, ml_dtypes, nvidia-cusolver-cu12, nvidia-cudnn-cu12, jaxlib, jax
+
+Successfully installed jax-0.11.2 jax-cuda12-pjrt-0.11.2 jax-cuda12-plugin-0.11.2 jaxlib-0.11.2 ml_dtypes-0.6.0 numpy-2.5.3 nvidia-cublas-cu12-12.9.2.10 nvidia-cuda-cccl-cu12-12.9.27 nvidia-cuda-cupti-cu12-12.9.79 nvidia-cuda-nvcc-cu12-12.9.86 nvidia-cuda-nvrtc-cu12-12.9.86 nvidia-cuda-runtime-cu12-12.9.79 nvidia-cudnn-cu12-9.26.0.51 nvidia-cufft-cu12-11.4.1.4 nvidia-cusolver-cu12-11.7.5.82 nvidia-cusparse-cu12-12.5.10.65 nvidia-nccl-cu12-2.32.3 nvidia-nvjitlink-cu12-12.9.86 nvidia-nvshmem-cu12-3.8.0 opt_einsum-3.4.0 scipy-1.18.1
+
+[notice] A new release of pip is available: 25.1.1 -> 26.2.1
+[notice] To update, run: pip install --upgrade pip
+Saving image...
+Image saved, took 1.53s
+
+Built image im-9pINz72XR4J91FO7Kz3WjN in 48.03s
+
+
+✓ Created objects.
+├── 🔨 Created mount 
+│   <dev-repo>/cloud/modal_a100_precision.py
+├── 🔨 Created mount 
+│   <dev-repo>/analysis/wn2_pallas_attn.py
+├── 🔨 Created function a100.
+└── 🔨 Created function a10g.
+/root/modal_a100_precision.py:34: UserWarning: Explicitly requested dtype float64 requested in asarray is not available, and will be truncated to dtype float32. To enable more dtypes, set the jax_enable_x64 configuration option or the JAX_ENABLE_X64 shell environment variable. See https://github.com/jax-ml/jax#current-gotchas for more.
+  ref = jax.nn.gelu(jnp.asarray(exact, jnp.float64).astype(np.float32))
+/root/modal_a100_precision.py:34: UserWarning: Explicitly requested dtype float64 requested in asarray is not available, and will be truncated to dtype float32. To enable more dtypes, set the jax_enable_x64 configuration option or the JAX_ENABLE_X64 shell environment variable. See https://github.com/jax-ml/jax#current-gotchas for more.
+  ref = jax.nn.gelu(jnp.asarray(exact, jnp.float64).astype(np.float32))
+a100 {
+ "device": "NVIDIA A100-SXM4-40GB",
+ "env": {
+  "NVIDIA_DRIVER_CAPABILITIES": "all",
+  "NVIDIA_VISIBLE_DEVICES": "GPU-7ff48784-38ad-9ce3-53ec-e856c09490f4"
+ },
+ "driver": "580.95.05",
+ "dot_default": 0.0002857589526959791,
+ "dot_high": 0.0002857589526959791,
+ "dot_highest": 1.3759009875102456e-06,
+ "fused_gemm_highest_autotune0": 1.2709273278233013e-06,
+ "fused_gemm_highest_autotune4": 1.2709273278233013e-06,
+ "pallas_default": 0.0005494419917104625,
+ "pallas_highest": 1.1104477860513782e-06
+}
+a10g {
+ "device": "NVIDIA A10",
+ "env": {
+  "NVIDIA_VISIBLE_DEVICES": "GPU-3ad98bb3-8b0b-e9a9-8f0b-1cfe0cf907e3",
+  "NVIDIA_DRIVER_CAPABILITIES": "all"
+ },
+ "driver": "580.95.05",
+ "dot_default": 0.0002857589526960377,
+ "dot_high": 0.0002857589526960377,
+ "dot_highest": 1.3759009873226595e-06,
+ "fused_gemm_highest_autotune0": 1.2709273278233013e-06,
+ "fused_gemm_highest_autotune4": 1.2709273278233013e-06,
+ "pallas_default": 0.0005494419917104625,
+ "pallas_highest": 1.1104477860513782e-06
+}
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/<workspace>/main/<app-id>

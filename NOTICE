@@ -1,0 +1,20 @@
+faster-weathernext
+Copyright 2026 Raymond Huang. Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+This project is not affiliated with, endorsed by, or supported by Google or Google DeepMind.
+"WeatherNext" refers to Google DeepMind's models; the name is used only to describe compatibility.
+
+Third-party material used at run time (downloaded, not redistributed here):
+
+* WeatherNext code (github.com/google-deepmind/weathernext): Copyright 2026 Google LLC,
+  Apache License 2.0. faster-weathernext subclasses and patches its modules at run time.
+* WeatherNext 2 / WeatherNext Cyclones model weights and sample data
+  (gs://dm_graphcast/weathernext2): Copyright Google LLC, Creative Commons Attribution 4.0
+  International (CC BY 4.0). Reference: Alet et al., "Skillful joint probabilistic weather
+  forecasting from marginals", arXiv:2506.10772 (2025).
+* ECMWF IFS open data (initial conditions): Copyright ECMWF, CC BY 4.0. ECMWF does not accept
+  any liability whatsoever for any error or omission in the data, their availability, or for
+  any loss or damage arising from their use.
+
+The WeatherNext models are an experimental research project and are not an operational
+forecasting system; they do not replace official alerts or warnings from meteorological agencies.

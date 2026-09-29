@@ -1,0 +1,77 @@
+{
+ "tag": "rollout01",
+ "model": "WeatherNextCyclones",
+ "device": "NVIDIA A100 80GB PCIe",
+ "jax": "0.11.2",
+ "per_lead": [
+  {
+   "lead_h": 6,
+   "implementation_diff": {
+    "min_corr": 0.999990189780931,
+    "max_rel_rms": 0.00442964475083148,
+    "median_rel_rms": 0.0005148042885118489,
+    "nan_masks_equal": true,
+    "n_fields": 101
+   },
+   "member_diff_reference": {
+    "min_corr": 0.3269787475036571,
+    "max_rel_rms": 1.826875032931999,
+    "median_rel_rms": 0.15995570736395942,
+    "nan_masks_equal": true,
+    "n_fields": 101
+   }
+  },
+  {
+   "lead_h": 12,
+   "implementation_diff": {
+    "min_corr": 0.9999450370231507,
+    "max_rel_rms": 0.010491089746701116,
+    "median_rel_rms": 0.0013058408513145431,
+    "nan_masks_equal": true,
+    "n_fields": 101
+   },
+   "member_diff_reference": {
+    "min_corr": 0.30723669832134853,
+    "max_rel_rms": 1.1478317511406089,
+    "median_rel_rms": 0.1927794237119961,
+    "nan_masks_equal": true,
+    "n_fields": 101
+   }
+  },
+  {
+   "lead_h": 18,
+   "implementation_diff": {
+    "min_corr": 0.9998566359753656,
+    "max_rel_rms": 0.016939413192541813,
+    "median_rel_rms": 0.001930368273975486,
+    "nan_masks_equal": true,
+    "n_fields": 101
+   },
+   "member_diff_reference": {
+    "min_corr": 0.2023953171218944,
+    "max_rel_rms": 1.4597623156975135,
+    "median_rel_rms": 0.21726294461265214,
+    "nan_masks_equal": true,
+    "n_fields": 101
+   }
+  },
+  {
+   "lead_h": 24,
+   "implementation_diff": {
+    "min_corr": 0.9996958562378125,
+    "max_rel_rms": 0.024665881366407693,
+    "median_rel_rms": 0.0027212460339895994,
+    "nan_masks_equal": true,
+    "n_fields": 101
+   },
+   "member_diff_reference": {
+    "min_corr": 0.2046716383494702,
+    "max_rel_rms": 1.2244051642044984,
+    "median_rel_rms": 0.24010192686144075,
+    "nan_masks_equal": true,
+    "n_fields": 101
+   }
+  }
+ ],
+ "peak_GiB": 35.43610215187073
+}

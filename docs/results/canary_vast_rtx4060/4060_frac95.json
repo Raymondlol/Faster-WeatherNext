@@ -1,0 +1,26 @@
+{
+ "label": "4060fix_frac95",
+ "env": {
+  "XLA_PYTHON_CLIENT_MEM_FRACTION": "0.95"
+ },
+ "ok": true,
+ "device": "NVIDIA GeForce RTX 4060",
+ "jax": "0.11.2",
+ "compute_capability": "8.9",
+ "grid_chunk": 32768,
+ "edge_chunk": 65536,
+ "pool_gib": 7.244140625,
+ "step_s": [
+  211.70624232292175,
+  18.461629629135132,
+  18.649045944213867,
+  18.68079423904419
+ ],
+ "finite": [
+  true,
+  true,
+  true,
+  true
+ ],
+ "peak_gib": 6.807797193527222
+}

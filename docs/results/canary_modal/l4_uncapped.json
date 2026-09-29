@@ -1,0 +1,30 @@
+{
+ "label": "l4_uncapped",
+ "env": {
+  "XLA_PYTHON_CLIENT_PREALLOCATE": "false"
+ },
+ "ok": true,
+ "device": "NVIDIA L4",
+ "jax": "0.11.2",
+ "compute_capability": "8.9",
+ "grid_chunk": 32768,
+ "edge_chunk": 65536,
+ "attn_impl": "pallas",
+ "reorder": true,
+ "pool_gib": 16.52734375,
+ "highest_first_call_s": 192.6254427433014,
+ "highest_n_fields": 101,
+ "step_s": [
+  175.80739951133728,
+  3.547935962677002,
+  3.5451509952545166,
+  3.5585732460021973
+ ],
+ "finite": [
+  true,
+  true,
+  true,
+  true
+ ],
+ "peak_gib": 6.527286529541016
+}

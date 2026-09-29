@@ -1,0 +1,5 @@
+done frac90  max_device_used_mib=7414
+done frac95  max_device_used_mib=7804
+done default  max_device_used_mib=6208
+done noprealloc  max_device_used_mib=2530
+RUN_FIX_DONE

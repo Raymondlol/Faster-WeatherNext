@@ -1,0 +1,10 @@
+__pycache__/
+*.egg-info/
+.venv/
+build/
+dist/
+*.nc
+*.npz
+*.grib2
+*.ncu-rep*
+.pytest_cache/

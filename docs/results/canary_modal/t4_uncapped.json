@@ -1,0 +1,30 @@
+{
+ "label": "t4_uncapped",
+ "env": {
+  "XLA_PYTHON_CLIENT_PREALLOCATE": "false"
+ },
+ "ok": true,
+ "device": "Tesla T4",
+ "jax": "0.11.2",
+ "compute_capability": "7.5",
+ "grid_chunk": 32768,
+ "edge_chunk": 65536,
+ "attn_impl": "xla",
+ "reorder": true,
+ "pool_gib": 10.9296875,
+ "highest_first_call_s": 186.89152312278748,
+ "highest_n_fields": 101,
+ "step_s": [
+  185.93101143836975,
+  43.708916425704956,
+  44.00753355026245,
+  44.24284315109253
+ ],
+ "finite": [
+  true,
+  true,
+  true,
+  true
+ ],
+ "peak_gib": 6.48809289932251
+}

@@ -1,0 +1,25 @@
+{
+ "label": "a100_at0",
+ "env": {
+  "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+  "XLA_FLAGS": "--xla_gpu_autotune_level=0"
+ },
+ "ok": true,
+ "device": "NVIDIA A100-SXM4-80GB",
+ "jax": "0.11.2",
+ "compute_capability": "8.0",
+ "grid_chunk": 32768,
+ "edge_chunk": 65536,
+ "attn_impl": "pallas",
+ "reorder": true,
+ "pool_gib": 59.439453125,
+ "highest_first_call_s": 112.97766399383545,
+ "highest_n_fields": 101,
+ "step_s": [
+  108.23368978500366
+ ],
+ "finite": [
+  true
+ ],
+ "peak_gib": 5.58174991607666
+}

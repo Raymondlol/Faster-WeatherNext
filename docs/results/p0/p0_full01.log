@@ -1,0 +1,284 @@
+Note that running a local entrypoint in detached mode only keeps the last triggered Modal function alive after the parent process has been killed or disconnected.
+✓ Initialized. View run at 
+https://modal.com/apps/<workspace>/main/<app-id>
+✓ Created objects.
+├── 🔨 Created mount 
+│   <dev-repo>/cloud/modal_p0_equiv.py
+├── 🔨 Created mount 
+│   <dev-repo>/analysis/wn2_gpu_patch.py
+├── 🔨 Created mount <dev-repo>/weathernext
+├── 🔨 Created function fetch.
+├── 🔨 Created function equiv_small.
+└── 🔨 Created function equiv_large.
+config: stage=full tag=full01
+have /data/weights/WeatherNextCyclones_<2025_model1.npz
+have /data/weights/WeatherNextCyclones_Mini_<2024.npz
+have /data/data/source-hres_forecast_init-2024-10-07 00:00:00_res-0.25_levels-13_steps-04.nc
+have /data/data/source-hres_forecast_init-2024-10-07 00:00:00_res-1.0_levels-13_steps-04.nc
+device NVIDIA A100 80GB PCIe jax 0.11.2
+WARNING:absl:Skipping gradient checkpointing for sequence length of 1
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 1, channels: 1, noise_channels: 32)> Size: 128B
+JitTracer(float32[1,1,32])
+Dimensions without coordinates: batch, channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/usr/local/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+/usr/local/lib/python3.12/site-packages/jax/_src/interpreters/mlir.py:1333: UserWarning: A large amount of constants were captured during lowering (4.38GB total). If this is intentional, disable this warning by setting JAX_CAPTURED_CONSTANTS_WARN_BYTES=-1. To obtain a report of where these constants were encountered, set JAX_CAPTURED_CONSTANTS_REPORT_FRAMES=-1.
+  warnings.warn(message)
+W0928 23:38:38.079356       2 hlo_rematerialization.cc:3363] Can't reduce memory use below 55.22GiB (59295936103 bytes) by rematerialization; only reduced to 61.27GiB (65791348764 bytes), down from 61.39GiB (65917286460 bytes) originally
+triblockdiag_mha   highest  temp  33.04 GiB  step 47.01s
+WARNING:absl:Skipping gradient checkpointing for sequence length of 1
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 1, channels: 1, noise_channels: 32)> Size: 128B
+JitTracer(float32[1,1,32])
+Dimensions without coordinates: batch, channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/usr/local/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+chunked_mha        highest  temp  20.79 GiB  step 48.32s
+ONE-STEP highest: {"min_corr": 0.9999999998599736, "max_rel_rms": 1.6735044514179274e-05, "max_rel_max": 0.0009895925986230724, "all_nan_masks_equal": true, "n_fields": 101}
+WARNING:absl:Skipping gradient checkpointing for sequence length of 1
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 1, channels: 1, noise_channels: 32)> Size: 128B
+JitTracer(float32[1,1,32])
+Dimensions without coordinates: batch, channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/usr/local/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+/usr/local/lib/python3.12/site-packages/jax/_src/interpreters/mlir.py:1333: UserWarning: A large amount of constants were captured during lowering (4.38GB total). If this is intentional, disable this warning by setting JAX_CAPTURED_CONSTANTS_WARN_BYTES=-1. To obtain a report of where these constants were encountered, set JAX_CAPTURED_CONSTANTS_REPORT_FRAMES=-1.
+  warnings.warn(message)
+W0928 23:48:24.706399       2 hlo_rematerialization.cc:3363] Can't reduce memory use below 55.22GiB (59295936103 bytes) by rematerialization; only reduced to 61.27GiB (65791348764 bytes), down from 61.39GiB (65917286460 bytes) originally
+triblockdiag_mha   default  temp  33.04 GiB  step 19.00s
+WARNING:absl:Skipping gradient checkpointing for sequence length of 1
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 1, channels: 1, noise_channels: 32)> Size: 128B
+JitTracer(float32[1,1,32])
+Dimensions without coordinates: batch, channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/usr/local/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+chunked_mha        default  temp  20.79 GiB  step 13.57s
+ONE-STEP default: {"min_corr": 0.9999888480512427, "max_rel_rms": 0.004722814367420743, "max_rel_max": 0.43723171488909374, "all_nan_masks_equal": true, "n_fields": 101}
+WARNING:absl:Skipping gradient checkpointing for sequence length of 1
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 1, channels: 1, noise_channels: 32)> Size: 128B
+JitTracer(float32[1,1,32])
+Dimensions without coordinates: batch, channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/usr/local/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+/usr/local/lib/python3.12/site-packages/jax/_src/interpreters/mlir.py:1333: UserWarning: A large amount of constants were captured during lowering (4.38GB total). If this is intentional, disable this warning by setting JAX_CAPTURED_CONSTANTS_WARN_BYTES=-1. To obtain a report of where these constants were encountered, set JAX_CAPTURED_CONSTANTS_REPORT_FRAMES=-1.
+  warnings.warn(message)
+W0928 23:56:04.043032       2 hlo_rematerialization.cc:3363] Can't reduce memory use below 55.22GiB (59295936103 bytes) by rematerialization; only reduced to 61.27GiB (65791348764 bytes), down from 61.39GiB (65917286460 bytes) originally
+WARNING:absl:Skipping gradient checkpointing for sequence length of 1
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 1, channels: 1, noise_channels: 32)> Size: 128B
+JitTracer(float32[1,1,32])
+Dimensions without coordinates: batch, channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/usr/local/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+Traceback (most recent call last):
+  File "/pkg/modal/_runtime/container_io_manager.py", line 987, in handle_input_exception
+    yield
+  File "/pkg/modal/_container_entrypoint.py", line 189, in run_input_sync
+    values = io_context.call_function_sync()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/pkg/modal/_runtime/container_io_manager.py", line 266, in call_function_sync
+    expected_value_or_values = self.finalized_function.callable(*args, **kwargs)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/modal_p0_equiv.py", line 184, in equiv_large
+    return _equivalence(model, weights, data, rollout_steps, tag)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/modal_p0_equiv.py", line 159, in _equivalence
+    stock0, chunk0, chunk1 = roll("triblockdiag_mha", 0), roll("chunked_mha", 0), roll("chunked_mha", 1)
+                                                          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/modal_p0_equiv.py", line 157, in roll
+    return xarray.concat([to_numpy(c) for c in chunks], dim="time").isel(time=-1)
+                          ^^^^^^^^^^^
+  File "/root/modal_p0_equiv.py", line 100, in to_numpy
+    return x.as_numpy() if hasattr(x, "as_numpy") else x
+           ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/xarray/core/dataset.py", line 1186, in as_numpy
+    numpy_variables = {k: v.as_numpy() for k, v in self.variables.items()}
+                          ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/xarray/namedarray/core.py", line 862, in as_numpy
+    return self._replace(data=self.to_numpy())
+                              ^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/xarray/namedarray/core.py", line 858, in to_numpy
+    return to_numpy(self._data)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/xarray/namedarray/pycompat.py", line 125, in to_numpy
+    data = np.asarray(data)
+           ^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/jax/_src/array.py", line 409, in __array__
+    return np.asarray(self._value, dtype=dtype, **kwds)  # pyrefly: ignore[no-matching-overload]
+                      ^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/jax/_src/profiler.py", line 420, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/jax/_src/array.py", line 637, in _value
+    npy_value, did_copy = self._single_device_array_to_np_array_did_copy()
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jax.errors.JaxRuntimeError: RESOURCE_EXHAUSTED: [0] Failed to load in-memory CUBIN (compiled for a different GPU?).: CUDA_ERROR_OUT_OF_MEMORY: out of memory [executable_name='jit__lambda']
+╭───────────────────── Traceback (most recent call last) ──────────────────────╮
+│ <venv>/lib/python3.12/site-packages/modal/_ser │
+│ ialization.py:117 in deserialize                                             │
+│                                                                              │
+│   116 │   try:                                                               │
+│ ❱ 117 │   │   return Unpickler(client, io.BytesIO(s)).load()                 │
+│   118 │   except AttributeError as exc:                                      │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ModuleNotFoundError: No module named 'jax'
+
+The above exception was the direct cause of the following exception:
+
+╭───────────────────── Traceback (most recent call last) ──────────────────────╮
+│ <dev-repo>/cloud/modal_p0_equiv.py:198 in main   │
+│                                                                              │
+│   197   elif stage == "full":                                                │
+│ ❱ 198 │   res = equiv_large.remote(*full, 4, tag)                            │
+│   199   else:                                                                │
+│                                                                              │
+│ <venv>/lib/python3.12/site-packages/modal/_obj │
+│ ect.py:46 in wrapped                                                         │
+│                                                                              │
+│    45 │   │   await self.hydrate()                                           │
+│ ❱  46 │   │   return await method(self, *args, **kwargs)                     │
+│    47                                                                        │
+│                                                                              │
+│ <venv>/lib/python3.12/site-packages/modal/_fun │
+│ ctions.py:1893 in remote                                                     │
+│                                                                              │
+│   1892 │   │                                                                 │
+│ ❱ 1893 │   │   return await self._call_function(args, kwargs)                │
+│   1894                                                                       │
+│                                                                              │
+│ <venv>/lib/python3.12/site-packages/modal/_fun │
+│ ctions.py:1830 in _call_function                                             │
+│                                                                              │
+│   1829 │   │                                                                 │
+│ ❱ 1830 │   │   return await invocation.run_function()                        │
+│   1831                                                                       │
+│                                                                              │
+│ <venv>/lib/python3.12/site-packages/modal/_fun │
+│ ctions.py:503 in run_function                                                │
+│                                                                              │
+│    502 │   │   │   # No more retries left.                                   │
+│ ❱  503 │   │   │   return await _process_result(                             │
+│    504 │   │   │   │   await_response.output.result, await_response.output.d │
+│                                                                              │
+│ <venv>/lib/python3.12/site-packages/modal/_uti │
+│ ls/function_utils.py:547 in _process_result                                  │
+│                                                                              │
+│   546 │   │   │   except DeserializationError as deser_exc:                  │
+│ ❱ 547 │   │   │   │   raise ExecutionError(                                  │
+│   548 │   │   │   │   │   "Could not deserialize remote exception due to loc │
+╰──────────────────────────────────────────────────────────────────────────────╯
+ExecutionError: Could not deserialize remote exception due to local error:
+Deserialization failed because the 'jax' module is not available in the local 
+environment.
+This can happen if your local environment does not have the remote exception 
+definitions.
+Here is the remote traceback:
+Traceback (most recent call last):
+  File "/pkg/modal/_runtime/container_io_manager.py", line 987, in 
+handle_input_exception
+    yield
+  File "/pkg/modal/_container_entrypoint.py", line 189, in run_input_sync
+    values = io_context.call_function_sync()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/pkg/modal/_runtime/container_io_manager.py", line 266, in 
+call_function_sync
+    expected_value_or_values = self.finalized_function.callable(*args, **kwargs)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/modal_p0_equiv.py", line 184, in equiv_large
+    return _equivalence(model, weights, data, rollout_steps, tag)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/modal_p0_equiv.py", line 159, in _equivalence
+    stock0, chunk0, chunk1 = roll("triblockdiag_mha", 0), roll("chunked_mha", 
+0), roll("chunked_mha", 1)
+                                                          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/modal_p0_equiv.py", line 157, in roll
+    return xarray.concat([to_numpy(c) for c in chunks], 
+dim="time").isel(time=-1)
+                          ^^^^^^^^^^^
+  File "/root/modal_p0_equiv.py", line 100, in to_numpy
+    return x.as_numpy() if hasattr(x, "as_numpy") else x
+           ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/xarray/core/dataset.py", line 
+1186, in as_numpy
+    numpy_variables = {k: v.as_numpy() for k, v in self.variables.items()}
+                          ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/xarray/namedarray/core.py", line
+862, in as_numpy
+    return self._replace(data=self.to_numpy())
+                              ^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/xarray/namedarray/core.py", line
+858, in to_numpy
+    return to_numpy(self._data)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/xarray/namedarray/pycompat.py", 
+line 125, in to_numpy
+    data = np.asarray(data)
+           ^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/jax/_src/array.py", line 409, in
+__array__
+    return np.asarray(self._value, dtype=dtype, **kwds)  # pyrefly: 
+ignore[no-matching-overload]
+                      ^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/jax/_src/profiler.py", line 420,
+in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/jax/_src/array.py", line 637, in
+_value
+    npy_value, did_copy = self._single_device_array_to_np_array_did_copy()
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jax.errors.JaxRuntimeError: RESOURCE_EXHAUSTED: [0] Failed to load in-memory 
+CUBIN (compiled for a different GPU?).: CUDA_ERROR_OUT_OF_MEMORY: out of memory 
+[executable_name='jit__lambda']
+
