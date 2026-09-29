@@ -11,10 +11,11 @@ jobs:
       - uses: actions/checkout@v5
       - uses: astral-sh/setup-uv@v6
       # Install into a venv: the runner's system Python is externally managed (PEP 668).
+      # `weathernext` is an extra (not a dependency) since 0.1.1; the tests import it.
       - name: Install (CPU JAX)
         run: |
           uv venv --python 3.12
-          uv pip install -e ".[test]"
+          uv pip install -e ".[test,weathernext]"
       - name: Unit tests (mask layouts, tiling, Pallas kernel in interpret mode, patch install)
         env:
           JAX_PLATFORMS: cpu
