@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+- IFS open-data inputs fall back across mirrors: AWS, then Google Cloud
+  (`storage.googleapis.com/ecmwf-open-data`), then ECMWF (`data.ecmwf.int`). The AWS bucket
+  throttles a freshly published run with 503 SlowDown on every request, sometimes for hours;
+  `fwn forecast` used to sit in its retry backoff. A 503 burst is now ridden out for ~10 s
+  before moving on, the mirror that worked is tried first for the next file, and
+  `FWN_IFS_MIRRORS` (comma-separated) overrides the order. Checked: the three mirrors return
+  identical fields for the 2026-09-29 12Z run.
+
 ## 0.1.1 — 2026-09-29
 
 Packaging, one memory fix for batch > 1, and validation.

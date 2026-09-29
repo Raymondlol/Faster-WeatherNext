@@ -1,6 +1,7 @@
-"""WeatherNext 2 inputs from ECMWF IFS open data (0.25°, 13 pressure levels) on AWS.
+"""WeatherNext 2 inputs from ECMWF IFS open data (0.25°, 13 pressure levels).
 
 Only the needed GRIB messages are downloaded (index-driven HTTP range requests) and cached.
+Files come from the first mirror in `MIRRORS` (or `FWN_IFS_MIRRORS`, comma-separated) that serves them.
 Known approximation: IFS open data has no SST, so skin temperature over the ocean
 (land-sea mask < 0.5) is used, clamped at the sea-ice freezing point (271.46 K).
 Static fields (orography, land-sea mask) are taken from Google's 0.25° sample file, exactly
@@ -13,6 +14,7 @@ for errors or omissions in the data.
 import concurrent.futures
 import datetime as dt
 import hashlib
+import http.client
 import json
 import os
 import random
@@ -25,7 +27,13 @@ import numpy as np
 import pandas as pd
 import xarray
 
-BUCKET = "https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com"
+# ECMWF open-data mirrors with identical paths and files, tried in this order. The AWS bucket
+# throttles a freshly published run (503 SlowDown on the whole prefix while demand peaks; ECMWF
+# points users to the mirrors), and a mirror can lag in publishing a run (404).
+MIRRORS = ("https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com",
+           "https://storage.googleapis.com/ecmwf-open-data",
+           "https://data.ecmwf.int/forecasts")
+_last_good = None  # the mirror that served the previous file; tried first for the next one
 STATIC_URL = ("https://storage.googleapis.com/dm_graphcast/weathernext2/dataset/"
               + urllib.parse.quote("source-hres_forecast_init-2024-10-07 00:00:00_res-0.25_levels-13_steps-01.nc"))
 LEVELS = [50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 850, 925, 1000]
@@ -47,12 +55,12 @@ def cache_dir(*parts) -> str:
   return path
 
 
-def _url(run: dt.datetime, step: int, ext: str) -> str:
+def _url(base: str, run: dt.datetime, step: int, ext: str) -> str:
   d, h = run.strftime("%Y%m%d"), run.strftime("%H")
-  return f"{BUCKET}/{d}/{h}z/ifs/0p25/oper/{d}{h}0000-{step}h-oper-fc.{ext}"
+  return f"{base}/{d}/{h}z/ifs/0p25/oper/{d}{h}0000-{step}h-oper-fc.{ext}"
 
 
-def _get(url: str, byte_range=None, retries: int = 8) -> bytes:
+def _get(url: str, byte_range=None, retries: int = 4) -> bytes:
   req = urllib.request.Request(url)
   if byte_range:
     req.add_header("Range", f"bytes={byte_range[0]}-{byte_range[1]}")
@@ -61,10 +69,62 @@ def _get(url: str, byte_range=None, retries: int = 8) -> bytes:
       with urllib.request.urlopen(req, timeout=120) as r:
         return r.read()
     except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as e:
-      # S3 answers bursts of range requests with 503 SlowDown; back off and retry.
+      # Ride out a short 503 burst (~10 s), then let the caller fail over to the next mirror:
+      # a throttled prefix can stay throttled for hours.
       if attempt == retries - 1 or (isinstance(e, urllib.error.HTTPError) and e.code not in (500, 503)):
         raise
-      time.sleep(min(2 ** attempt, 30) * (0.5 + random.random()))
+      time.sleep(min(2 ** attempt, 8) * (0.5 + random.random()))
+
+
+def _mirrors() -> list:
+  env = os.environ.get("FWN_IFS_MIRRORS")
+  mirrors = [m.strip().rstrip("/") for m in env.split(",") if m.strip()] if env else list(MIRRORS)
+  if _last_good in mirrors:
+    mirrors.remove(_last_good)
+    mirrors.insert(0, _last_good)
+  return mirrors
+
+
+def _download_from(base: str, run: dt.datetime, step: int, wanted: set) -> bytes:
+  index = [json.loads(line) for line in _get(_url(base, run, step, "index")).decode().splitlines()]
+  recs = [r for r in index if (r["param"], r["levtype"], int(r.get("levelist", 0))) in wanted]
+  missing = wanted - {(r["param"], r["levtype"], int(r.get("levelist", 0))) for r in recs}
+  if missing:
+    raise KeyError(f"IFS open data {run:%Y-%m-%d %HZ} +{step}h is missing {sorted(missing)}")
+  recs.sort(key=lambda r: r["_offset"])
+  url = _url(base, run, step, "grib2")
+  with concurrent.futures.ThreadPoolExecutor(6) as ex:
+    futures = [ex.submit(_get, url, (r["_offset"], r["_offset"] + r["_length"] - 1)) for r in recs]
+    try:
+      parts = [f.result() for f in futures]
+    except BaseException:
+      for f in futures:  # fail over now instead of requesting the rest from this mirror
+        f.cancel()
+      raise
+  for r, part in zip(recs, parts):
+    if len(part) != r["_length"]:  # e.g. a server that ignores Range and sends the whole file
+      raise OSError(f"{url}: got {len(part)} bytes for a {r['_length']}-byte range")
+  return b"".join(parts)
+
+
+def _download(run: dt.datetime, step: int, wanted: set) -> bytes:
+  """The wanted GRIB messages of one IFS file, from the first mirror that serves all of them."""
+  global _last_good
+  errors = []
+  mirrors = _mirrors()
+  for i, base in enumerate(mirrors):
+    try:
+      data = _download_from(base, run, step, wanted)
+    except (OSError, ValueError, http.client.HTTPException) as e:
+      errors.append(f"{base}: {e}")
+      if i + 1 < len(mirrors):
+        print(f"IFS open data {run:%Y-%m-%d %HZ} +{step}h: {base} failed ({e}); trying {mirrors[i + 1]}",
+              flush=True)
+      continue
+    _last_good = base
+    return data
+  raise RuntimeError(f"IFS open data {run:%Y-%m-%d %HZ} +{step}h: no mirror served it (a run is published "
+                     "~7-8 h after its init time)\n  " + "\n  ".join(errors))
 
 
 def fetch_fields(run: dt.datetime, step: int, wanted: set) -> dict:
@@ -73,17 +133,9 @@ def fetch_fields(run: dt.datetime, step: int, wanted: set) -> dict:
   tag = f"{run:%Y%m%d%H}-{step}h-" + hashlib.md5(repr(sorted(wanted)).encode()).hexdigest()[:8]
   path = os.path.join(cache_dir("ifs"), tag + ".grib2")
   if not os.path.exists(path):
-    index = [json.loads(line) for line in _get(_url(run, step, "index")).decode().splitlines()]
-    recs = [r for r in index if (r["param"], r["levtype"], int(r.get("levelist", 0))) in wanted]
-    missing = wanted - {(r["param"], r["levtype"], int(r.get("levelist", 0))) for r in recs}
-    if missing:
-      raise KeyError(f"IFS open data {run:%Y-%m-%d %HZ} +{step}h is missing {sorted(missing)}")
-    recs.sort(key=lambda r: r["_offset"])
-    url = _url(run, step, "grib2")
-    with concurrent.futures.ThreadPoolExecutor(6) as ex:
-      parts = list(ex.map(lambda r: _get(url, (r["_offset"], r["_offset"] + r["_length"] - 1)), recs))
+    data = _download(run, step, wanted)
     with open(path + ".tmp", "wb") as f:
-      f.write(b"".join(parts))
+      f.write(data)
     os.replace(path + ".tmp", path)
   out = {}
   with open(path, "rb") as f:

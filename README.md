@@ -44,7 +44,7 @@ Same model · same checkpoints · same results · **6.4 GiB instead of 34 GiB** 
 ```bash
 pip install "faster-weathernext[cuda12,weathernext] @ git+https://github.com/Raymondlol/Faster-WeatherNext.git@v0.1.1"
 ```
-<sub>Python 3.12. Use `[cuda13]` with a CUDA 13 driver. The `[weathernext]` extra installs the official code at the validated commit; leave it out if `weathernext` is already installed (e.g. with earth2studio). Weights (~735 MB per checkpoint) come from Google's public bucket, initial conditions from ECMWF open data on AWS; both are cached in `~/.cache/faster-weathernext`.</sub>
+<sub>Python 3.12. Use `[cuda13]` with a CUDA 13 driver. The `[weathernext]` extra installs the official code at the validated commit; leave it out if `weathernext` is already installed (e.g. with earth2studio). Weights (~735 MB per checkpoint) come from Google's public bucket, initial conditions from ECMWF open data (AWS, falling back to the Google Cloud and ECMWF mirrors); both are cached in `~/.cache/faster-weathernext`.</sub>
 
 ```bash
 fwn info        # your GPU, memory, attention path, compatibility check
