@@ -48,8 +48,8 @@ One 0.25° step, WeatherNextCyclones model 1, Google sample data; reference = §
 
 All NaN masks equal. The worst field is always `vertical_velocity@50` (tiny variance).
 Step times at `highest` vary by ~10% between runs (XLA autotuning picks differ).
-The TF32 differences are the same size as the reference path's own TF32-vs-fp32 difference
-(§1: 4.7e-3). Files: [`results/same_card/`](results/same_card/), and the packaged code:
+The TF32 differences are the same size as the difference between the official GPU path and the
+reference at TF32 (§1: 4.7e-3). Files: [`results/same_card/`](results/same_card/), and the packaged code:
 [`results/equivalence_rtx5090.json`](results/equivalence_rtx5090.json)
 (`scripts/verify_equivalence.py`).
 
