@@ -1,0 +1,15 @@
+NVIDIA GeForce RTX 4060 cc=8.9 attention=pallas pool 6.86 GiB
+WARNING:absl:Skipping gradient checkpointing for sequence length of 1
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 1, channels: 1, noise_channels: 32)> Size: 128B
+JitTracer(float32[1,1,32])
+Dimensions without coordinates: batch, channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/root/fwn/.venv/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+W0929 06:37:28.764117    6190 hlo_rematerialization.cc:3363] Can't reduce memory use below 5.28GiB (5665363149 bytes) by rematerialization; only reduced to 28.82GiB (30943716076 bytes), down from 28.82GiB (30943728380 bytes) originally
+  step 1: 292.9s  msl min 948.5 hPa
+  step 2: 5.1s  msl min 947.6 hPa
+  step 3: 5.2s  msl min 950.9 hPa
+  step 4: 5.3s  msl min 952.5 hPa
+peak 6.21 GiB of pool 6.86 GiB; ok=True

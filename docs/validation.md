@@ -98,6 +98,7 @@ rollout step including host overhead (steps 2–4 of a 4-step rollout, default p
 | GPU | arch | attention | s/step | peak in pool | fits 8 GB pool | fp32 vs RTX 5090 (max rel RMS) |
 |---|---|---|---|---|---|---|
 | RTX 5090 (local) | sm_120 | pallas | 0.7 | 6.40 GiB | yes | — |
+| RTX 4060 (vast.ai) | sm_89 | pallas | 5.2 | 6.21 GiB | yes (real 8 GB card) | not measured (sm_89 covered by L4) |
 | A100-SXM4-40GB | sm_80 | pallas | 1.1 | 6.18 GiB | yes (6.21) | 1.6–1.9e-5 in 5 of 6 runs; see note |
 | A10G | sm_86 | pallas | 2.5 | 6.53 GiB | yes (6.34) | 1.6e-5 |
 | L4 | sm_89 | pallas | 3.5 | 6.53 GiB | yes (6.34) | 1.75e-5 |
@@ -105,12 +106,13 @@ rollout step including host overhead (steps 2–4 of a 4-step rollout, default p
 
 Files: [`results/canary_modal/`](results/canary_modal/) (incl. `cross_card_fp32.txt`).
 
-**Real 8 GB card (RTX 4060, vast.ai)** — measured *before* the Pallas attention was added
-(XLA attention path): runs at 18.5 s/step with `XLA_PYTHON_CLIENT_MEM_FRACTION=0.9` or `0.95`
-(whole-card peak 7.4 / 7.8 of 8.0 GB); JAX's default 0.75 and `XLA_PYTHON_CLIENT_PREALLOCATE=false`
-(which keeps the 0.75 cap) run out of memory. Files:
-[`results/canary_vast_rtx4060/`](results/canary_vast_rtx4060/). The Pallas path on sm_89 was
-tested on the L4 above; a re-run on a real 8 GB card is pending.
+**Real 8 GB card (RTX 4060, vast.ai), faster-weathernext 0.1.0** (Pallas attention): 5.1–5.3 s/step
+with `XLA_PYTHON_CLIENT_MEM_FRACTION=0.9` (in-pool peak 6.21 of 6.86 GiB; whole-card peak 7320 of
+8188 MiB). With JAX's default 0.75 (5.72 GiB pool) the first step completes and the second runs
+out of memory. Installed from the repo on a fresh machine. Files:
+[`results/rtx4060_v0.1.0/`](results/rtx4060_v0.1.0/).
+An earlier build without the fused attention kernel ran at 18.5 s/step on the same card
+([`results/canary_vast_rtx4060/`](results/canary_vast_rtx4060/)).
 
 **A100 note.** One of six A100 fp32 runs deviated from the RTX 5090 at TF32 level (max rel RMS
 1.3e-2, median 6.2e-4) and could not be reproduced (autotune on / off and three fresh repeats:
@@ -129,3 +131,15 @@ and for reproducible runs `--autotune-cache`. Files: [`results/a100_repeats/`](r
 - Without a fixed autotune cache, results are not bitwise reproducible between runs (§4 note).
 - TPU (`splash_mha`) numerics were not compared; TPU matmuls use bf16 passes by default and
   differ from any of the GPU paths above.
+
+## README figures
+
+- `figures/noreaster_comparison.gif`: member `m1s0` (WeatherNext 2 checkpoint 1, noise sample 0)
+  of the 2026-09-25 00Z hindcast in §3 — old (reference code) vs new (faster-weathernext), same
+  inputs and seed, next to the ECMWF IFS analysis; 10 m wind speed and mean sea-level pressure,
+  +6 h to +78 h. RMS sea-level pressure difference between the two runs: 0.002 hPa at +6 h,
+  0.12 hPa at +78 h.
+- `figures/perf_*.svg`: memory from §1 (official path, A100-80GB) and §2/§4 (rollout peak),
+  speed from §2 (RTX 5090, default precision).
+- `figures/chaos_*.svg`: MSLP rows of [`results/noreaster/noreaster_p2_vs_p0.csv`](results/noreaster/noreaster_p2_vs_p0.csv)
+  (median over the four initialisations).

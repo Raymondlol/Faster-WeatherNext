@@ -88,11 +88,11 @@ for step, pred in enumerate(model.rollout(forward, params, jax.random.PRNGKey(0)
 | A100 | 40 GB | 1.1 s | 44 s |
 | A10G | 24 GB | 2.5 s | 1.7 min |
 | L4 | 24 GB | 3.5 s | 2.3 min |
-| RTX 4060 | 8 GB | 18.5 s ¹ | 12 min |
+| RTX 4060 | 8 GB | 5.2 s ¹ | 3.5 min |
 | T4 | 16 GB | 44 s ² | 29 min |
 
 <sub>Default (TF32) precision, measured during rollouts; see [validation](docs/validation.md). The first step adds ~1 minute of compilation.
-¹ Measured with an earlier build without the fused attention kernel; needs `XLA_PYTHON_CLIENT_MEM_FRACTION=0.9` (the CLI sets it).
+¹ Needs `XLA_PYTHON_CLIENT_MEM_FRACTION=0.9` (the CLI sets it); whole-card peak 7.3 of 8.0 GB.
 ² Turing GPUs have no TF32: the XLA attention path in full fp32 is used automatically.
 Tested on NVIDIA GPUs. Other devices (e.g. AMD ROCm) fall back to the XLA attention path, untested.</sub>
 

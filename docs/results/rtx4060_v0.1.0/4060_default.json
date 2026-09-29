@@ -1,0 +1,19 @@
+{
+ "label": "4060_default",
+ "env": {},
+ "ok": false,
+ "device": "NVIDIA GeForce RTX 4060",
+ "jax": "0.11.2",
+ "faster_weathernext": "0.1.0",
+ "compute_capability": "8.9",
+ "attention": "pallas",
+ "pool_gib": 5.71875,
+ "step_s": [
+  218.0912630558014
+ ],
+ "finite": [
+  true
+ ],
+ "error": "JaxRuntimeError: RESOURCE_EXHAUSTED: Out of memory while trying to allocate 3.92GiB with allocator GPU_0_bfc on device 0. [tf-allocator-allocation-error=''] [executable_name='jit__lambda']",
+ "traceback": "Traceback (most recent call last):\n  File \"/root/fwn/src/cloud/canary_run.py\", line 86, in <module>\n    msl = np.asarray(pred[\"mean_sea_level_pressure\"])\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/fwn/.venv/lib/python3.12/site-packages/xarray/core/common.py\", line 181, in __array__\n    return np.array(self.values, dtype=dtype, copy=copy)\n                    ^^^^^^^^^^^\n  File \"/root/fwn/.venv/lib/python3.12/site-packages/xarray/core/dataarray.py\", line 798, in values\n    return self.variable.values\n           ^^^^^^^^^^^^^^^^^^^^\n  File \"/root/fwn/.venv/lib/python3.12/site-packages/xarray/core/variable.py\", line 556, in values\n    return _as_array_or_item(self._data)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/fwn/.venv/lib/python3.12/site-packages/xarray/core/variable.py\", line 336, in _as_array_or_item\n    data = np.asarray(data)\n           ^^^^^^^^^^^^^^^^\n  File \"/root/fwn/.venv/lib/python3.12/site-packages/jax/_src/array.py\", line 409, in __array__\n    return np.asarray(self._value, dtype=dtype, **kwds)  # pyrefly: ignore[no-matching-overload]\n                      ^^^^^^^^^^^\n  File \"/root/fwn/.venv/lib/python3.12/site-packages/jax/_src/profiler.py\", line 420, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/fwn/.venv/lib/python3.12/site-packages/jax/_src/array.py\", line 637, in _value\n    npy_value, did_copy = self._single_device_array_to_np_array_did_copy()\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\njax.errors.JaxRuntimeError: RESOURCE_EXHAUSTED: Out of memory while trying to allocate 3.92GiB with allocator GPU_0_bfc on device 0. [tf-allocator-allocation-error=''] [executable_name='jit__lambda']\n"
+}

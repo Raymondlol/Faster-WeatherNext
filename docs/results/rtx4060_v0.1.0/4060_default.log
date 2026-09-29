@@ -1,0 +1,16 @@
+NVIDIA GeForce RTX 4060 cc=8.9 attention=pallas pool 5.72 GiB
+WARNING:absl:Skipping gradient checkpointing for sequence length of 1
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 1, channels: 1, noise_channels: 32)> Size: 128B
+JitTracer(float32[1,1,32])
+Dimensions without coordinates: batch, channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/root/fwn/.venv/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+W0929 06:41:38.547655   10273 hlo_rematerialization.cc:3363] Can't reduce memory use below 4.19GiB (4497878631 bytes) by rematerialization; only reduced to 28.82GiB (30943716076 bytes), down from 28.82GiB (30943728380 bytes) originally
+  step 1: 218.1s  msl min 948.5 hPa
+W0929 06:42:00.313356   10273 bfc_allocator.cc:598] Allocator (GPU_0_bfc) ran out of memory trying to allocate 3.92GiB (rounded to 4212389632) from the lower end requested by op 
+If this is caused by memory fragmentation, the environment variable 'TF_GPU_ALLOCATOR=cuda_malloc_async' may improve the situation.
+Current allocation summary follows.
+W0929 06:42:00.314983   10273 bfc_allocator.cc:609] **********************x****************_____________________________________________________________
+JaxRuntimeError: RESOURCE_EXHAUSTED: Out of memory while trying to allocate 3.92GiB with allocator GPU_0_bfc on device 0. [tf-allocator-allocation-error=''] [executable_name='jit__lambda']
