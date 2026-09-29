@@ -56,6 +56,8 @@ def cmd_info(args):
 
 def _subset(pred, variables, region):
   out = {}
+  if list(variables) == ["all"]:  # every output field, levels kept as a dimension
+    variables = list(pred.data_vars)
   for v in variables:
     name, _, level = v.partition("@")
     da = pred[name]
