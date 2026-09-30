@@ -1,0 +1,5 @@
+Platform 'oneapi' is experimental and not all JAX functionality may be correctly supported!
+faster-weathernext 0.1.1 | jax 0.11.2 | weathernext 0.3.1.dev0 (f2f2c51) (validated at f2f2c51) | device Intel(R) Arc(TM) B580 Graphics (compute capability unknown)
+JAX memory pool: 10.20 GiB (XLA_PYTHON_CLIENT_MEM_FRACTION=0.9); a 0.25° step needs ~6.4 GiB
+weathernext compatibility: OK
+attention implementation: xla  (options: Options(attention='auto', replace_attention=True, reorder=True, strict_fp32=False, attn_chunk=512, grid_chunk=32768, edge_chunk=65536, layer_loop=True))

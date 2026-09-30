@@ -1,0 +1,5 @@
+/scratch/guido/jax-xpu-test/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+mask: 40962 nodes, 3101 keys/query, built in 44s
+Platform 'oneapi' is experimental and not all JAX functionality may be correctly supported!
+xla        684.2 ms/layer  (x24 = 16.42 s/step)
