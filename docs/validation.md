@@ -193,6 +193,39 @@ wrapper dropped).
 Mini times are dominated by host work. `highest` was set with `JAX_DEFAULT_MATMUL_PRECISION=highest`
 for both processes. Files: [`results/earth2studio/`](results/earth2studio/).
 
+## 7. Intel XPU / Arc GPUs (OpenXLA via oneAPI)
+
+Intel GPUs (such as Arc B-series / Battlemage) run via Intel's OpenXLA PJRT plugin (`jax-oneapi-plugin`). Because Intel GPUs do not use NVIDIA CUDA / Triton Pallas kernels, `faster-weathernext` automatically dispatches to the pure XLA chunked attention implementation (`attention_impl() == "xla"`). A full 0.25° rollout step on Intel is currently a TODO.
+
+### Installation
+
+Requires the Intel compute runtime / Level-Zero and the [Intel oneAPI Base Toolkit](https://www.intel.com/content/www/us/en/developer/tools/oneapi/base-toolkit.html) (source `oneapi-vars.sh` or `setvars.sh` to initialize the runtime environment).
+
+Install `faster-weathernext` with the `[oneapi]` extra:
+```bash
+pip install -e ".[oneapi,weathernext]"
+```
+(installs `jax-oneapi-plugin==0.11.2` and `jax-oneapi-pjrt==0.11.2`).
+
+### Device Check & Microbenchmark
+
+Running `fwn info` on an Intel Arc B580 (12 GB GDDR6):
+```
+Platform 'oneapi' is experimental and not all JAX functionality may be correctly supported!
+faster-weathernext 0.1.1 | jax 0.11.2 | weathernext 0.3.1.dev0 (f2f2c51) (validated at f2f2c51) | device Intel(R) Arc(TM) B580 Graphics (compute capability unknown)
+JAX memory pool: 10.20 GiB (XLA_PYTHON_CLIENT_MEM_FRACTION=0.9); a 0.25° step needs ~6.4 GiB
+weathernext compatibility: OK
+attention implementation: xla  (options: Options(attention='auto', replace_attention=True, reorder=True, strict_fp32=False, attn_chunk=512, grid_chunk=32768, edge_chunk=65536, layer_loop=True))
+```
+
+One WN2 layer's masked mesh attention (40,962 nodes, 6 heads × 128 dim, 32-hop mask, `scripts/attn_bench.py`):
+
+| GPU | arch | memory | attention | precision | ms/layer | attention only, ×24 |
+|---|---|---|---|---|---|---|
+| Intel Arc B580 (contributed) | Xe2 (Battlemage) | 12 GB (10.2 GiB pool) | xla | default | 684.2 ms | 16.42 s |
+
+Files: [`results/intel_b580/`](results/intel_b580/) (`fwn_info.txt`, `attn_bench.txt`). All unit tests pass (`pytest -q`).
+
 ## Limitations
 
 - Single-step equivalence (§1, §2) used one initialisation (2024-10-07) and the

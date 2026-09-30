@@ -23,7 +23,13 @@ def _reference(q, k, v, mask, scale):
 
 def _on_gpu():
   dev = jax.devices()[0]
-  return dev.platform == "gpu" and float(getattr(dev, "compute_capability", "0") or 0) >= 8.0
+  if dev.platform != "gpu" or "cuda" not in str(getattr(dev.client, "platform_version", "")).lower():
+    return False
+  try:
+    cc = float(getattr(dev, "compute_capability", "0") or 0)
+  except ValueError:
+    return False
+  return cc >= 8.0
 
 
 @pytest.mark.parametrize("batch", [1, 2])
