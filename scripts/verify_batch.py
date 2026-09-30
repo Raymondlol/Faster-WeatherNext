@@ -146,6 +146,7 @@ def main():
   p.add_argument("--precisions", default="highest,default")
   p.add_argument("--weights-dir")
   p.add_argument("--out")
+  p.add_argument("--save-preds", metavar="DIR", help="also write each run's predictions as <DIR>/<precision>_<run>.nc")
   args = p.parse_args()
 
   import jax
@@ -184,6 +185,10 @@ def main():
         r["checks"][f"fwn_{k} vs official_{k}"] = compare(fwn[k], off[k])
       for i in range(2):
         r["checks"][f"official_b2[{i}] vs official_b1_{i}"] = compare(off["b2"].isel(batch=[i]), off[f"b1_{i}"])
+    if args.save_preds:
+      os.makedirs(args.save_preds, exist_ok=True)
+      for k, ds in fwn.items():
+        ds.to_netcdf(os.path.join(args.save_preds, f"{precision}_fwn_{k}.nc"))
     for k, v in r["checks"].items():
       print(f"  {k:36s} min corr {v['min_corr']:.10f}  max rel RMS {v['max_rel_rms']:.2e}  "
             f"median {v['median_rel_rms']:.2e}  NaN masks equal {v['nan_masks_equal']}", flush=True)

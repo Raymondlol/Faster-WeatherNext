@@ -12,7 +12,9 @@ import sys
 
 import numpy as np
 
-STRIDE = 7  # 721 x 1440 -> 103 x 206 points per field; 101 fields fit in a 10 MB attachment
+def stride(n_lon):
+  """7 at 0.25° (721 x 1440 -> 103 x 206 points), 2 at 1°: ~100 fields stay under a 10 MB attachment."""
+  return 7 if n_lon >= 1440 else 2 if n_lon >= 360 else 1
 
 
 def load(path):
@@ -26,7 +28,8 @@ def load(path):
     da = ds[v]
     if not {"lat", "lon"} <= set(da.dims):
       continue
-    da = da.isel(lat=slice(None, None, STRIDE), lon=slice(None, None, STRIDE))
+    k = stride(da.sizes["lon"])
+    da = da.isel(lat=slice(None, None, k), lon=slice(None, None, k))
     if "level" in da.dims:
       for lev in da["level"].values:
         out[f"{v}@{int(lev)}"] = np.asarray(da.sel(level=lev), np.float32)
