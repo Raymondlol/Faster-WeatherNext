@@ -9,6 +9,12 @@
   before moving on, the mirror that worked is tried first for the next file, and
   `FWN_IFS_MIRRORS` (comma-separated) overrides the order. Checked: the three mirrors return
   identical fields for the 2026-09-29 12Z run.
+- `fwn forecast --vars all` writes every output field (levels kept as a dimension).
+  `scripts/compare_npz.py` accepts `fwn forecast` NetCDF files on either side (levels split,
+  fixed lat/lon stride) and `--save` writes a subsampled `.npz` small enough to attach to an issue.
+- Intel Arc B580 via Intel's OpenXLA plugin (`[oneapi]` extra): runs the XLA attention path and
+  the unit tests; a full 0.25° step is still open (docs/validation.md §7; contributed by @guidov,
+  #1). The Pallas test no longer crashes on GPUs whose compute capability is not a number.
 
 ## 0.1.1 — 2026-09-29
 
