@@ -52,6 +52,7 @@ _REQUIRED = [
 _REQUIRED_METHODS = [
     ("weathernext.utils.deep_gnn", "DeepGNN", "_networks_builder"),
     ("weathernext.utils.points_mesh_gnn", "PointsMeshTypedGraphGNN", "_build_typed_graph"),
+    ("weathernext.weathernext2.fgn", "Predictor", "run_model_with_sample_as_batch"),
 ]
 
 

@@ -40,7 +40,9 @@ from weathernext.utils import points_mesh_gnn
 from weathernext.utils import sparse_transformer as st
 from weathernext.utils import sparse_transformer_utils as st_utils
 from weathernext.utils import typed_graph_net
+from weathernext.utils import casting
 from weathernext.utils import xarray_dense
+from weathernext.weathernext2 import fgn
 
 from faster_weathernext import pallas_attn
 
@@ -65,10 +67,16 @@ class Options:
   edge_chunk: int = 65536
   # Run the transformer layers as a loop (hk.scan + hk.switch) instead of unrolled.
   layer_loop: bool = True
-  # Rematerialise each grid/edge block (GNNs, encoder, decoder) in the backward pass. Without it,
-  # differentiating the blocked scans stores every block's intermediates, i.e. exactly the
-  # whole-grid tensors the blocking avoids. Has no effect on code that is not differentiated.
+  # Rematerialise in the backward pass: each grid/edge block (GNNs, encoder, decoder), each
+  # transformer layer, and each XLA attention chunk. Without it, differentiating the blocked scans
+  # stores every block's intermediates, i.e. exactly the whole-grid tensors the blocking avoids.
+  # Has no effect on code that is not differentiated.
   remat: bool = False
+  # Training: run the network once per element of the stacked (batch x ensemble member) batch,
+  # each call rematerialised, instead of once on the whole batch. The backward pass then holds one
+  # member's activations at a time (about half the memory for FGN's 2 members). The noise is
+  # drawn for the stacked batch as before and split, so results match the batched call.
+  sequential_samples: bool = False
 
 
 OPTIONS = Options()
@@ -143,6 +151,11 @@ def chunked_mha(x, starts, bits, window, n_kv, chunk, cfg):
     weights = st_utils.wrap_fn_for_upcast_downcast(logits, jax.nn.softmax)
     return jnp.einsum("bhqk,bkhd->bqhd", weights, vc)
 
+  # With remat, the backward pass recomputes each chunk's logits instead of storing them all.
+  # one_chunk is pure JAX inside a raw lax.map, so jax.checkpoint, not hk.remat: hk.remat threads
+  # Haiku's state (the RNG key) and leaks it out of the lax.map trace (UnexpectedTracerError).
+  if OPTIONS.remat:
+    one_chunk = jax.checkpoint(one_chunk, prevent_cse=False)
   out = jax.lax.map(one_chunk, (q, starts, bits))
   out = out.transpose(1, 0, 2, 3, 4).reshape(batch, n_chunks * chunk, heads * head_dim)[:, :n]
   attn_winit_final = hk.initializers.VarianceScaling(cfg.attn_winit_final_mult / cfg.num_layers)
@@ -156,8 +169,9 @@ def tiled_mha(x, tiles, cfg):
   k = st.multihead_linear(x, "k", cfg)
   v = st.multihead_linear(x, "v", cfg)
   _, _, heads, head_dim = q.shape
-  out = pallas_attn.tiled_flash_attention(q, k, v, *tiles, scale=cfg.key_size**-0.5,
-                                          strict_fp32=OPTIONS.strict_fp32)
+  # tiles[3:] is the transposed mask's tile list, present only for non-symmetric masks.
+  out = pallas_attn.tiled_flash_attention(q, k, v, *tiles[:3], tiles_t=tiles[3:] or None,
+                                          scale=cfg.key_size**-0.5, strict_fp32=OPTIONS.strict_fp32)
   attn_winit_final = hk.initializers.VarianceScaling(cfg.attn_winit_final_mult / cfg.num_layers)
   return hk.Linear(cfg.d_model, name="mha_final", w_init=attn_winit_final)(
       out.reshape(batch, n, heads * head_dim))
@@ -172,6 +186,7 @@ _ORIG = dict(
     Decoder=xarray_dense.DataArrayDictDenseDecoder,
     build_typed_graph=points_mesh_gnn.PointsMeshTypedGraphGNN._build_typed_graph,
     get_adjacency_matrix=mesh_transformer._get_adjacency_matrix,
+    run_model_with_sample_as_batch=fgn.Predictor.run_model_with_sample_as_batch,
 )
 
 
@@ -197,6 +212,10 @@ def _transformer_init(self, adj_mat, attention_k_hop, attention_type, mask_type,
     if perm is not None:
       mask = mask.tocsr()[perm][:, perm]
     self.mask = pallas_attn.build_tile_mask(mask)
+    # The backward pass walks the transposed mask. Powers of a symmetric adjacency (the mesh's)
+    # are symmetric, so the forward tile list serves; checking the adjacency is cheap.
+    if (adj_mat != adj_mat.T).nnz:
+      self.mask += pallas_attn.build_tile_mask(mask.T.tocsr())
     self.num_padding_nodes = ("pallas", perm)
   else:
     starts, bits, window, n_kv = build_chunked_mask(adj_mat**attention_k_hop, OPTIONS.attn_chunk)
@@ -256,14 +275,16 @@ class ChunkedTransformer(_ORIG["Transformer"]):
     if perm is not None:
       node_features = jnp.take(node_features, jnp.asarray(perm, jnp.int32), axis=1)
 
+    # With remat, the backward pass keeps only each layer's input and recomputes the layer
+    # (attention q/k/v/output alone would otherwise be ~1 GiB per layer at 0.25°, batch 2).
     if OPTIONS.layer_loop:
       branches = [functools.partial(apply, b) for b in blocks]
-      x, _ = hk.scan(lambda x, i: (hk.switch(i, branches, x), None), node_features,
-                     jnp.arange(len(blocks)))
+      layer = _maybe_remat(lambda x, i: hk.switch(i, branches, x))
+      x, _ = hk.scan(lambda x, i: (layer(x, i), None), node_features, jnp.arange(len(blocks)))
     else:
       x = node_features
       for b in blocks:
-        x = apply(b, x)
+        x = _maybe_remat(functools.partial(apply, b))(x)
     x = st.layernorm(x, create_scale=False, create_offset=False)
     x = dense.LinearNormConditioning(name=self.name + "_final_norm_conditioning")(
         x, norm_conditioning=jnp.expand_dims(global_norm_conditioning, 1))
@@ -643,6 +664,61 @@ class ChunkedDenseDecoder(_ORIG["Decoder"]):
 
 
 # ----------------------------------------------------------------------------------------------
+# Ensemble members one at a time (training)
+
+
+def _take(ds, i):
+  """Element i of a stacked-batch Dataset, as batch 1 without the (MultiIndex) batch coordinates."""
+  if ds is None:
+    return None
+  out = {}
+  for name, da in ds.data_vars.items():
+    if "batch" not in da.dims:  # static fields
+      out[name] = da
+      continue
+    x = jax.lax.dynamic_slice_in_dim(xarray_jax.unwrap_data(da), i, 1, axis=da.dims.index("batch"))
+    out[name] = xarray_jax.DataArray(x, dims=da.dims,
+                                     coords={k: c for k, c in da.coords.items() if "batch" not in c.dims})
+  return xr.Dataset(out)
+
+
+def _run_model_with_sample_as_batch(self, inputs, targets, forcings, is_training, add_noise=True):
+  """fgn.Predictor.run_model_with_sample_as_batch; with sequential_samples the network runs once
+  per stacked element, inside hk.scan with a rematerialised body. Independent per-element calls are
+  not enough: XLA then runs the elements' backward passes side by side (46.1 vs 45.8 GiB at 0.25°);
+  a scan's backward runs its iterations one after another. fgn.Predictor is not a Haiku module and
+  the network module is built in its __init__, so parameter names are unchanged."""
+  if not OPTIONS.sequential_samples:
+    return _ORIG["run_model_with_sample_as_batch"](self, inputs, targets, forcings, is_training,
+                                                   add_noise=add_noise)
+  # As the official method: stack batch and sample, draw the noise for the whole stack.
+  stack = lambda ds: ds.rename({"batch": "_batch"}).stack(batch=("_batch", "sample")).transpose("batch", ...)
+  inputs, targets = stack(inputs), stack(targets)
+  forcings = stack(forcings) if forcings is not None else None
+  if add_noise:
+    inputs, forcings = self._noise_generator(inputs, forcings,
+                                             default_dtype=casting.infer_floating_dtype(inputs))
+  n = inputs.sizes["batch"]
+  dims = {}
+
+  def element(carry, i):
+    preds = self._noisy_function(inputs=_take(inputs, i), targets_template=_take(targets, i),
+                                 forcings=_take(forcings, i), is_training=is_training)
+    dims.update({v: da.dims for v, da in preds.data_vars.items()})
+    return carry, {v: xarray_jax.unwrap_data(da) for v, da in preds.data_vars.items()}
+
+  _, stacked = hk.scan(hk.remat(element), None, jnp.arange(n))
+  data = {}
+  for v, x in stacked.items():  # [n, ..., 1 (batch), ...] -> [..., n (batch), ...]
+    ax = dims[v].index("batch")
+    x = jnp.moveaxis(x, 0, ax)
+    data[v] = xarray_jax.DataArray(x.reshape(x.shape[:ax] + (n,) + x.shape[ax + 2:]), dims=dims[v],
+                                   coords=targets[v].coords)
+  preds = xr.Dataset(data).unstack("batch").rename({"_batch": "batch"}).transpose("sample", "batch", ...)
+  return preds.drop_indexes(["sample", "batch"]).reset_coords(["sample", "batch"], drop=True)
+
+
+# ----------------------------------------------------------------------------------------------
 # Install / uninstall
 
 _enabled = False
@@ -663,6 +739,7 @@ def install():
   points_mesh_gnn.PointsMeshTypedGraphGNN._build_typed_graph = _build_typed_graph
   xarray_dense.DataArrayDictDenseEncoder = ChunkedDenseEncoder
   xarray_dense.DataArrayDictDenseDecoder = ChunkedDenseDecoder
+  fgn.Predictor.run_model_with_sample_as_batch = _run_model_with_sample_as_batch
   _enabled = True
 
 
@@ -677,6 +754,7 @@ def uninstall():
   points_mesh_gnn.PointsMeshTypedGraphGNN._build_typed_graph = _ORIG["build_typed_graph"]
   xarray_dense.DataArrayDictDenseEncoder = _ORIG["Encoder"]
   xarray_dense.DataArrayDictDenseDecoder = _ORIG["Decoder"]
+  fgn.Predictor.run_model_with_sample_as_batch = _ORIG["run_model_with_sample_as_batch"]
   _enabled = False
 
 

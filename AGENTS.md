@@ -92,6 +92,20 @@ below the ensemble member-to-member spread (docs/validation.md).
 - **Triton IEEE fp32 dots do not use tensor cores** (~10× slower on sm_120); under `highest`
   the kernel uses 3xTF32 (`strict_fp32=True` for IEEE). Turing (sm_75) has no TF32 → the
   XLA attention path is selected automatically.
+- **Attention backward: precision and shared memory**: all attention kernels use one dot precision
+  (the backward recomputes P from the forward's log-sum-exp). 3xTF32 keeps hi/lo operand copies in
+  shared memory: the forward (2 dots per tile) fits sm_120's 99 KB in 64-row programs, the backward
+  kernels (3–4 dots) asked for 147 KB, so under `highest` they run in 32-row programs
+  (`bwd_split=2`): 115 ms/layer forward+backward (797 ms with IEEE dots). Whole-model gradients at
+  `highest` vs the official path (H200): 3xTF32 attention ~1.7× the official-vs-official floor
+  with a smooth loss, ~5× with the CRPS; `strict_fp32=True` at the floor. Matching forward and
+  backward precision did not measurably change this; the forward's precision did. In Pallas
+  interpret mode, `pl.program_id` is unavailable inside `fori_loop` bodies: read it at kernel top
+  level.
+- **CRPS gradients are noisy references**: the fair CRPS hits non-differentiable points exactly
+  (zero precipitation, land-filled SST), so rounding-level forward differences flip signs. Between
+  two runs of the same comparison (official vs XLA-autodiff path, H200, `highest`) the gradient
+  difference went from 1.1e-3 to 4.3e-3. Judge implementations with the smooth `--loss linear`.
 - **XLA autotuning is timing-based**: kernel picks (and last bits) differ between runs; once, an
   A100 fp32 run deviated at TF32 level (1 of 6, not reproduced). Use `--autotune-cache` for
   reproducible runs and `--no-autotune` for strict fp32.
@@ -99,6 +113,13 @@ below the ensemble member-to-member spread (docs/validation.md).
   `dynamic_update_slice`, or XLA fuses the read into the update and copies the whole buffer.
 - **Transformer layers as a loop** (`hk.scan` + `hk.switch`) avoid XLA heap fragmentation
   (~2 GiB with 24 unrolled layers).
+- **Remat inside raw JAX transforms**: `hk.remat` threads Haiku state (the RNG key) and leaks it
+  out of a raw `jax.lax.map`/`lax.scan` (UnexpectedTracerError on a jit call; with AOT
+  `.lower().compile()` it surfaced as "compiled for N inputs but called with M"). Use
+  `jax.checkpoint` for pure-JAX bodies there; `hk.remat` only inside `hk.scan`/`hk.map`.
+- **Independent remat regions run side by side**: two rematerialised calls with no data dependence
+  (e.g. one per ensemble member) did not lower peak memory, because XLA overlapped their backward
+  passes (46.1 vs 45.8 GiB). An `hk.scan` over them forces one at a time (25.5 GiB).
 - **Nsight Compute**: JAX 0.11's CUDA 13.4 runtime crashes ncu 2025.3; use ncu ≥ 2026.3.
 - **eccodes** must be imported after pyproj (heap corruption at exit otherwise): keep it lazy.
 - **Compile time**: ~1 min on a fast desktop CPU, 2–3 min on cloud vCPUs; building the tile

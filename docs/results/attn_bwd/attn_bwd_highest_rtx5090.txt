@@ -1,0 +1,8 @@
+/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+mask: 40962 nodes, 3101 keys/query, built in 35s
+hilbert tiles: 5480 keys/query-block
+xla          128.4 ms/layer  (x24 = 3.08 s/step)   forward+backward   258.5 ms/layer  (x24 = 6.20 s)
+hilbert       31.0 ms/layer  (x24 = 0.74 s/step)   forward+backward   115.4 ms/layer  (x24 = 2.77 s)
+hilbert vs xla: output rel RMS 8.68e-07  dq rel RMS 1.14e-06  dk rel RMS 1.08e-06  dv rel RMS 8.76e-07
+exit 0

@@ -1,0 +1,259 @@
+{
+ "model": "WeatherNextCyclones_Mini",
+ "device": "NVIDIA GeForce RTX 5090",
+ "jax": "0.11.2",
+ "faster_weathernext": "0.1.1",
+ "blocks": {
+  "grid_chunk": 8192,
+  "edge_chunk": 16384
+ },
+ "masked": [],
+ "modules": "all",
+ "loss": "linear",
+ "head_params": 56684133,
+ "precisions": {
+  "highest": {
+   "official": {
+    "temp_gib": 45.37405942380428,
+    "compile_s": 75.64562153816223,
+    "oom": "RESOURCE_EXHAUSTED: Out of memory while trying to allocate 45.37GiB with allocator GPU_0_bfc on device 0. [tf-allocator-allocation-error=''] [executable_name='jit_fn']"
+   },
+   "official_mha": {
+    "temp_gib": 56.799837335944176,
+    "compile_s": 32.98060917854309,
+    "oom": "RESOURCE_EXHAUSTED: Out of memory while trying to allocate 56.80GiB with allocator GPU_0_bfc on device 0. [tf-allocator-allocation-error=''] [executable_name='jit_fn']"
+   },
+   "fwn": {
+    "temp_gib": 3.258644051849842,
+    "compile_s": 60.61225605010986,
+    "step_s": 0.4557206630706787
+   },
+   "fwn_xla": {
+    "temp_gib": 3.383711516857147,
+    "compile_s": 30.882630586624146,
+    "step_s": 0.6089086532592773
+   },
+   "fwn_strict": {
+    "temp_gib": 3.258644051849842,
+    "compile_s": 19.047070741653442,
+    "step_s": 1.497154951095581
+   },
+   "fwn_noremat": {
+    "temp_gib": 19.638427458703518,
+    "compile_s": 20.204537868499756
+   },
+   "reference": "fwn_xla",
+   "checks": {
+    "fwn vs fwn_xla": {
+     "loss": {
+      "official": 506.6861572265625,
+      "other": 506.6861877441406,
+      "rel_diff": 6.022974515831148e-08,
+      "max_per_var_rel_diff": 0.0003032060775157625
+     },
+     "grads": {
+      "global_rel_l2": 0.0002508788890675034,
+      "global_cos": 0.9999999764855787,
+      "max_rel_l2": 0.0012514083634297562,
+      "n_params": 376,
+      "n_compared": 315,
+      "n_zero_both": 6,
+      "n_zero_ref_only": 0,
+      "all_finite": true,
+      "worst": [
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_06/mha_proj_k/w",
+        "size": 262144,
+        "ref_norm": 2.7120831628078528,
+        "got_norm": 2.7136186826774487,
+        "finite": true,
+        "rel_l2": 0.0012514083634297562
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_02/block_02_norm_conditioning_1/linear/w",
+        "size": 32768,
+        "ref_norm": 0.6124617058595232,
+        "got_norm": 0.6129337448134701,
+        "finite": true,
+        "rel_l2": 0.0008403606200358301
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_02/block_02_norm_conditioning_1/linear/b",
+        "size": 1024,
+        "ref_norm": 0.7096776081980437,
+        "got_norm": 0.7102245703081098,
+        "finite": true,
+        "rel_l2": 0.0008403565468236138
+       },
+       {
+        "param": "multimodality_forward/global_norm_conditioning_encoder/split_input_matmul/w_input_noise_noise_channels=range(32)",
+        "size": 1024,
+        "ref_norm": 23.969418629655788,
+        "got_norm": 23.98620849168166,
+        "finite": true,
+        "rel_l2": 0.0008002067917544567
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_07/block_07_norm_conditioning/linear/w",
+        "size": 32768,
+        "ref_norm": 0.49396599475904734,
+        "got_norm": 0.49413754179569436,
+        "finite": true,
+        "rel_l2": 0.0007814520189398472
+       }
+      ]
+     }
+    },
+    "fwn_strict vs fwn_xla": {
+     "loss": {
+      "official": 506.6861572265625,
+      "other": 506.6861877441406,
+      "rel_diff": 6.022974515831148e-08,
+      "max_per_var_rel_diff": 7.215591727129653e-05
+     },
+     "grads": {
+      "global_rel_l2": 7.00702748801237e-05,
+      "global_cos": 0.9999999975569918,
+      "max_rel_l2": 0.00028294166195617026,
+      "n_params": 376,
+      "n_compared": 315,
+      "n_zero_both": 6,
+      "n_zero_ref_only": 0,
+      "all_finite": true,
+      "worst": [
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_07/block_07_norm_conditioning/linear/b",
+        "size": 1024,
+        "ref_norm": 0.5723730995779387,
+        "got_norm": 0.5723946947170323,
+        "finite": true,
+        "rel_l2": 0.00028294166195617026
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_07/block_07_norm_conditioning/linear/w",
+        "size": 32768,
+        "ref_norm": 0.49396599475904734,
+        "got_norm": 0.49398463229563155,
+        "finite": true,
+        "rel_l2": 0.0002829416078077201
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_04/block_04_norm_conditioning/linear/b",
+        "size": 1024,
+        "ref_norm": 0.7267677300240337,
+        "got_norm": 0.7267119887138631,
+        "finite": true,
+        "rel_l2": 0.00027242850582178893
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_04/block_04_norm_conditioning/linear/w",
+        "size": 32768,
+        "ref_norm": 0.6272107223622873,
+        "got_norm": 0.6271626172304601,
+        "finite": true,
+        "rel_l2": 0.00027242841682077263
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_04/block_04_norm_conditioning_1/linear/b",
+        "size": 1024,
+        "ref_norm": 0.5775905981194651,
+        "got_norm": 0.5775921518521128,
+        "finite": true,
+        "rel_l2": 0.00022276233266231747
+       }
+      ]
+     }
+    }
+   }
+  },
+  "default": {
+   "official": {
+    "temp_gib": 33.92704151570797,
+    "compile_s": 44.175304651260376,
+    "oom": "RESOURCE_EXHAUSTED: Out of memory while trying to allocate 33.93GiB with allocator GPU_0_bfc on device 0. [tf-allocator-allocation-error=''] [executable_name='jit_fn']"
+   },
+   "official_mha": {
+    "temp_gib": 32.61181591451168,
+    "compile_s": 22.591861963272095,
+    "oom": "RESOURCE_EXHAUSTED: Out of memory while trying to allocate 32.61GiB with allocator GPU_0_bfc on device 0. [executable_name='jit_fn'] [tf-allocator-allocation-error='']"
+   },
+   "fwn": {
+    "temp_gib": 3.258623071014881,
+    "compile_s": 35.82840013504028,
+    "step_s": 0.2399282455444336
+   },
+   "fwn_xla": {
+    "temp_gib": 3.3798927664756775,
+    "compile_s": 25.616586446762085,
+    "step_s": 0.4442577362060547
+   },
+   "fwn_noremat": {
+    "temp_gib": 19.62287374585867,
+    "compile_s": 17.91448426246643
+   },
+   "reference": "fwn_xla",
+   "checks": {
+    "fwn vs fwn_xla": {
+     "loss": {
+      "official": 506.6859130859375,
+      "other": 506.68756103515625,
+      "rel_diff": 3.252407805682366e-06,
+      "max_per_var_rel_diff": 0.07683305534178157
+     },
+     "grads": {
+      "global_rel_l2": 0.028688181598863615,
+      "global_cos": 0.9995909616423241,
+      "max_rel_l2": 0.0820666610018653,
+      "n_params": 376,
+      "n_compared": 313,
+      "n_zero_both": 6,
+      "n_zero_ref_only": 0,
+      "all_finite": true,
+      "worst": [
+       {
+        "param": "multimodality_forward/mesh_encoder/split_input_matmul/w_input_year_progress_cos_time=0",
+        "size": 512,
+        "ref_norm": 2.351501000231752,
+        "got_norm": 2.3303718952293266,
+        "finite": true,
+        "rel_l2": 0.0820666610018653
+       },
+       {
+        "param": "multimodality_forward/mesh_encoder/split_input_matmul/w_input_year_progress_sin_time=-21600",
+        "size": 512,
+        "ref_norm": 21.78868875294578,
+        "got_norm": 21.592909116932475,
+        "finite": true,
+        "rel_l2": 0.08206663218437225
+       },
+       {
+        "param": "multimodality_forward/mesh_encoder/split_input_matmul/w_input_year_progress_sin_time=0",
+        "size": 512,
+        "ref_norm": 21.78868875294578,
+        "got_norm": 21.592909116932475,
+        "finite": true,
+        "rel_l2": 0.08206663218437225
+       },
+       {
+        "param": "multimodality_forward/mesh_encoder/split_input_matmul/w_input_year_progress_cos_time=-21600",
+        "size": 512,
+        "ref_norm": 2.257063190882897,
+        "got_norm": 2.236782741491796,
+        "finite": true,
+        "rel_l2": 0.08206662769641662
+       },
+       {
+        "param": "multimodality_forward/mesh_encoder/split_input_matmul/w_forcing_year_progress_cos_time=21600",
+        "size": 512,
+        "ref_norm": 2.4440499873566526,
+        "got_norm": 2.42208932735907,
+        "finite": true,
+        "rel_l2": 0.08206660768292522
+       }
+      ]
+     }
+    }
+   }
+  }
+ }
+}

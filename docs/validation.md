@@ -307,6 +307,95 @@ Files: [`results/finetune/finetune_smoke_rtx5090.json`](results/finetune/finetun
 [`finetune_lr3e-6_rtx5090.json`](results/finetune/finetune_lr3e-6_rtx5090.json) (+ `.log`; per-variable
 losses before and after for each held-out init).
 
+## 9. Attention backward and full fine-tuning
+
+The fused attention kernel is differentiable (`pallas_attn.py`, `jax.custom_vjp`): the forward also
+stores each row's log-sum-exp, and two tiled kernels compute dQ (per 64-query block, over the
+forward's tile list) and dK/dV (per 64-key block, over the transposed mask's tile list, which for
+the symmetric k-hop mask is the forward's). With `remat`, each transformer layer is
+rematerialised, so the backward pass keeps one [nodes, 768] input per layer instead of q/k/v/output.
+Without differentiation the forward kernel is the same as before. Inference re-checked as in §2 on
+the final code: `highest` max rel RMS 1.97e-5; default 6.54e-3 in that run (worst field the sparse
+`cyclone_exists_gaussian_unit_mode`; vertical velocity 4.9e-3 as usual) and 4.74e-3 on a repeat,
+i.e. TF32 run-to-run variation from timing-based kernel selection (§4 note); temp memory and speed
+unchanged ([`results/finetune/equivalence_rtx5090_attention_bwd.json`](results/finetune/equivalence_rtx5090_attention_bwd.json),
+[`equivalence_rtx5090_attention_bwd_default_repeat.json`](results/finetune/equivalence_rtx5090_attention_bwd_default_repeat.json)).
+
+**Kernel vs references.** `tests/test_pallas_kernel.py`: dQ, dK, dV against an analytic float64
+masked-softmax gradient (n = 300, so padding rows are exercised; symmetric and non-symmetric masks;
+batch 1 and 2; both `bwd_split` settings): the kernel test file passes on the RTX 5090 (21 tests,
+forward and backward; 11 of them also run on CPUs in Pallas interpret mode). One layer of
+WeatherNext 2's exact 32-hop mask (40,962 nodes, 6 heads × 128, Hilbert order;
+`scripts/attn_bench.py --grad`) against JAX autodiff of the XLA attention path:
+
+| precision | dQ rel RMS | dK rel RMS | dV rel RMS | output rel RMS | Pallas fwd / fwd+bwd | XLA fwd / fwd+bwd |
+|---|---|---|---|---|---|---|
+| highest | 1.1e-6 | 1.1e-6 | 8.8e-7 | 8.7e-7 | 31.0 / 115.4 ms | 128.4 / 258.5 ms |
+| default (TF32) | 3.0e-4 | 2.9e-4 | 1.8e-5 | 2.8e-4 | 9.3 / 42.2 ms | 98.0 / 228.8 ms |
+
+Gradients agree to the same level as the outputs. All attention kernels use one dot precision (the
+backward recomputes P from the forward's log-sum-exp). Under `highest` that is 3xTF32, which keeps
+hi/lo copies of each operand in shared memory: the backward kernels (3–4 dots per tile) asked for
+147 KB of sm_120's 99 KB in 64-row programs, so they run in 32-row programs (`bwd_split=2`). TF32
+keeps 64-row programs (43.7 ms with 32 rows); IEEE fp32 dots (`strict_fp32=True`) take 797 ms.
+Files: [`results/attn_bwd/`](results/attn_bwd/). The kernel tests also pass on an H200 (sm_90; the
+kernel's first run on Hopper): [`results/finetune/h200/grads01/pytest_h200.txt`](results/finetune/h200/grads01/pytest_h200.txt).
+
+**Whole-model gradients vs the official path (Mini, 1°, all 56.7M parameters;
+`verify_head_grads.py --modules all`).** The official path cannot be differentiated end to end on
+a 32 GB GPU (compiled backward 82–116 GiB with the fair CRPS on the RTX 5090). On an H200 (141 GB;
+`cloud/modal_grads.py`, Modal, ~$4 for the three runs below) it needs 102 GiB (`triblockdiag_mha`)
+and 123 GiB (dense `mha`) with the CRPS, 51 and 62 GiB with a one-member loss; faster-weathernext
+needs 3.97 and 3.30 GiB (39.1 / 19.7 GiB without remat). Reference: the official GPU path
+(`triblockdiag_mha`); floor: the official dense `mha` path against it. Two losses: the fair CRPS,
+whose sign terms let rounding flip individual contributions (§8), and `--loss linear`, a fixed
+random linear functional of all outputs, which is smooth. Global relative L2 error of all gradients:
+
+| loss | precision | fwn | fwn, `strict_fp32` attention | fwn, XLA attention (autodiff) | floor: official `mha` |
+|---|---|---|---|---|---|
+| linear | highest | 1.4e-4 | 9.0e-5 | 7.6e-5 | 8.1e-5 |
+| linear | default | 4.4e-2 | — | 2.0e-2 | 4.5e-2 |
+| CRPS | highest | 4.7e-3 | 1.2e-3 | 1.2e-3 | 9.5e-4 |
+| CRPS | default | 5.2e-2 | — | 4.9e-2 | 5.5e-2 |
+
+At the training default (TF32), faster-weathernext's whole-model gradients differ from the official
+path's as much as the official path's two attention implementations differ from each other. At
+`highest`, IEEE fp32 attention (`strict_fp32=True`) is at the floor; the default 3xTF32 attention,
+whose forward differs slightly from fp32, is at 1.7× the floor with the smooth loss and 5× with the
+CRPS (cosine 0.99998880), whose sign terms amplify forward rounding. The highest rows are from the
+final code (run `grads03`); the default rows from `grads01` (that path has not changed since).
+Comparisons fluctuate between runs (XLA autotuning): over the three H200 runs the floor ranged
+7.5e-4–9.5e-4 (CRPS) and 7.6e-5–1.3e-4 (linear), and the XLA-attention row once reached 4.3e-3 with
+the CRPS. In `grads01` the backward used IEEE dots after a 3xTF32 forward (fwn 2.4e-4 linear,
+4.8e-3 CRPS); in `grads02` the training forward used IEEE dots too (6.8e-5, 1.4e-3, at the floor
+but 797 instead of 115 ms per layer); the final version uses 3xTF32 throughout. What sets the
+distance to the official path at `highest` is the attention forward's precision, not whether
+forward and backward match. On the RTX 5090 the same comparisons against the XLA-attention path,
+before those changes, gave the same picture at default precision (4.4e-2 CRPS, 2.9e-2 linear).
+Files: [`results/finetune/h200/`](results/finetune/h200/) (`grads01`–`grads03`; JSON + log),
+[`results/finetune/full_grads_mini_*_rtx5090.json`](results/finetune/).
+
+**Ensemble members one at a time.** At 0.25° the full-model step compiled to 45.8 GiB temp with
+FGN's two members as one batch ([`finetune_full_batched_oom_rtx5090.log`](results/finetune/finetune_full_batched_oom_rtx5090.log)).
+One rematerialised call per member did not help (46.1 GiB,
+[`finetune_full_unrolled_oom_rtx5090.log`](results/finetune/finetune_full_unrolled_oom_rtx5090.log)):
+the calls are independent, so XLA ran both backward passes side by side. Running the members in an
+`hk.scan` with a rematerialised body forces one at a time: 25.5 GiB. The noise is drawn for the
+stacked batch as before, so the loss is unchanged; checked on the CPU (Mini, all parameters, fp32)
+with the CRPS's absolute differences replaced by squares to make the loss smooth: loss rel diff
+8.4e-8, gradients 1.6e-4 global rel L2 vs the batched call, temp 4.14 → 2.55 GiB.
+
+**WeatherNext 2 at 0.25°, every parameter** (`finetune_head.py --modules all`; same data and
+held-out days as §8; SST masked; lr 1e-6 with a 5-step warmup; 20 steps). Compiled step: 25.46 GiB
+temp + 3.12 GiB arguments (parameters, Adam state, one example), device peak 28.6 GiB, so it needs
+`XLA_PYTHON_CLIENT_MEM_FRACTION=0.95` on a 32 GB card (at 0.9 the step failed to allocate:
+[`finetune_full_scan_pool90_oom_rtx5090.log`](results/finetune/finetune_full_scan_pool90_oom_rtx5090.log)).
+8.51 s per step. Held-out loss −1.8 … −2.4 % on the four days (same noise before and after); every
+variable lower: 2 m T −9.3 %, z −6.1 %, precipitation −5.3 %, MSLP −4.6 %, T −3.9 %, the rest
+−0.4 … −1.5 % (SST, masked, −0.1 %). The same caveats as §8 apply: one checkpoint, 20 steps, one
+week of held-out one-step losses, no rollout or spread evaluation.
+Files: [`results/finetune/finetune_full_smoke_rtx5090.json`](results/finetune/finetune_full_smoke_rtx5090.json) (+ `.log`).
+
 ## Limitations
 
 - Single-step equivalence (§1, §2) used one initialisation (2024-10-07) and the
@@ -317,9 +406,10 @@ losses before and after for each held-out init).
 - Without a fixed autotune cache, results are not bitwise reproducible between runs (§4 note).
 - TPU (`splash_mha`) numerics were not compared; TPU matmuls use bf16 passes by default and
   differ from any of the GPU paths above.
-- Fine-tuning (§8) covers the head only; gradients were compared with the official path on the
-  Mini model at 1° (the official path does not fit at 0.25°). The fused attention kernel has no
-  backward pass, so the transformer and everything before it cannot be trained yet.
+- Whole-model gradients were compared with the official path on the Mini model at 1° (§9, on an
+  H200: the official backward does not fit a 32 GB GPU). At 0.25° the official backward does not
+  fit any single GPU, so the 0.25° training runs rest on the Mini comparison, the kernel checks
+  against a float64 reference and the real-mask comparison with JAX autodiff.
 
 ## README figures
 

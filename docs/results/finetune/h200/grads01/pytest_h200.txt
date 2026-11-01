@@ -1,0 +1,10 @@
+.....................                                                    [100%]
+=============================== warnings summary ===============================
+tests/test_pallas_kernel.py: 55 warnings
+  /usr/local/lib/python3.12/site-packages/jax/_src/pallas/pallas_call.py:926: DeprecationWarning: The Pallas Triton backend is deprecated and will be removed in a future JAX version. To keep using Pallas on GPU, please migrate to the Mosaic GPU backend. To keep using Triton, switch to the official Triton bindings and jax_triton.
+    return rule(ctx, *in_nodes, compiler_params=compiler_params, **params)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+21 passed, 55 warnings in 34.91s
+
+exit 0  wall 37s

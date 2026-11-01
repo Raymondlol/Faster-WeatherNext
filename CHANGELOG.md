@@ -10,6 +10,14 @@
   pass. `ifs.training_example` builds one-step examples from IFS open data, and
   `scripts/finetune_head.py` / `scripts/verify_head_grads.py` train and validate. New `[train]`
   extra (optax). Validation and memory: docs/validation.md §8.
+- The fused attention kernel is differentiable (FlashAttention-2 backward as two more tiled
+  Pallas kernels, dQ and dK/dV, over the same tile lists), so every parameter can be trained:
+  `finetune.split(params, "all")`, `scripts/finetune_head.py --modules all`. `remat` now also
+  rematerialises each transformer layer and each XLA attention chunk, and the new option
+  `sequential_samples` runs the 2 ensemble members one at a time in training (same noise; half
+  the activation memory). Forward and inference unchanged. Whole-model gradients checked against
+  the official path on an H200 (`cloud/modal_grads.py`; the official backward needs 102 GiB even
+  for the 1° Mini model). Validation: docs/validation.md §9.
 - IFS open-data inputs fall back across mirrors: AWS, then Google Cloud
   (`storage.googleapis.com/ecmwf-open-data`), then ECMWF (`data.ecmwf.int`). The AWS bucket
   throttles a freshly published run with 503 SlowDown on every request, sometimes for hours;

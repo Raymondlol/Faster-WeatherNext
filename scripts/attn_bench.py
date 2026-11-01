@@ -6,6 +6,8 @@ Builds the model's exact 32-hop mask from the icosahedral mesh and compares:
   hilbert  fused tiled kernel, Hilbert-ordered nodes (the default on Ampere+)
 
   python scripts/attn_bench.py --variants xla,pallas,hilbert --precision default
+  python scripts/attn_bench.py --variants xla,hilbert --grad --bwd-warps 4,8   # backward: dQ/dK/dV vs
+      JAX autodiff of the XLA path (chunks rematerialised), and forward+backward time
 """
 import argparse
 import time
@@ -37,6 +39,10 @@ def main():
   p.add_argument("--precision", default="default")
   p.add_argument("--iters", type=int, default=10)
   p.add_argument("--chunk", type=int, default=512)
+  p.add_argument("--grad", action="store_true", help="also time forward+backward and compare dQ, dK, dV")
+  p.add_argument("--bwd-warps", default=str(pallas_attn.BWD_NUM_WARPS),
+                 help="hilbert variant: comma-separated backward-kernel warp counts to try")
+  p.add_argument("--bwd-split", default="auto", help="hilbert variant: comma-separated bwd_split values (auto, 1, 2)")
   args = p.parse_args()
 
   t0 = time.time()
@@ -66,7 +72,7 @@ def main():
         w = jax.nn.softmax(jnp.where(m[None, None], logits, -1e30), axis=-1)
         return jnp.einsum("bhqk,bkhd->bqhd", w, vc)
 
-      out = jax.lax.map(one, (qc, starts, bits))
+      out = jax.lax.map(jax.checkpoint(one, prevent_cse=False) if args.grad else one, (qc, starts, bits))
       return out.transpose(1, 0, 2, 3, 4).reshape(1, nc * c, H, D)[:, :n]
     fns["xla"] = xla
   if "pallas" in args.variants:
@@ -79,28 +85,48 @@ def main():
     htiles = pallas_attn.build_tile_mask(mask[perm][:, perm])
     print(f"hilbert tiles: {len(htiles[1]) * pallas_attn.BLOCK_K / (len(htiles[0]) - 1):.0f} keys/query-block")
 
-    def hilbert(q, k, v):
+    def hilbert(q, k, v, warps, split):
       pq, pk, pv = (x[:, perm] for x in (q, k, v))
-      return pallas_attn.tiled_flash_attention(pq, pk, pv, *htiles, scale=scale)[:, inv]
-    fns["hilbert"] = hilbert
+      return pallas_attn.tiled_flash_attention(pq, pk, pv, *htiles, scale=scale, bwd_num_warps=warps,
+                                               bwd_split=split)[:, inv]
+    combos = [(int(w), None if s == "auto" else int(s))
+              for w in args.bwd_warps.split(",") for s in args.bwd_split.split(",")]
+    for i, (w, sp) in enumerate(combos):
+      name = "hilbert" if i == 0 else f"hilbert_w{w}" + ("" if sp is None else f"s{sp}")
+      fns[name] = lambda q, k, v, w=w, sp=sp: hilbert(q, k, v, w, sp)
 
-  outs = {}
+  def timed(fn, *a):
+    out = jax.block_until_ready(fn(*a))
+    ts = []
+    for _ in range(args.iters):
+      t0 = time.time()
+      jax.block_until_ready(fn(*a))
+      ts.append(time.time() - t0)
+    return out, np.median(ts)
+
+  names = [n for n in fns if n.split("_w")[0] in args.variants.split(",")]
+  do = jax.random.normal(jax.random.PRNGKey(1), q.shape, jnp.float32)
+  outs, grads = {}, {}
   with jax.default_matmul_precision(args.precision):
-    for name in args.variants.split(","):
-      fn = jax.jit(fns[name])
-      out = jax.block_until_ready(fn(q, k, v))
-      ts = []
-      for _ in range(args.iters):
-        t0 = time.time()
-        jax.block_until_ready(fn(q, k, v))
-        ts.append(time.time() - t0)
+    for name in names:
+      out, t = timed(jax.jit(fns[name]), q, k, v)
       outs[name] = np.asarray(out, np.float64)
-      print(f"{name:8s} {np.median(ts) * 1e3:7.1f} ms/layer  (x24 = {24 * np.median(ts):.2f} s/step)", flush=True)
-  ref_name = args.variants.split(",")[0]
+      line = f"{name:10s} {t * 1e3:7.1f} ms/layer  (x24 = {24 * t:.2f} s/step)"
+      if args.grad:
+        bwd = jax.jit(lambda q, k, v, do, f=fns[name]: jax.vjp(f, q, k, v)[1](do))
+        g, tg = timed(bwd, q, k, v, do)
+        grads[name] = [np.asarray(x, np.float64) for x in g]
+        line += f"   forward+backward {tg * 1e3:7.1f} ms/layer  (x24 = {24 * tg:.2f} s)"
+      print(line, flush=True)
+  ref_name = names[0]
+  rel = lambda o, r: np.sqrt(np.mean((o - r) ** 2)) / r.std()
   for name, o in outs.items():
     if name != ref_name:
-      r = outs[ref_name]
-      print(f"{name} vs {ref_name}: rel RMS {np.sqrt(np.mean((o - r) ** 2)) / r.std():.2e}")
+      print(f"{name} vs {ref_name}: output rel RMS {rel(o, outs[ref_name]):.2e}", end="")
+      if args.grad:
+        print("  " + "  ".join(f"d{x} rel RMS {rel(a, b):.2e}" for x, a, b in zip("qkv", grads[name], grads[ref_name])),
+              end="")
+      print(flush=True)
 
 
 if __name__ == "__main__":

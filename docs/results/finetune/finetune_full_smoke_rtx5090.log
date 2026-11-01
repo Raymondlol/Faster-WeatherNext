@@ -1,0 +1,46 @@
+example 2026100412 built in 2.2s
+WeatherNext2 ckpt 1: training 183.79M of 183.8M params; masked targets: 18 (cyclone channels, sea_surface_temperature)
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 1, channels: 1, noise_channels: 32)> Size: 128B
+JitTracer(float32[1,1,32])
+Dimensions without coordinates: batch, channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+W1101 01:23:18.923607  149577 hlo_rematerialization.cc:3363] Can't reduce memory use below 27.36GiB (29379875767 bytes) by rematerialization; only reduced to 60.88GiB (65367275125 bytes), down from 64.04GiB (68764898983 bytes) originally
+train step compiled in 122s: temp 25.46 GiB, arguments 3.12 GiB
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 1, channels: 1, noise_channels: 32)> Size: 128B
+JitTracer(float32[1,1,32])
+Dimensions without coordinates: batch, channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+W1101 01:24:37.340890  149577 hlo_rematerialization.cc:3363] Can't reduce memory use below 26.61GiB (28575899763 bytes) by rematerialization; only reduced to 31.11GiB (33406662528 bytes), down from 31.99GiB (34353549912 bytes) originally
+eval before (73s): 2026102800 1.04095  2026102812 1.05584  2026103000 1.00725  2026103012 1.02892
+step    0 2026101006  loss 1.11917  |g| 1.693e+01  8.80s
+step    1 2026102406  loss 1.08201  |g| 1.824e+01  8.50s
+step    2 2026101206  loss 1.16186  |g| 1.862e+01  8.50s
+step    3 2026100612  loss 0.99548  |g| 1.398e+01  8.51s
+step    4 2026101900  loss 1.02724  |g| 1.580e+01  8.51s
+step    5 2026101906  loss 1.07443  |g| 1.648e+01  8.51s
+step    6 2026102300  loss 1.12754  |g| 1.628e+01  8.51s
+step    7 2026100512  loss 1.05021  |g| 1.433e+01  8.51s
+step    8 2026101806  loss 1.09190  |g| 1.218e+01  8.51s
+step    9 2026102200  loss 0.97432  |g| 1.321e+01  8.51s
+step   10 2026101500  loss 1.09529  |g| 1.687e+01  8.51s
+step   11 2026100700  loss 1.05157  |g| 1.449e+01  8.51s
+step   12 2026100912  loss 1.00318  |g| 1.346e+01  8.51s
+step   13 2026100500  loss 0.99749  |g| 1.329e+01  8.52s
+step   14 2026101812  loss 1.06023  |g| 1.831e+01  8.51s
+step   15 2026101612  loss 0.95348  |g| 1.135e+01  8.51s
+step   16 2026101112  loss 0.98637  |g| 1.527e+01  8.51s
+step   17 2026102006  loss 1.05018  |g| 1.561e+01  8.52s
+step   18 2026100706  loss 1.10406  |g| 1.524e+01  8.52s
+step   19 2026102312  loss 0.96010  |g| 1.356e+01  8.51s
+median step 8.51s, device peak 28.58 GiB
+eval 2026102800: 1.04095 -> 1.01856 (-2.15 %)
+eval 2026102812: 1.05584 -> 1.03347 (-2.12 %)
+eval 2026103000: 1.00725 -> 0.98292 (-2.42 %)
+eval 2026103012: 1.02892 -> 1.01006 (-1.83 %)
+wrote docs/results/finetune/finetune_full_smoke_rtx5090.json

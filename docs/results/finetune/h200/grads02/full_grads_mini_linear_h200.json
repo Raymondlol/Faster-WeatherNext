@@ -1,0 +1,290 @@
+{
+ "model": "WeatherNextCyclones_Mini",
+ "device": "NVIDIA H200",
+ "jax": "0.11.2",
+ "faster_weathernext": "0.1.1",
+ "blocks": {
+  "grid_chunk": 8192,
+  "edge_chunk": 16384
+ },
+ "masked": [],
+ "modules": "all",
+ "loss": "linear",
+ "head_params": 56684133,
+ "precisions": {
+  "highest": {
+   "official": {
+    "temp_gib": 51.41228340566158,
+    "compile_s": 71.35185122489929,
+    "step_s": 0.5169267654418945
+   },
+   "official_mha": {
+    "temp_gib": 61.79655359685421,
+    "compile_s": 41.12771034240723,
+    "step_s": 0.5860462188720703
+   },
+   "fwn": {
+    "temp_gib": 3.299081988632679,
+    "compile_s": 63.962586402893066,
+    "step_s": 0.952063798904419
+   },
+   "fwn_xla": {
+    "temp_gib": 3.397009789943695,
+    "compile_s": 41.45921754837036,
+    "step_s": 0.7416081428527832
+   },
+   "fwn_strict": {
+    "temp_gib": 3.299081988632679,
+    "compile_s": 29.10938858985901,
+    "step_s": 0.8634288311004639
+   },
+   "fwn_noremat": {
+    "temp_gib": 19.658946715295315,
+    "compile_s": 32.132792949676514
+   },
+   "reference": "official",
+   "checks": {
+    "fwn vs official": {
+     "loss": {
+      "official": 506.6861267089844,
+      "other": 506.68609619140625,
+      "rel_diff": 6.02297487859339e-08,
+      "max_per_var_rel_diff": 5.983790193194335e-05
+     },
+     "grads": {
+      "global_rel_l2": 6.747983738157028e-05,
+      "global_cos": 0.9999999977251447,
+      "max_rel_l2": 0.00040668020635455663,
+      "n_params": 376,
+      "n_compared": 315,
+      "n_zero_both": 6,
+      "n_zero_ref_only": 0,
+      "all_finite": true,
+      "worst": [
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_01/block_01_norm_conditioning/linear/w",
+        "size": 32768,
+        "ref_norm": 0.8212241099797718,
+        "got_norm": 0.8211282246485626,
+        "finite": true,
+        "rel_l2": 0.00040668020635455663
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_01/block_01_norm_conditioning/linear/b",
+        "size": 1024,
+        "ref_norm": 0.9515768185772578,
+        "got_norm": 0.9514657150469644,
+        "finite": true,
+        "rel_l2": 0.0004066777278866067
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_02/block_02_norm_conditioning/linear/b",
+        "size": 1024,
+        "ref_norm": 0.570128324689503,
+        "got_norm": 0.570091227624361,
+        "finite": true,
+        "rel_l2": 0.00031003748064335117
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_02/block_02_norm_conditioning/linear/w",
+        "size": 32768,
+        "ref_norm": 0.4920287234745772,
+        "got_norm": 0.4919967082159768,
+        "finite": true,
+        "rel_l2": 0.0003100369667402391
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_03/block_03_norm_conditioning/linear/b",
+        "size": 1024,
+        "ref_norm": 0.6554303125710794,
+        "got_norm": 0.6553247150737159,
+        "finite": true,
+        "rel_l2": 0.0002989693185339831
+       }
+      ]
+     }
+    },
+    "fwn_strict vs official": {
+     "loss": {
+      "official": 506.6861267089844,
+      "other": 506.6861572265625,
+      "rel_diff": 6.02297487859339e-08,
+      "max_per_var_rel_diff": 8.986486355122179e-05
+     },
+     "grads": {
+      "global_rel_l2": 7.769181962751524e-05,
+      "global_cos": 0.9999999969823907,
+      "max_rel_l2": 0.00024482507727029086,
+      "n_params": 376,
+      "n_compared": 315,
+      "n_zero_both": 6,
+      "n_zero_ref_only": 0,
+      "all_finite": true,
+      "worst": [
+       {
+        "param": "multimodality_forward/grid_to_mesh_gnn/edge_encoder/shared_dense/mlp/linear_0/b",
+        "size": 32,
+        "ref_norm": 5.131798694299954,
+        "got_norm": 5.132980508586088,
+        "finite": true,
+        "rel_l2": 0.00024482507727029086
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_06/mha_proj_k/w",
+        "size": 262144,
+        "ref_norm": 2.7121599826891596,
+        "got_norm": 2.712255287913129,
+        "finite": true,
+        "rel_l2": 0.00023651406176779463
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_02/block_02_norm_conditioning_1/linear/w",
+        "size": 32768,
+        "ref_norm": 0.6123730296586022,
+        "got_norm": 0.6124950330649098,
+        "finite": true,
+        "rel_l2": 0.00022509363453914556
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_02/block_02_norm_conditioning_1/linear/b",
+        "size": 1024,
+        "ref_norm": 0.7095748580288647,
+        "got_norm": 0.709716221120885,
+        "finite": true,
+        "rel_l2": 0.00022508454435158547
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_04/block_04_norm_conditioning_1/linear/b",
+        "size": 1024,
+        "ref_norm": 0.5775796758362444,
+        "got_norm": 0.5776165145753557,
+        "finite": true,
+        "rel_l2": 0.00020761502928520162
+       }
+      ]
+     }
+    },
+    "fwn_xla vs official": {
+     "loss": {
+      "official": 506.6861267089844,
+      "other": 506.6861572265625,
+      "rel_diff": 6.02297487859339e-08,
+      "max_per_var_rel_diff": 2.55985248337014e-05
+     },
+     "grads": {
+      "global_rel_l2": 8.365192541712793e-05,
+      "global_cos": 0.9999999965319865,
+      "max_rel_l2": 0.0004991382707796397,
+      "n_params": 376,
+      "n_compared": 315,
+      "n_zero_both": 6,
+      "n_zero_ref_only": 0,
+      "all_finite": true,
+      "worst": [
+       {
+        "param": "multimodality_forward/grid_to_mesh_gnn/edge_encoder/shared_dense/mlp/linear_0/b",
+        "size": 32,
+        "ref_norm": 5.131798694299954,
+        "got_norm": 5.133924904310215,
+        "finite": true,
+        "rel_l2": 0.0004991382707796397
+       },
+       {
+        "param": "multimodality_forward/grid_to_mesh_gnn/edge_encoder/split_input_matmul/w_spatial_feature=distance,rel_x,rel_y,rel_z",
+        "size": 128,
+        "ref_norm": 5.380476093448445,
+        "got_norm": 5.38267862004577,
+        "finite": true,
+        "rel_l2": 0.0004279359698555622
+       },
+       {
+        "param": "multimodality_forward/grid_to_mesh_gnn/edge_encoder/shared_dense/normalization/linear_norm_conditioning/linear/w",
+        "size": 2048,
+        "ref_norm": 0.21243608807573908,
+        "got_norm": 0.21250627394911525,
+        "finite": true,
+        "rel_l2": 0.00041425873259760295
+       },
+       {
+        "param": "multimodality_forward/grid_to_mesh_gnn/edge_encoder/shared_dense/normalization/linear_norm_conditioning/linear/b",
+        "size": 64,
+        "ref_norm": 0.2461560175103653,
+        "got_norm": 0.2462373353025157,
+        "finite": true,
+        "rel_l2": 0.0004142047554172557
+       },
+       {
+        "param": "multimodality_forward/grid_to_mesh_gnn/edge_encoder/shared_dense/mlp/linear_1/b",
+        "size": 32,
+        "ref_norm": 23.439334198251515,
+        "got_norm": 23.444884591868277,
+        "finite": true,
+        "rel_l2": 0.00037849919702644623
+       }
+      ]
+     }
+    },
+    "official_mha vs official (floor)": {
+     "loss": {
+      "official": 506.6861267089844,
+      "other": 506.6861267089844,
+      "rel_diff": 0.0,
+      "max_per_var_rel_diff": 6.210612565138524e-05
+     },
+     "grads": {
+      "global_rel_l2": 7.588123000222357e-05,
+      "global_cos": 0.9999999972161001,
+      "max_rel_l2": 0.0006613859159092648,
+      "n_params": 376,
+      "n_compared": 315,
+      "n_zero_both": 6,
+      "n_zero_ref_only": 0,
+      "all_finite": true,
+      "worst": [
+       {
+        "param": "multimodality_forward/grid_to_mesh_gnn/edge_encoder/shared_dense/mlp/linear_0/b",
+        "size": 32,
+        "ref_norm": 5.131798694299954,
+        "got_norm": 5.129150950775782,
+        "finite": true,
+        "rel_l2": 0.0006613859159092648
+       },
+       {
+        "param": "multimodality_forward/grid_to_mesh_gnn/edge_encoder/split_input_matmul/w_spatial_feature=distance,rel_x,rel_y,rel_z",
+        "size": 128,
+        "ref_norm": 5.380476093448445,
+        "got_norm": 5.378281485478416,
+        "finite": true,
+        "rel_l2": 0.0004965656272527077
+       },
+       {
+        "param": "multimodality_forward/grid_to_mesh_gnn/edge_encoder/shared_dense/mlp/linear_1/b",
+        "size": 32,
+        "ref_norm": 23.439334198251515,
+        "got_norm": 23.43352481180425,
+        "finite": true,
+        "rel_l2": 0.0004930205840060552
+       },
+       {
+        "param": "multimodality_forward/grid_to_mesh_gnn/edge_encoder/shared_dense/normalization/linear_norm_conditioning/linear/w",
+        "size": 2048,
+        "ref_norm": 0.21243608807573908,
+        "got_norm": 0.21238719761427038,
+        "finite": true,
+        "rel_l2": 0.00047779131280530426
+       },
+       {
+        "param": "multimodality_forward/grid_to_mesh_gnn/edge_encoder/shared_dense/normalization/linear_norm_conditioning/linear/b",
+        "size": 64,
+        "ref_norm": 0.2461560175103653,
+        "got_norm": 0.24609936721373887,
+        "finite": true,
+        "rel_l2": 0.0004777884657070471
+       }
+      ]
+     }
+    }
+   }
+  }
+ }
+}

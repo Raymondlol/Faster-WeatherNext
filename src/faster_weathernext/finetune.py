@@ -1,11 +1,12 @@
-"""Head-only fine-tuning of WeatherNext 2 (prototype).
+"""Fine-tuning of WeatherNext 2 (prototype).
 
-The trainable "head" is everything after the mesh transformer: the mesh->grid GNN
-(`mesh_to_grid_gnn`) and the grid decoder (`grid_decoder`), ~5.6M of WeatherNext 2's 184M
-parameters. The grid encoder, grid->mesh GNN, noise-conditioning encoder and the 24-layer
-transformer stay frozen. Gradients are taken with respect to the head only, so JAX never
-differentiates the frozen part: it runs as in inference, and no attention backward pass is needed
-(the Pallas kernel has none).
+By default only the "head" is trained: everything after the mesh transformer, i.e. the mesh->grid
+GNN (`mesh_to_grid_gnn`) and the grid decoder (`grid_decoder`), ~5.6M of WeatherNext 2's 184M
+parameters. Gradients are taken with respect to the trained modules only, so JAX never
+differentiates a frozen prefix of the model: with the head alone, the encoder, grid->mesh GNN and
+transformer run as in inference. `split(params, "all")` (or any set of module names, e.g.
+("mesh_transformer", *HEAD_MODULES)) trains more; the backward pass then runs through the fused
+attention kernel's backward and needs `enable(remat=True)` to fit.
 
 The loss is the official training loss: the checkpoint config's full predictor stack (residual
 normalisation, NaN cleaning, autoregressive wrapper, two-member sample dimension) and FGN's fair
@@ -41,12 +42,13 @@ HEAD_MODULES = ("mesh_to_grid_gnn", "grid_decoder")
 
 
 def is_head(module_name: str, modules=HEAD_MODULES) -> bool:
-  """Whether a Haiku module path (e.g. 'multimodality_forward/grid_decoder/...') is in the head."""
-  return bool(set(module_name.split("/")) & set(modules))
+  """Whether a Haiku module path (e.g. 'multimodality_forward/grid_decoder/...') is trained:
+  one of its path components is in `modules`, or modules == "all"."""
+  return modules == "all" or bool(set(module_name.split("/")) & set(modules))
 
 
 def split(params, modules=HEAD_MODULES):
-  """(head, frozen) partition of a parameter tree by module path."""
+  """(trained, frozen) partition of a parameter tree by module path (see is_head)."""
   return hk.data_structures.partition(lambda m, n, v: is_head(m, modules), params)
 
 
