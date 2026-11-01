@@ -1,0 +1,227 @@
+{
+ "model": "WeatherNext2",
+ "checkpoint": 1,
+ "device": "NVIDIA GeForce RTX 5090",
+ "jax": "0.11.2",
+ "faster_weathernext": "0.1.1",
+ "args": {
+  "model": "WeatherNext2",
+  "checkpoint": 1,
+  "train": [
+   "2026100412",
+   "2026100418",
+   "2026100500",
+   "2026100506",
+   "2026100512",
+   "2026100518",
+   "2026100600",
+   "2026100606",
+   "2026100612",
+   "2026100618"
+  ],
+  "eval": [
+   "2026103012"
+  ],
+  "steps": 10,
+  "lr": 3e-06,
+  "warmup": 10,
+  "weight_decay": 0.0,
+  "clip": 1.0,
+  "eval_keys": 1,
+  "precision": "default",
+  "seed": 0,
+  "no_precip": false,
+  "modules": null,
+  "sequential_samples": "on",
+  "mask": [
+   "sea_surface_temperature"
+  ],
+  "compile_only": false,
+  "no_remat": false,
+  "weights_dir": "/home/raymxnd/Workspace/WeatherForcast/weights",
+  "out": null,
+  "log": "docs/results/finetune/head_sequential_pool24gb_rtx5090.json"
+ },
+ "masked": [
+  "cyclone_all_wind_disc",
+  "cyclone_exists_gaussian_unit_mode",
+  "cyclone_usa_pres_disc",
+  "cyclone_usa_r34_ne_radius_disc",
+  "cyclone_usa_r34_nw_radius_disc",
+  "cyclone_usa_r34_se_radius_disc",
+  "cyclone_usa_r34_sw_radius_disc",
+  "cyclone_usa_r50_ne_radius_disc",
+  "cyclone_usa_r50_nw_radius_disc",
+  "cyclone_usa_r50_se_radius_disc",
+  "cyclone_usa_r50_sw_radius_disc",
+  "cyclone_usa_r64_ne_radius_disc",
+  "cyclone_usa_r64_nw_radius_disc",
+  "cyclone_usa_r64_se_radius_disc",
+  "cyclone_usa_r64_sw_radius_disc",
+  "cyclone_usa_rmw_disc",
+  "cyclone_usa_wind_disc",
+  "sea_surface_temperature"
+ ],
+ "modules": [
+  "mesh_to_grid_gnn",
+  "grid_decoder"
+ ],
+ "head_params": 5572967,
+ "total_params": 183785575,
+ "compile": {
+  "seconds": 86.74354243278503,
+  "temp_gib": 12.274599187076092,
+  "argument_gib": 1.7898386679589748,
+  "output_gib": 0.0622851625084877
+ },
+ "eval_before": {
+  "2026103012": {
+   "loss": 1.0278562307357788,
+   "per_var": {
+    "100m_u_component_of_wind": 0.1378091424703598,
+    "100m_v_component_of_wind": 0.12773606181144714,
+    "10m_u_component_of_wind": 0.145751953125,
+    "10m_v_component_of_wind": 0.13495990633964539,
+    "2m_temperature": 0.09912233799695969,
+    "cyclone_all_wind_disc": 0.0,
+    "cyclone_exists_gaussian_unit_mode": 0.0,
+    "cyclone_usa_pres_disc": 0.0,
+    "cyclone_usa_r34_ne_radius_disc": 0.0,
+    "cyclone_usa_r34_nw_radius_disc": 0.0,
+    "cyclone_usa_r34_se_radius_disc": 0.0,
+    "cyclone_usa_r34_sw_radius_disc": 0.0,
+    "cyclone_usa_r50_ne_radius_disc": 0.0,
+    "cyclone_usa_r50_nw_radius_disc": 0.0,
+    "cyclone_usa_r50_se_radius_disc": 0.0,
+    "cyclone_usa_r50_sw_radius_disc": 0.0,
+    "cyclone_usa_r64_ne_radius_disc": 0.0,
+    "cyclone_usa_r64_nw_radius_disc": 0.0,
+    "cyclone_usa_r64_se_radius_disc": 0.0,
+    "cyclone_usa_r64_sw_radius_disc": 0.0,
+    "cyclone_usa_rmw_disc": 0.0,
+    "cyclone_usa_wind_disc": 0.0,
+    "geopotential": 0.06089600920677185,
+    "mean_sea_level_pressure": 0.06440246105194092,
+    "sea_surface_temperature": 1.6431478261947632,
+    "specific_humidity": 0.21508638560771942,
+    "temperature": 0.11762493848800659,
+    "total_precipitation_6hr": 0.1405649185180664,
+    "u_component_of_wind": 0.12581828236579895,
+    "v_component_of_wind": 0.1115967333316803,
+    "vertical_velocity": 0.2803499400615692
+   }
+  }
+ },
+ "steps": [
+  {
+   "step": 0,
+   "init": "2026100512",
+   "loss": 1.0483423471450806,
+   "grad_norm": 3.6788527965545654,
+   "seconds": 4.32775616645813
+  },
+  {
+   "step": 1,
+   "init": "2026100600",
+   "loss": 0.9512643814086914,
+   "grad_norm": 3.7587673664093018,
+   "seconds": 4.013657331466675
+  },
+  {
+   "step": 2,
+   "init": "2026100500",
+   "loss": 1.0784754753112793,
+   "grad_norm": 5.3454389572143555,
+   "seconds": 4.020414113998413
+  },
+  {
+   "step": 3,
+   "init": "2026100606",
+   "loss": 1.0890121459960938,
+   "grad_norm": 3.226203680038452,
+   "seconds": 4.022968053817749
+  },
+  {
+   "step": 4,
+   "init": "2026100506",
+   "loss": 1.1361663341522217,
+   "grad_norm": 3.379551887512207,
+   "seconds": 4.024449825286865
+  },
+  {
+   "step": 5,
+   "init": "2026100518",
+   "loss": 1.0784796476364136,
+   "grad_norm": 3.357921600341797,
+   "seconds": 4.032755613327026
+  },
+  {
+   "step": 6,
+   "init": "2026100618",
+   "loss": 1.227004885673523,
+   "grad_norm": 5.038512706756592,
+   "seconds": 4.0339744091033936
+  },
+  {
+   "step": 7,
+   "init": "2026100412",
+   "loss": 1.057813286781311,
+   "grad_norm": 3.085665225982666,
+   "seconds": 4.032515048980713
+  },
+  {
+   "step": 8,
+   "init": "2026100612",
+   "loss": 1.0449199676513672,
+   "grad_norm": 3.1186587810516357,
+   "seconds": 4.036591053009033
+  },
+  {
+   "step": 9,
+   "init": "2026100418",
+   "loss": 1.078609585762024,
+   "grad_norm": 2.8268682956695557,
+   "seconds": 4.032351970672607
+  }
+ ],
+ "peak_gib": 14.064476490020752,
+ "median_step_s": 4.032351970672607,
+ "eval_after": {
+  "2026103012": {
+   "loss": 1.0226144790649414,
+   "per_var": {
+    "100m_u_component_of_wind": 0.1377466470003128,
+    "100m_v_component_of_wind": 0.12740720808506012,
+    "10m_u_component_of_wind": 0.1455896943807602,
+    "10m_v_component_of_wind": 0.1344599574804306,
+    "2m_temperature": 0.09660831838846207,
+    "cyclone_all_wind_disc": 0.0,
+    "cyclone_exists_gaussian_unit_mode": 0.0,
+    "cyclone_usa_pres_disc": 0.0,
+    "cyclone_usa_r34_ne_radius_disc": 0.0,
+    "cyclone_usa_r34_nw_radius_disc": 0.0,
+    "cyclone_usa_r34_se_radius_disc": 0.0,
+    "cyclone_usa_r34_sw_radius_disc": 0.0,
+    "cyclone_usa_r50_ne_radius_disc": 0.0,
+    "cyclone_usa_r50_nw_radius_disc": 0.0,
+    "cyclone_usa_r50_se_radius_disc": 0.0,
+    "cyclone_usa_r50_sw_radius_disc": 0.0,
+    "cyclone_usa_r64_ne_radius_disc": 0.0,
+    "cyclone_usa_r64_nw_radius_disc": 0.0,
+    "cyclone_usa_r64_se_radius_disc": 0.0,
+    "cyclone_usa_r64_sw_radius_disc": 0.0,
+    "cyclone_usa_rmw_disc": 0.0,
+    "cyclone_usa_wind_disc": 0.0,
+    "geopotential": 0.060519445687532425,
+    "mean_sea_level_pressure": 0.06435970962047577,
+    "sea_surface_temperature": 1.6431505680084229,
+    "specific_humidity": 0.21444392204284668,
+    "temperature": 0.11650239676237106,
+    "total_precipitation_6hr": 0.1395885944366455,
+    "u_component_of_wind": 0.12552106380462646,
+    "v_component_of_wind": 0.11156003922224045,
+    "vertical_velocity": 0.28006401658058167
+   }
+  }
+ }
+}

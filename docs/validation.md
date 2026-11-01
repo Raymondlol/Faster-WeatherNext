@@ -120,6 +120,17 @@ An earlier build without the fused attention kernel ran at 18.5 s/step on the sa
 149 autotuned ops differed across three repeats); the most likely explanation is one pick that
 did not honour fp32 in that run. For strict fp32 use `--no-autotune` (5/5 matching A100 runs)
 and for reproducible runs `--autotune-cache`. Files: [`results/a100_repeats/`](results/a100_repeats/).
+Update (2026-11-01): the canary below reproduced the deviation almost exactly (max rel RMS 1.32e-2,
+median 6.21e-4, same worst fields, min corr equal to 8 digits), so it is not a one-off pick: on
+A100, `cloud/canary_run.py` lands at TF32 level where the repeat script did not. Not yet explained;
+it predates the attention backward (same numbers on v0.1.0).
+
+**Canary after the attention backward (2026-11-01, branch `head-only-finetune`).** Same runner and
+cards as the table above (`modal run cloud/modal_canary.py --cards a100,a10g,l4,t4`, ~$1–2): every
+card ran and fits the 8 GB pool; steady-state s/step and peaks as in the table (A100 1.10 s / 6.18
+GiB, A10G 2.43 / 6.53, L4 3.57 / 6.53, T4 43 / 6.49 on the XLA path). fp32 outputs vs a fresh
+RTX 5090 run of the same code: A10G 1.67e-5, L4 1.85e-5, T4 9.67e-5 max rel RMS; A100 1.32e-2 (the
+note above). Files: [`results/canary_modal/v0.2/`](results/canary_modal/v0.2/).
 
 ## 5. Mini model and batch size > 1 (v0.1.1)
 
@@ -239,7 +250,8 @@ re-run as in §2): `highest` max rel RMS 1.98e-5, default 4.87e-3 (v0.1.1: 2.00e
 memory and step time unchanged (4.14 / 4.02 GiB, 1.49 / 0.77 s).
 Files: [`results/finetune/equivalence_rtx5090_remat_option.json`](results/finetune/equivalence_rtx5090_remat_option.json).
 
-**Head gradients vs the official GPU path** (`scripts/verify_head_grads.py`, WeatherNextCyclones_Mini
+**Head gradients vs the official GPU path** (`scripts/verify_grads.py`; the runs in §8 and §9 were made
+when it and `scripts/finetune.py` were called `verify_head_grads.py` / `finetune_head.py`; WeatherNextCyclones_Mini
 at 1°, Google's sample, same inputs / targets / noise). faster-weathernext runs with remat and
 small blocks (8,192 grid points, 16,384 edges), so the 1° grid passes through 8 blocks in every
 blocked module. The fair CRPS has sign terms (|pred − target|, |pred_i − pred_j|): rounding-level
@@ -264,7 +276,7 @@ Temp memory per step (Mini, effective batch 2): official 7.36 GiB (`highest`), f
 1.48 GiB with remat and 9.91 GiB without; 0.22 s vs 0.42 s per step.
 Files: [`results/finetune/head_grads_mini_rtx5090.json`](results/finetune/head_grads_mini_rtx5090.json) (+ `.log`).
 
-**WeatherNext 2 at 0.25°** (`scripts/finetune_head.py`, IFS open data). Compiled training step:
+**WeatherNext 2 at 0.25°** (`scripts/finetune.py`, IFS open data). Compiled training step:
 20.03 GiB temp + 1.79 GiB arguments (default precision). Rematerialisation is what makes this
 fit: compiled for the CPU backend (whose buffer assignment is larger; the loss forward alone is
 21.1 GiB there vs 8.3 GiB on the GPU), the step needs 34.3 GiB temp with remat and 249.6 GiB
@@ -272,7 +284,7 @@ without ([`results/finetune/cpu_compile_*.json`](results/finetune/)). The step n
 contiguous 20 GiB buffer: in a JAX pool that grows on demand, an evaluation pass run first left
 regions too small for it and the step failed with RESOURCE_EXHAUSTED
 ([`results/finetune/finetune_smoke_rtx5090_oom_growing_pool.log`](results/finetune/finetune_smoke_rtx5090_oom_growing_pool.log));
-`finetune_head.py` therefore preallocates 90 % of the card.
+`finetune.py` therefore preallocates 90 % of the card.
 
 **Training runs** (checkpoint 1; 60 steps of one example each, 3.84 s per step, device peak
 21.8 GiB; Adam, gradient-norm clip 1). Training examples: 60 of 68 IFS open-data init times
@@ -342,7 +354,7 @@ Files: [`results/attn_bwd/`](results/attn_bwd/). The kernel tests also pass on a
 kernel's first run on Hopper): [`results/finetune/h200/grads01/pytest_h200.txt`](results/finetune/h200/grads01/pytest_h200.txt).
 
 **Whole-model gradients vs the official path (Mini, 1°, all 56.7M parameters;
-`verify_head_grads.py --modules all`).** The official path cannot be differentiated end to end on
+`verify_grads.py --modules all`).** The official path cannot be differentiated end to end on
 a 32 GB GPU (compiled backward 82–116 GiB with the fair CRPS on the RTX 5090). On an H200 (141 GB;
 `cloud/modal_grads.py`, Modal, ~$4 for the three runs below) it needs 102 GiB (`triblockdiag_mha`)
 and 123 GiB (dense `mha`) with the CRPS, 51 and 62 GiB with a one-member loss; faster-weathernext
@@ -384,8 +396,15 @@ the calls are independent, so XLA ran both backward passes side by side. Running
 stacked batch as before, so the loss is unchanged; checked on the CPU (Mini, all parameters, fp32)
 with the CRPS's absolute differences replaced by squares to make the loss smooth: loss rel diff
 8.4e-8, gradients 1.6e-4 global rel L2 vs the batched call, temp 4.14 → 2.55 GiB.
+For the head alone at 0.25° it brings the step from 20.03 to 12.27 GiB temp (+1.79 GiB arguments;
+4.03 instead of 3.84 s per step). With the JAX pool on the RTX 5090 capped at what a 24 GB card
+gets at `XLA_PYTHON_CLIENT_MEM_FRACTION=0.9` (fraction 0.678), 10 head-only training steps ran with
+a device peak of 14.06 GiB; capped at a 16 GB card's pool (14.39 GiB) they also ran, with 0.2 GiB
+to spare (14.16 GiB). No real 24 GB or 16 GB card has been tried. `scripts/finetune.py` runs the
+members one at a time by default (`--sequential-samples on`).
+Files: [`results/finetune/head_sequential_*`](results/finetune/).
 
-**WeatherNext 2 at 0.25°, every parameter** (`finetune_head.py --modules all`; same data and
+**WeatherNext 2 at 0.25°, every parameter** (`finetune.py --modules all`; same data and
 held-out days as §8; SST masked; lr 1e-6 with a 5-step warmup; 20 steps). Compiled step: 25.46 GiB
 temp + 3.12 GiB arguments (parameters, Adam state, one example), device peak 28.6 GiB, so it needs
 `XLA_PYTHON_CLIENT_MEM_FRACTION=0.95` on a 32 GB card (at 0.9 the step failed to allocate:

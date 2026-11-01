@@ -1,0 +1,26 @@
+{
+ "label": "l4_cap8",
+ "env": {
+  "XLA_PYTHON_CLIENT_MEM_FRACTION": "0.3112"
+ },
+ "ok": true,
+ "device": "NVIDIA L4",
+ "jax": "0.11.2",
+ "faster_weathernext": "0.1.1",
+ "compute_capability": "8.9",
+ "attention": "pallas",
+ "pool_gib": 6.8671875,
+ "step_s": [
+  172.45196914672852,
+  3.5930335521698,
+  3.576650619506836,
+  3.612750291824341
+ ],
+ "finite": [
+  true,
+  true,
+  true,
+  true
+ ],
+ "peak_gib": 6.335777282714844
+}

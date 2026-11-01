@@ -1,0 +1,26 @@
+{
+ "label": "a100_cap8",
+ "env": {
+  "XLA_PYTHON_CLIENT_MEM_FRACTION": "0.1750"
+ },
+ "ok": true,
+ "device": "NVIDIA A100-SXM4-40GB",
+ "jax": "0.11.2",
+ "faster_weathernext": "0.1.1",
+ "compute_capability": "8.0",
+ "attention": "pallas",
+ "pool_gib": 6.916015625,
+ "step_s": [
+  121.82319569587708,
+  1.1012904644012451,
+  1.101973295211792,
+  1.0997393131256104
+ ],
+ "finite": [
+  true,
+  true,
+  true,
+  true
+ ],
+ "peak_gib": 6.335763216018677
+}

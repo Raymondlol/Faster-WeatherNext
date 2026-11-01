@@ -8,11 +8,11 @@
   enter the frozen part, so no attention backward pass is needed. New option `remat` (off by
   default; inference unchanged) rematerialises each GNN / encoder / decoder block in the backward
   pass. `ifs.training_example` builds one-step examples from IFS open data, and
-  `scripts/finetune_head.py` / `scripts/verify_head_grads.py` train and validate. New `[train]`
+  `scripts/finetune.py` / `scripts/verify_grads.py` train and validate. New `[train]`
   extra (optax). Validation and memory: docs/validation.md §8.
 - The fused attention kernel is differentiable (FlashAttention-2 backward as two more tiled
   Pallas kernels, dQ and dK/dV, over the same tile lists), so every parameter can be trained:
-  `finetune.split(params, "all")`, `scripts/finetune_head.py --modules all`. `remat` now also
+  `finetune.split(params, "all")`, `scripts/finetune.py --modules all`. `remat` now also
   rematerialises each transformer layer and each XLA attention chunk, and the new option
   `sequential_samples` runs the 2 ensemble members one at a time in training (same noise; half
   the activation memory). Forward and inference unchanged. Whole-model gradients checked against

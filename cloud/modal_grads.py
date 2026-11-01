@@ -2,7 +2,7 @@
 
 On a 32 GB GPU the official path's end-to-end backward does not fit even for the Mini model at 1°
 (compiled temp 82-116 GiB with the fair CRPS, 33-57 GiB with a one-member loss; docs/validation.md
-§9). On an H200 (141 GB) it does, so scripts/verify_head_grads.py --modules all can compare
+§9). On an H200 (141 GB) it does, so scripts/verify_grads.py --modules all can compare
 faster-weathernext (Pallas backward kernels) with the official GPU path directly, with a second
 official implementation as the floor. Each loss (crps, linear) runs in its own container; the first
 also runs the kernel tests (the Pallas kernel's first run on Hopper, sm_90).
@@ -68,7 +68,7 @@ def grads(loss: str, tag: str, run_tests: bool, precisions: str) -> str:
     rc = _run(["python", "-m", "pytest", "-q", "-rs", "tests/test_pallas_kernel.py"], f"{out}/pytest_h200.txt")
     lines.append(f"kernel tests exit {rc}: " + open(f"{out}/pytest_h200.txt").read().strip().splitlines()[-2])
   # The official mha path needs ~116 GiB with the CRPS: above JAX's default 75 % pool.
-  rc = _run(["python", "scripts/verify_head_grads.py", "--modules", "all", "--loss", loss,
+  rc = _run(["python", "scripts/verify_grads.py", "--modules", "all", "--loss", loss,
              "--data", f"/data/{os.path.basename(DATA)}", "--weights-dir", "/data",
              "--precisions", precisions, "--out", f"{out}/full_grads_mini_{loss}_h200.json"],
             f"{out}/full_grads_mini_{loss}_h200.log", env={"XLA_PYTHON_CLIENT_MEM_FRACTION": "0.95"})
