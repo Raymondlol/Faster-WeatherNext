@@ -1,0 +1,14 @@
+# NumPy 2.5.3, glibc 2.43, AMD Ryzen 9 9950X3D; code path chosen with NPY_DISABLE_CPU_FEATURES.
+# 1. Grid/mesh lat/lon as passed to PointsMeshTypedGraphGNN._get_edge_indices (float32 degrees): AVX-512 path vs AVX2 path
+grid lat: 0 of 1038240 differ, max |diff| 0 deg
+grid lon: 0 of 1038240 differ, max |diff| 0 deg
+mesh lat: 12454 of 40962 differ, max |diff| 1.53e-05 deg
+mesh lon: 9964 of 40962 differ, max |diff| 3.05e-05 deg
+# 2. sha1 of np.sin / np.cos (float32, of deg2rad of those lat/lon, AVX-512-path inputs) per code path
+['X86_V3', 'X86_V4', 'AVX512_ICL'] plat.sin=d5d8f045 plat.cos=c1f67be5 plon.sin=7d39474b plon.cos=4a982ecb mlat.sin=a182b930 mlat.cos=5a82959f mlon.sin=a041ab3a mlon.cos=8cf23768
+['X86_V3'] plat.sin=d5d8f045 plat.cos=c1f67be5 plon.sin=7d39474b plon.cos=4a982ecb mlat.sin=a182b930 mlat.cos=5a82959f mlon.sin=a041ab3a mlon.cos=8cf23768
+[] plat.sin=7858a558 plat.cos=1a851bd7 plon.sin=045c86ec plon.cos=0bdf7d9f mlat.sin=ff320064 mlat.cos=809d1d43 mlon.sin=c1255eb9 mlon.cos=7ee4dbc1
+# 3. float32 sin/cos of the grid's lat/lon in radians vs glibc sinf/cosf and vs float64-then-rounded, per code path
+''                           simd=['X86_V3', 'X86_V4', 'AVX512_ICL'] sin 77c0589a3f cos b298336f92 | != glibc sinf 242 cosf 389 | != f64-rounded sin 223 cos 404
+'X86_V4 AVX512_ICL'          simd=['X86_V3'] sin 77c0589a3f cos b298336f92 | != glibc sinf 242 cosf 389 | != f64-rounded sin 223 cos 404
+'X86_V3 X86_V4 AVX512_ICL'   simd=[] sin 24493c9f5f cos da72d7cf59 | != glibc sinf 0 cosf 0 | != f64-rounded sin 35 cos 31

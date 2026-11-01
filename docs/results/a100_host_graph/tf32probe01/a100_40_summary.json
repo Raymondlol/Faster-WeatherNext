@@ -1,0 +1,80 @@
+{
+ "card": "a100_40",
+ "nvidia_smi": "name, driver_version, memory.total [MiB], clocks.max.sm [MHz], ecc.mode.current\nNVIDIA A100-SXM4-40GB, 610.57.04, 40960 MiB, 1410 MHz, Enabled\n",
+ "env": {},
+ "base": {
+  "label": "a100_40_base",
+  "env": {
+   "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+   "XLA_FLAGS": "--xla_dump_to=/tmp/dump_a100_40_base --xla_dump_hlo_as_text --xla_dump_hlo_module_re=.*lambda.* --xla_gpu_dump_autotune_results_to=/data/results/tf32probe01/a100_40_base_autotune.txt"
+  },
+  "ok": true,
+  "device": "NVIDIA A100-SXM4-40GB",
+  "jax": "0.11.2",
+  "faster_weathernext": "0.1.1",
+  "compute_capability": "8.0",
+  "attention": "pallas",
+  "pool_gib": 29.63671875,
+  "highest_first_call_s": 132.97908067703247,
+  "step_s": [],
+  "finite": [],
+  "peak_gib": 5.937268257141113,
+  "wall_s": 143.64632391929626
+ },
+ "at0": {
+  "label": "a100_40_at0",
+  "env": {
+   "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+   "XLA_FLAGS": "--xla_gpu_autotune_level=0"
+  },
+  "ok": true,
+  "device": "NVIDIA A100-SXM4-40GB",
+  "jax": "0.11.2",
+  "faster_weathernext": "0.1.1",
+  "compute_capability": "8.0",
+  "attention": "pallas",
+  "pool_gib": 29.63671875,
+  "highest_first_call_s": 126.01233983039856,
+  "step_s": [],
+  "finite": [],
+  "peak_gib": 5.581749677658081,
+  "wall_s": 133.0238482952118
+ },
+ "tf32off": {
+  "label": "a100_40_tf32off",
+  "env": {
+   "XLA_PYTHON_CLIENT_PREALLOCATE": "false"
+  },
+  "ok": true,
+  "device": "NVIDIA A100-SXM4-40GB",
+  "jax": "0.11.2",
+  "faster_weathernext": "0.1.1",
+  "compute_capability": "8.0",
+  "attention": "pallas",
+  "pool_gib": 29.63671875,
+  "highest_first_call_s": 133.15456080436707,
+  "step_s": [],
+  "finite": [],
+  "peak_gib": 5.937268018722534,
+  "wall_s": 140.29184436798096
+ },
+ "notritongemm": {
+  "label": "a100_40_notritongemm",
+  "env": {
+   "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+   "XLA_FLAGS": "--xla_gpu_enable_triton_gemm=false"
+  },
+  "ok": true,
+  "device": "NVIDIA A100-SXM4-40GB",
+  "jax": "0.11.2",
+  "faster_weathernext": "0.1.1",
+  "compute_capability": "8.0",
+  "attention": "pallas",
+  "pool_gib": 29.63671875,
+  "highest_first_call_s": 120.14120078086853,
+  "step_s": [],
+  "finite": [],
+  "peak_gib": 5.7115514278411865,
+  "wall_s": 127.63998007774353
+ }
+}

@@ -1,0 +1,75 @@
+{
+ "card": "a100_40",
+ "nvidia_smi": "name, driver_version, memory.total [MiB], clocks.max.sm [MHz], ecc.mode.current\nNVIDIA A100-SXM4-40GB, 610.57.04, 40960 MiB, 1410 MHz, Enabled\n",
+ "env": {},
+ "graph": {
+  "cpu": "unknown",
+  "numpy": "2.5.4",
+  "avx512_skx": false,
+  "dispatch": [
+   "X86_V3"
+  ],
+  "npy_disable_cpu_features": "",
+  "graphs": [
+   {
+    "connectivity": "BALL_QUERY",
+    "n_edges": 1618832,
+    "sha1": "1d90c1ed7b086815",
+    "dtypes": [
+     "float32",
+     "float32",
+     "float32",
+     "float32"
+    ],
+    "radius": 0.012404080480337143,
+    "pairs_near_radius": {
+     "1e-12": 0,
+     "1e-09": 0,
+     "1e-07": 0,
+     "1e-06": 1,
+     "1e-05": 70
+    }
+   },
+   {
+    "connectivity": "IN_TRIANGLE",
+    "n_edges": 3114720,
+    "sha1": "31e1d7a376c54521"
+   }
+  ]
+ },
+ "edges5090": {
+  "label": "a100_40_edges5090",
+  "env": {
+   "XLA_PYTHON_CLIENT_PREALLOCATE": "false"
+  },
+  "ok": true,
+  "cpu": "unknown",
+  "numpy": "2.5.4",
+  "numpy_simd": [
+   "X86_V3"
+  ],
+  "graphs": {
+   "BALL_QUERY": {
+    "n_edges": 1618841,
+    "sha1": "189d06f0830e1c31",
+    "loaded": true
+   },
+   "IN_TRIANGLE": {
+    "n_edges": 3114720,
+    "sha1": "0bd261acea40807d",
+    "loaded": true
+   }
+  },
+  "device": "NVIDIA A100-SXM4-40GB",
+  "jax": "0.11.2",
+  "faster_weathernext": "0.1.1",
+  "compute_capability": "8.0",
+  "attention": "pallas",
+  "pool_gib": 29.63671875,
+  "highest_first_call_s": 112.11894607543945,
+  "step_s": [],
+  "finite": [],
+  "peak_gib": 5.937268018722534,
+  "wall_s": 120.11274552345276
+ }
+}

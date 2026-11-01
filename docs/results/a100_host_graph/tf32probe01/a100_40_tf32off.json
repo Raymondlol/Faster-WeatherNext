@@ -1,0 +1,17 @@
+{
+ "label": "a100_40_tf32off",
+ "env": {
+  "XLA_PYTHON_CLIENT_PREALLOCATE": "false"
+ },
+ "ok": true,
+ "device": "NVIDIA A100-SXM4-40GB",
+ "jax": "0.11.2",
+ "faster_weathernext": "0.1.1",
+ "compute_capability": "8.0",
+ "attention": "pallas",
+ "pool_gib": 29.63671875,
+ "highest_first_call_s": 133.15456080436707,
+ "step_s": [],
+ "finite": [],
+ "peak_gib": 5.937268018722534
+}

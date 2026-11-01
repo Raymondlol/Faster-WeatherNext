@@ -99,7 +99,7 @@ rollout step including host overhead (steps 2–4 of a 4-step rollout, default p
 |---|---|---|---|---|---|---|
 | RTX 5090 (local) | sm_120 | pallas | 0.7 | 6.40 GiB | yes | — |
 | RTX 4060 (vast.ai) | sm_89 | pallas | 5.2 | 6.21 GiB | yes (real 8 GB card) | not measured (sm_89 covered by L4) |
-| A100-SXM4-40GB | sm_80 | pallas | 1.1 | 6.18 GiB | yes (6.21) | 1.6–1.9e-5 in 5 of 6 runs; see note |
+| A100-SXM4-40GB | sm_80 | pallas | 1.1 | 6.18 GiB | yes (6.21) | 1.32e-2: its host builds another graph; 1.7e-5 vs an A100-80GB given the same host inputs (see note) |
 | A10G | sm_86 | pallas | 2.5 | 6.53 GiB | yes (6.34) | 1.6e-5 |
 | L4 | sm_89 | pallas | 3.5 | 6.53 GiB | yes (6.34) | 1.75e-5 |
 | T4 | sm_75 | xla (automatic; no TF32) | 44 | 6.49 GiB | yes (6.30) | 9.7e-5 |
@@ -114,23 +114,74 @@ out of memory. Installed from the repo on a fresh machine. Files:
 An earlier build without the fused attention kernel ran at 18.5 s/step on the same card
 ([`results/canary_vast_rtx4060/`](results/canary_vast_rtx4060/)).
 
-**A100 note.** One of six A100 fp32 runs deviated from the RTX 5090 at TF32 level (max rel RMS
-1.3e-2, median 6.2e-4) and could not be reproduced (autotune on / off and three fresh repeats:
-1.6–1.9e-5). XLA's autotuner picks kernels by timing and its picks vary between runs (21 of
-149 autotuned ops differed across three repeats); the most likely explanation is one pick that
-did not honour fp32 in that run. For strict fp32 use `--no-autotune` (5/5 matching A100 runs)
-and for reproducible runs `--autotune-cache`. Files: [`results/a100_repeats/`](results/a100_repeats/).
-Update (2026-11-01): the canary below reproduced the deviation almost exactly (max rel RMS 1.32e-2,
-median 6.21e-4, same worst fields, min corr equal to 8 digits), so it is not a one-off pick: on
-A100, `cloud/canary_run.py` lands at TF32 level where the repeat script did not. Not yet explained;
-it predates the attention backward (same numbers on v0.1.0).
+**A100 note: the host CPU, not the GPU (cause found 2026-11-01).** On Modal's A100-SXM4-40GB the
+fp32 step differs from the RTX 5090 by max rel RMS 1.32e-2 (median 6.21e-4; worst fields
+`cyclone_usa_rmw_disc`, `vertical_velocity@50`) in every run (canary02 on v0.1.0, canary03 and
+tf32probe01 on v0.2; the three agree with each other at 1.5–2.1e-5). It looks like TF32 but is not.
+Earlier it was read as "1 of 6 runs, an autotune pick that did not honour fp32"; that was wrong:
+Modal served the five "A100-40GB" probe and repeat requests on A100-SXM4-80GB machines (`device`
+in [`results/a100_repeats/`](results/a100_repeats/)), so every 40GB run deviated and every 80GB run
+matched (1.6–1.9e-5).
+
+The official code builds the grid→mesh and mesh→grid graphs on the host CPU, with NumPy, from
+float32 latitudes and longitudes: the mesh nodes' lat/lon come from Cartesian positions through
+`np.arctan2`/`np.arccos`, then grid and mesh go back to unit-sphere coordinates through
+`np.sin`/`np.cos`, and a `cKDTree` ball query (radius 0.6 × the longest mesh edge, 0.0124) picks the
+grid→mesh edges; mesh→grid uses the mesh triangle that contains each grid point. One float32 ULP
+of a coordinate moves a 0.0124 distance by ~1e-5 (relative), and about 70 (grid point, mesh node)
+pairs lie that close to the radius. NumPy picks its math code at run time from the host CPU, and
+the results differ in the last bit: between its AVX-512 and AVX2 code, 12,454 of the 40,962 mesh
+latitudes (and 9,964 longitudes) come out different; its baseline code (no AVX2) also hands
+`sin`/`cos` to glibc ([`numpy_code_paths.txt`](results/a100_host_graph/local_rtx5090/numpy_code_paths.txt)).
+Modal's A100-40GB hosts offer AVX2 but not AVX-512; the RTX 5090 desktop (Zen 5) and Modal's
+A100-80GB and T4 hosts offer AVX-512. The two build different graphs: 1,618,832 vs 1,618,841
+grid→mesh edges (13 differ), and 517 of 1,038,240 grid points in a different mesh triangle (points
+on mesh edges along the meridians 0°, 60°, …, 300°); the edge-feature and node-position constants
+also differ in the last bits.
+faster-weathernext does not touch this (the patched `_build_typed_graph` calls the stock one,
+which calls the official `PointsMeshTypedGraphGNN._get_edge_indices`), so the official code depends
+on the host in the same way. Each graph is what the official code builds on that CPU.
+
+Evidence (one 0.25° step at `highest`; files in [`results/a100_host_graph/`](results/a100_host_graph/),
+comparisons in its `cross_card_fp32.txt`):
+- The HLO that JAX hands to XLA already differs between a 40GB and an 80GB run, in one place: the
+  grid→mesh edge-feature constant is `f32[1618832,1,4]` vs `f32[1618841,1,4]`
+  (`tf32probe01/hlo_before_optimizations_40gb_vs_80gb.diff`).
+- XLA and TF32 settings change nothing on the 40GB card: autotuning off, `NVIDIA_TF32_OVERRIDE=0`
+  and Triton GEMMs off all give 1.32e-2 / 6.21e-4 (`cloud/modal_a100_tf32.py`).
+- The difference is local. It sits on the 13 changed edges and the 517 re-assigned grid points
+  ([map](results/a100_host_graph/errmap_a100_40gb_vs_rtx5090.png),
+  [`differing_edges.txt`](results/a100_host_graph/differing_edges.txt)); elsewhere the two cards
+  agree at ~1e-6.
+- Graph swap (`scripts/graph_edges.py --save-edges`, `cloud/canary_run.py --edges`): the RTX 5090
+  on the 40GB host's graph differs from the RTX 5090 on its own graph by 1.32e-2 / 6.21e-4 (same
+  worst fields), and so does the A100-40GB on the RTX 5090's graph from the A100-40GB on its own.
+  With the graph swapped, the two cards are 1.3e-4 / 1e-5 apart. The remainder is the host-side
+  features: on the RTX 5090, with the graph held fixed, switching only NumPy's code path from
+  AVX-512 to AVX2 moves the output by the same 1.33e-4 / 1.0e-5.
+- One card, one environment variable: on an A100 80GB PCIe (AVX-512 host), forcing NumPy's AVX2
+  code (`NPY_DISABLE_CPU_FEATURES="X86_V4 AVX512_ICL AVX512_SPR"`) builds exactly the 40GB host's
+  graph (same hash) and moves the output by 1.32e-2 / 6.21e-4 from the same card's default run.
+  That output then matches the A100-40GB at 1.69e-5 / 1.47e-6, the usual cross-GPU level
+  (tf32probe03).
+- Host survey (`cloud/modal_graph_hosts.py`): the T4 and A100-80GB hosts build the RTX 5090's graph
+  (same hash); an A10G host with AVX2 only builds the 40GB host's graph. The canary's A10G
+  requests ran on `NVIDIA A10` cards (another host type; its CPU was not recorded) and matched.
+
+So the fp32 agreement across GPUs holds for the same host-built graph. On machines whose CPUs take
+different NumPy code paths the official model runs on slightly different graphs, and one fp32 step
+then differs by up to ~1e-2 max rel RMS (median 6e-4), around the changed edges. `cloud/canary_run.py`
+now records the graph hashes and NumPy's SIMD targets: compare fp32 outputs across machines only
+when the hashes match, or pass `--edges`. `--no-autotune` is not needed for fp32 (it changed nothing
+here). XLA's autotune picks still vary between runs (21 of 149 ops across three A100 repeats), so
+use `--autotune-cache` for bitwise-reproducible runs.
 
 **Canary after the attention backward (2026-11-01, branch `head-only-finetune`).** Same runner and
 cards as the table above (`modal run cloud/modal_canary.py --cards a100,a10g,l4,t4`, ~$1–2): every
 card ran and fits the 8 GB pool; steady-state s/step and peaks as in the table (A100 1.10 s / 6.18
 GiB, A10G 2.43 / 6.53, L4 3.57 / 6.53, T4 43 / 6.49 on the XLA path). fp32 outputs vs a fresh
-RTX 5090 run of the same code: A10G 1.67e-5, L4 1.85e-5, T4 9.67e-5 max rel RMS; A100 1.32e-2 (the
-note above). Files: [`results/canary_modal/v0.2/`](results/canary_modal/v0.2/).
+RTX 5090 run of the same code: A10G 1.67e-5, L4 1.85e-5, T4 9.67e-5 max rel RMS; A100 1.32e-2 (a
+different host-built graph, not the GPU: note above). Files: [`results/canary_modal/v0.2/`](results/canary_modal/v0.2/).
 
 ## 5. Mini model and batch size > 1 (v0.1.1)
 
@@ -423,6 +474,10 @@ Files: [`results/finetune/finetune_full_smoke_rtx5090.json`](results/finetune/fi
   rollouts in §3 and the batch checks in §5.
 - Batch sizes > 1 were checked at 2 (§5, §6); larger batches only change memory.
 - Without a fixed autotune cache, results are not bitwise reproducible between runs (§4 note).
+- fp32 agreement across machines assumes the same host-built graphs. The official code builds the
+  grid↔mesh graphs with NumPy on the host CPU, and they follow NumPy's SIMD code path: between an
+  AVX2 and an AVX-512 host one fp32 step differs by up to 1.3e-2 max rel RMS (median 6e-4), with or
+  without faster-weathernext (§4, A100 note). Only x86 hosts were checked.
 - TPU (`splash_mha`) numerics were not compared; TPU matmuls use bf16 passes by default and
   differ from any of the GPU paths above.
 - Whole-model gradients were compared with the official path on the Mini model at 1° (§9, on an

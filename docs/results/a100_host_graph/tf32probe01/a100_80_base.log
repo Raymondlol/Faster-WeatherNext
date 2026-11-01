@@ -1,0 +1,11 @@
+NVIDIA A100 80GB PCIe cc=8.0 attention=pallas pool 59.46 GiB
+highest-precision step saved (101 fields) in 127s
+peak 5.94 GiB of pool 59.46 GiB; ok=True
+WARNING:absl:Skipping gradient checkpointing for sequence length of 1
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 1, channels: 1, noise_channels: 32)> Size: 128B
+JitTracer(float32[1,1,32])
+Dimensions without coordinates: batch, channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/usr/local/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode

@@ -1,0 +1,36 @@
+{
+ "label": "rtx5090_edges_a100_40",
+ "env": {
+  "XLA_PYTHON_CLIENT_PREALLOCATE": "false"
+ },
+ "ok": true,
+ "cpu": "AMD Ryzen 9 9950X3D 16-Core Processor",
+ "numpy": "2.5.3",
+ "numpy_simd": [
+  "X86_V3",
+  "X86_V4",
+  "AVX512_ICL"
+ ],
+ "graphs": {
+  "BALL_QUERY": {
+   "n_edges": 1618832,
+   "sha1": "1d90c1ed7b086815",
+   "loaded": true
+  },
+  "IN_TRIANGLE": {
+   "n_edges": 3114720,
+   "sha1": "31e1d7a376c54521",
+   "loaded": true
+  }
+ },
+ "device": "NVIDIA GeForce RTX 5090",
+ "jax": "0.11.2",
+ "faster_weathernext": "0.1.1",
+ "compute_capability": "12.0",
+ "attention": "pallas",
+ "pool_gib": 23.494140625,
+ "highest_first_call_s": 72.90617728233337,
+ "step_s": [],
+ "finite": [],
+ "peak_gib": 5.810781002044678
+}

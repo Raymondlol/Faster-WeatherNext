@@ -1,0 +1,18 @@
+{
+ "label": "a100_40_notritongemm",
+ "env": {
+  "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+  "XLA_FLAGS": "--xla_gpu_enable_triton_gemm=false"
+ },
+ "ok": true,
+ "device": "NVIDIA A100-SXM4-40GB",
+ "jax": "0.11.2",
+ "faster_weathernext": "0.1.1",
+ "compute_capability": "8.0",
+ "attention": "pallas",
+ "pool_gib": 29.63671875,
+ "highest_first_call_s": 120.14120078086853,
+ "step_s": [],
+ "finite": [],
+ "peak_gib": 5.7115514278411865
+}

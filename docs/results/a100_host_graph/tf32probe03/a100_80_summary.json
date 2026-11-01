@@ -1,0 +1,40 @@
+{
+ "card": "a100_80",
+ "nvidia_smi": "name, driver_version, memory.total [MiB], clocks.max.sm [MHz], ecc.mode.current\nNVIDIA A100 80GB PCIe, 610.57.04, 81920 MiB, 1410 MHz, Enabled\n",
+ "env": {},
+ "numpy_avx2": {
+  "label": "a100_80_numpy_avx2",
+  "env": {
+   "XLA_PYTHON_CLIENT_PREALLOCATE": "false"
+  },
+  "ok": true,
+  "cpu": "unknown",
+  "numpy": "2.5.4",
+  "numpy_simd": [
+   "X86_V3"
+  ],
+  "graphs": {
+   "BALL_QUERY": {
+    "n_edges": 1618832,
+    "sha1": "1d90c1ed7b086815",
+    "loaded": false
+   },
+   "IN_TRIANGLE": {
+    "n_edges": 3114720,
+    "sha1": "31e1d7a376c54521",
+    "loaded": false
+   }
+  },
+  "device": "NVIDIA A100 80GB PCIe",
+  "jax": "0.11.2",
+  "faster_weathernext": "0.1.1",
+  "compute_capability": "8.0",
+  "attention": "pallas",
+  "pool_gib": 59.455078125,
+  "highest_first_call_s": 137.35874152183533,
+  "step_s": [],
+  "finite": [],
+  "peak_gib": 5.937268495559692,
+  "wall_s": 149.64930152893066
+ }
+}

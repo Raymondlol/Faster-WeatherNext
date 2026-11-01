@@ -1,0 +1,18 @@
+{
+ "label": "rtx5090_base",
+ "env": {
+  "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+  "XLA_FLAGS": "--xla_dump_to=/tmp/claude-1000/-home-raymxnd-Workspace-WeatherForcast/103238b9-ccc5-49c4-8b99-159fd6100067/scratchpad/local5090/dump --xla_dump_hlo_as_text --xla_dump_hlo_module_re=.*lambda.* --xla_gpu_dump_autotune_results_to=/tmp/claude-1000/-home-raymxnd-Workspace-WeatherForcast/103238b9-ccc5-49c4-8b99-159fd6100067/scratchpad/local5090/autotune.txt"
+ },
+ "ok": true,
+ "device": "NVIDIA GeForce RTX 5090",
+ "jax": "0.11.2",
+ "faster_weathernext": "0.1.1",
+ "compute_capability": "12.0",
+ "attention": "pallas",
+ "pool_gib": 23.494140625,
+ "highest_first_call_s": 87.90489864349365,
+ "step_s": [],
+ "finite": [],
+ "peak_gib": 5.585663318634033
+}

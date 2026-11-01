@@ -1,0 +1,24 @@
+{
+ "card": "a100_80",
+ "nvidia_smi": "name, driver_version, memory.total [MiB], clocks.max.sm [MHz], ecc.mode.current\nNVIDIA A100 80GB PCIe, 610.57.04, 81920 MiB, 1410 MHz, Enabled\n",
+ "env": {},
+ "base": {
+  "label": "a100_80_base",
+  "env": {
+   "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+   "XLA_FLAGS": "--xla_dump_to=/tmp/dump_a100_80_base --xla_dump_hlo_as_text --xla_dump_hlo_module_re=.*lambda.* --xla_gpu_dump_autotune_results_to=/data/results/tf32probe01/a100_80_base_autotune.txt"
+  },
+  "ok": true,
+  "device": "NVIDIA A100 80GB PCIe",
+  "jax": "0.11.2",
+  "faster_weathernext": "0.1.1",
+  "compute_capability": "8.0",
+  "attention": "pallas",
+  "pool_gib": 59.455078125,
+  "highest_first_call_s": 127.11047983169556,
+  "step_s": [],
+  "finite": [],
+  "peak_gib": 5.937267303466797,
+  "wall_s": 139.12689113616943
+ }
+}

@@ -1,0 +1,13 @@
+NVIDIA GeForce RTX 5090 cc=12.0 attention=pallas pool 23.49 GiB; host AMD Ryzen 9 9950X3D 16-Core Processor, NumPy SIMD ['X86_V3']
+WARNING:absl:Skipping gradient checkpointing for sequence length of 1
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 1, channels: 1, noise_channels: 32)> Size: 128B
+JitTracer(float32[1,1,32])
+Dimensions without coordinates: batch, channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+W1101 13:58:29.252897  466929 hlo_rematerialization.cc:3363] Can't reduce memory use below 21.08GiB (22629749965 bytes) by rematerialization; only reduced to 28.82GiB (30943716076 bytes), down from 28.82GiB (30943728380 bytes) originally
+highest-precision step saved (101 fields) in 70s
+graphs: {'BALL_QUERY': {'n_edges': 1618841, 'sha1': '189d06f0830e1c31', 'loaded': True}, 'IN_TRIANGLE': {'n_edges': 3114720, 'sha1': '0bd261acea40807d', 'loaded': True}}
+peak 5.94 GiB of pool 23.49 GiB; ok=True

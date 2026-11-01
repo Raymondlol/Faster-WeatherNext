@@ -1,0 +1,18 @@
+# grid<->mesh edges that differ between the AVX-512 host graph (RTX 5090 desktop, Modal T4 / A100-80GB;
+# sha1 189d06f0830e1c31) and the A100-SXM4-40GB host graph (NumPy X86_V3; sha1 1d90c1ed7b086815)
+BALL_QUERY: 1618841 vs 1618832 edges; 11 only in the AVX-512 graph, 2 only in the 40GB-host graph; 13 grid points affected
+  grid ( -87.75,   30.50)  mesh node 17483 ( -87.538,   13.924)  AVX-512 graph only
+  grid ( -87.75,   89.50)  mesh node 17486 ( -87.538,  106.076)  AVX-512 graph only
+  grid ( -87.75,  150.50)  mesh node 17166 ( -87.538,  133.924)  AVX-512 graph only
+  grid ( -87.75,  209.50)  mesh node 16203 ( -87.538,  226.076)  AVX-512 graph only
+  grid ( -87.75,  270.50)  mesh node 16202 ( -87.538,  253.924)  AVX-512 graph only
+  grid ( -87.75,  329.50)  mesh node 17162 ( -87.538,  346.076)  AVX-512 graph only
+  grid ( -54.75,   33.50)  mesh node 27691 ( -54.092,   33.962)  AVX-512 graph only
+  grid ( -54.75,  206.50)  mesh node  7200 ( -54.092,  206.038)  AVX-512 graph only
+  grid ( -54.75,  326.50)  mesh node 16171 ( -54.092,  326.038)  AVX-512 graph only
+  grid ( -18.75,   28.75)  mesh node 35351 ( -18.056,   28.590)  AVX-512 graph only
+  grid (   9.50,  111.00)  mesh node 33731 (   9.720,  110.315)  AVX-512 graph only
+  grid (  22.75,  121.75)  mesh node 30499 (  22.485,  121.036)  40GB-host graph only
+  grid (  23.00,  285.75)  mesh node  9005 (  22.890,  284.988)  40GB-host graph only
+IN_TRIANGLE: 3114720 vs 3114720 edges; 517 only in the AVX-512 graph, 517 only in the 40GB-host graph; 517 grid points affected
+  most common longitudes of the affected grid points: 240° (100), 0° (98), 120° (98), 180° (74), 60° (68), 300° (49), 26.25° (1), 18° (1)

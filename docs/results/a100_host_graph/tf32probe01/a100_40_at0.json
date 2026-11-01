@@ -1,0 +1,18 @@
+{
+ "label": "a100_40_at0",
+ "env": {
+  "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+  "XLA_FLAGS": "--xla_gpu_autotune_level=0"
+ },
+ "ok": true,
+ "device": "NVIDIA A100-SXM4-40GB",
+ "jax": "0.11.2",
+ "faster_weathernext": "0.1.1",
+ "compute_capability": "8.0",
+ "attention": "pallas",
+ "pool_gib": 29.63671875,
+ "highest_first_call_s": 126.01233983039856,
+ "step_s": [],
+ "finite": [],
+ "peak_gib": 5.581749677658081
+}

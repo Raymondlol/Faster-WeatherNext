@@ -106,9 +106,17 @@ below the ensemble member-to-member spread (docs/validation.md).
   (zero precipitation, land-filled SST), so rounding-level forward differences flip signs. Between
   two runs of the same comparison (official vs XLA-autodiff path, H200, `highest`) the gradient
   difference went from 1.1e-3 to 4.3e-3. Judge implementations with the smooth `--loss linear`.
-- **XLA autotuning is timing-based**: kernel picks (and last bits) differ between runs; once, an
-  A100 fp32 run deviated at TF32 level (1 of 6, not reproduced). Use `--autotune-cache` for
-  reproducible runs and `--no-autotune` for strict fp32.
+- **XLA autotuning is timing-based**: kernel picks (and last bits) differ between runs. Use
+  `--autotune-cache` for reproducible runs.
+- **The grid↔mesh graphs depend on the host CPU** (official code): they are built with NumPy from
+  float32 lat/lon at trace time, and NumPy's math code path, picked from the host CPU (AVX-512,
+  AVX2, baseline), changes last bits and with them which grid points near the ball-query radius
+  get an edge. An AVX2 host
+  (Modal's A100-40GB) and an AVX-512 host differ in 13 of 1.6M grid→mesh edges and 517 mesh→grid
+  triangles: 1.3e-2 max rel RMS at `highest`, which looks like TF32 and is not. Before reading a
+  cross-machine fp32 difference as GPU numerics, compare the graph hashes in `cloud/canary_run.py`'s
+  JSON (or `scripts/graph_edges.py`); `--edges` pins a graph. Modal may serve "A100-40GB" requests
+  on 80GB cards: check `device`.
 - **In-place block updates** need the new block wrapped in `optimization_barrier` before the
   `dynamic_update_slice`, or XLA fuses the read into the update and copies the whole buffer.
 - **Transformer layers as a loop** (`hk.scan` + `hk.switch`) avoid XLA heap fragmentation

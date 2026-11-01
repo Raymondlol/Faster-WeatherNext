@@ -1,0 +1,48 @@
+{
+ "cpu": "unknown",
+ "numpy": "2.5.4",
+ "avx512_skx": true,
+ "dispatch": [
+  "X86_V3",
+  "X86_V4"
+ ],
+ "npy_disable_cpu_features": "",
+ "graphs": [
+  {
+   "connectivity": "BALL_QUERY",
+   "n_edges": 1618841,
+   "sha1": "189d06f0830e1c31",
+   "dtypes": [
+    "float32",
+    "float32",
+    "float32",
+    "float32"
+   ],
+   "radius": 0.012404078617691994,
+   "pairs_near_radius": {
+    "1e-12": 0,
+    "1e-09": 0,
+    "1e-07": 0,
+    "1e-06": 3,
+    "1e-05": 70
+   }
+  },
+  {
+   "connectivity": "IN_TRIANGLE",
+   "n_edges": 3114720,
+   "sha1": "0bd261acea40807d"
+  }
+ ],
+ "card": "a100_80",
+ "gpu": "NVIDIA A100-SXM4-80GB",
+ "nproc": 24,
+ "cpu_flags": {
+  "sse4_2": true,
+  "avx": true,
+  "avx2": true,
+  "fma": true,
+  "avx512f": true,
+  "avx512bw": true,
+  "avx512vl": true
+ }
+}

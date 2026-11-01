@@ -1,0 +1,102 @@
+# fp32 ("highest") one-step outputs, every 4th grid point, 101 fields; scripts/compare_npz.py A B.
+# rtx5090 = docs/results/canary_modal/v0.2/rtx5090.npz (AVX-512 host graph, sha1 189d06f0830e1c31).
+# A100-40GB host graph: sha1 1d90c1ed7b086815 (1,618,832 grid->mesh edges vs 1,618,841).
+
+## 1. Reproduction and XLA/TF32 knobs on the A100-SXM4-40GB (tf32probe01, cloud/modal_a100_tf32.py)
+== A100-40GB base vs rtx5090
+101 fields  min corr 0.999913072909  max rel RMS 1.32e-02  median rel RMS 6.21e-04  NaN masks equal: True
+  cyclone_usa_rmw_disc             corr 0.9999130729  rel RMS 1.32e-02
+  vertical_velocity@50             corr 0.9999802987  rel RMS 6.28e-03
+  vertical_velocity@100            corr 0.9999813396  rel RMS 6.11e-03
+== A100-40GB --xla_gpu_autotune_level=0 vs rtx5090
+101 fields  min corr 0.999913072036  max rel RMS 1.32e-02  median rel RMS 6.21e-04  NaN masks equal: True
+  cyclone_usa_rmw_disc             corr 0.9999130720  rel RMS 1.32e-02
+  vertical_velocity@50             corr 0.9999802981  rel RMS 6.28e-03
+  vertical_velocity@100            corr 0.9999813398  rel RMS 6.11e-03
+== A100-40GB NVIDIA_TF32_OVERRIDE=0 vs rtx5090
+101 fields  min corr 0.999913071873  max rel RMS 1.32e-02  median rel RMS 6.21e-04  NaN masks equal: True
+  cyclone_usa_rmw_disc             corr 0.9999130719  rel RMS 1.32e-02
+  vertical_velocity@50             corr 0.9999802993  rel RMS 6.28e-03
+  vertical_velocity@100            corr 0.9999813400  rel RMS 6.11e-03
+== A100-40GB --xla_gpu_enable_triton_gemm=false vs rtx5090
+101 fields  min corr 0.999913075693  max rel RMS 1.32e-02  median rel RMS 6.21e-04  NaN masks equal: True
+  cyclone_usa_rmw_disc             corr 0.9999130757  rel RMS 1.32e-02
+  vertical_velocity@50             corr 0.9999802899  rel RMS 6.28e-03
+  vertical_velocity@100            corr 0.9999813399  rel RMS 6.11e-03
+== A100 80GB PCIe base vs rtx5090
+101 fields  min corr 0.999999999834  max rel RMS 1.83e-05  median rel RMS 1.96e-06  NaN masks equal: True
+  vertical_velocity@50             corr 0.9999999998  rel RMS 1.83e-05
+  vertical_velocity@100            corr 0.9999999999  rel RMS 1.45e-05
+  vertical_velocity@150            corr 0.9999999999  rel RMS 1.39e-05
+== A100-40GB canary02 (v0.1.0) vs A100-40GB canary03 (v0.2): same host graph, reproducible
+101 fields  min corr 0.999999999894  max rel RMS 1.46e-05  median rel RMS 1.47e-06  NaN masks equal: True
+  vertical_velocity@50             corr 0.9999999999  rel RMS 1.46e-05
+  vertical_velocity@100            corr 0.9999999999  rel RMS 1.10e-05
+  vertical_velocity@150            corr 0.9999999999  rel RMS 1.06e-05
+
+## 2. Graph swap (scripts/graph_edges.py --save-edges, cloud/canary_run.py --edges)
+== RTX 5090 on the A100-40GB host graph vs RTX 5090 on its own graph
+101 fields  min corr 0.999913080664  max rel RMS 1.32e-02  median rel RMS 6.21e-04  NaN masks equal: True
+  cyclone_usa_rmw_disc             corr 0.9999130807  rel RMS 1.32e-02
+  vertical_velocity@50             corr 0.9999803010  rel RMS 6.28e-03
+  vertical_velocity@100            corr 0.9999813436  rel RMS 6.11e-03
+== A100-40GB on the RTX 5090 graph vs A100-40GB on its own graph (tf32probe02)
+101 fields  min corr 0.999913084050  max rel RMS 1.32e-02  median rel RMS 6.21e-04  NaN masks equal: True
+  cyclone_usa_rmw_disc             corr 0.9999130841  rel RMS 1.32e-02
+  vertical_velocity@50             corr 0.9999802932  rel RMS 6.28e-03
+  vertical_velocity@100            corr 0.9999813383  rel RMS 6.11e-03
+== A100-40GB on the RTX 5090 graph vs rtx5090
+101 fields  min corr 0.999999992431  max rel RMS 1.31e-04  median rel RMS 9.69e-06  NaN masks equal: True
+  cyclone_usa_rmw_disc             corr 0.9999999924  rel RMS 1.31e-04
+  vertical_velocity@500            corr 0.9999999972  rel RMS 7.47e-05
+  vertical_velocity@600            corr 0.9999999972  rel RMS 7.44e-05
+== RTX 5090 on the A100-40GB host graph vs A100-40GB
+101 fields  min corr 0.999999991545  max rel RMS 1.37e-04  median rel RMS 1.11e-05  NaN masks equal: True
+  cyclone_usa_rmw_disc             corr 0.9999999915  rel RMS 1.37e-04
+  cyclone_exists_gaussian_unit_mode corr 0.9999999963  rel RMS 9.04e-05
+  vertical_velocity@600            corr 0.9999999962  rel RMS 8.75e-05
+
+## 3. Host-side features (same graph indices, NumPy code path switched with NPY_DISABLE_CPU_FEATURES on the RTX 5090 desktop)
+== RTX 5090, own graph indices, NumPy AVX2 path vs NumPy AVX-512 path
+101 fields  min corr 0.999999992186  max rel RMS 1.33e-04  median rel RMS 1.01e-05  NaN masks equal: True
+  cyclone_usa_rmw_disc             corr 0.9999999922  rel RMS 1.33e-04
+  cyclone_exists_gaussian_unit_mode corr 0.9999999969  rel RMS 8.36e-05
+  vertical_velocity@150            corr 0.9999999972  rel RMS 7.53e-05
+== RTX 5090, A100-40GB host graph indices, NumPy AVX2 path vs A100-40GB
+101 fields  min corr 0.999999997506  max rel RMS 7.06e-05  median rel RMS 6.81e-06  NaN masks equal: True
+  cyclone_usa_rmw_disc             corr 0.9999999975  rel RMS 7.06e-05
+  vertical_velocity@500            corr 0.9999999982  rel RMS 6.00e-05
+  vertical_velocity@600            corr 0.9999999982  rel RMS 5.95e-05
+== RTX 5090, NumPy baseline path (own graph build: 1,618,832 edges, sha1 97d163811acc313e) vs RTX 5090
+101 fields  min corr 0.999943218592  max rel RMS 1.07e-02  median rel RMS 7.12e-04  NaN masks equal: True
+  cyclone_usa_rmw_disc             corr 0.9999432186  rel RMS 1.07e-02
+  vertical_velocity@50             corr 0.9999815077  rel RMS 6.08e-03
+  cyclone_all_wind_disc            corr 0.9999886737  rel RMS 4.76e-03
+== RTX 5090 own graph loaded with --edges vs RTX 5090 (run-to-run level)
+101 fields  min corr 0.999999999899  max rel RMS 1.42e-05  median rel RMS 1.55e-06  NaN masks equal: True
+  vertical_velocity@50             corr 0.9999999999  rel RMS 1.42e-05
+  vertical_velocity@100            corr 0.9999999999  rel RMS 1.08e-05
+  vertical_velocity@150            corr 0.9999999999  rel RMS 1.06e-05
+== RTX 5090 today vs rtx5090 (run-to-run level)
+101 fields  min corr 0.999999999896  max rel RMS 1.44e-05  median rel RMS 1.54e-06  NaN masks equal: True
+  vertical_velocity@50             corr 0.9999999999  rel RMS 1.44e-05
+  vertical_velocity@100            corr 0.9999999999  rel RMS 1.11e-05
+  vertical_velocity@200            corr 0.9999999999  rel RMS 1.08e-05
+
+## 4. Same host inputs on different GPUs (tf32probe03): A100 80GB PCIe with NPY_DISABLE_CPU_FEATURES="X86_V4 AVX512_ICL AVX512_SPR"
+##    (NumPy AVX2 path on an AVX-512 host) builds the A100-40GB host graph (sha1 1d90c1ed7b086815)
+== A100-80GB, NumPy AVX2 path vs A100-40GB (tf32probe01)
+101 fields  min corr 0.999999999879  max rel RMS 1.69e-05  median rel RMS 1.47e-06  NaN masks equal: True
+  cyclone_exists_gaussian_unit_mode corr 0.9999999999  rel RMS 1.69e-05
+  vertical_velocity@50             corr 0.9999999999  rel RMS 1.50e-05
+  vertical_velocity@100            corr 0.9999999999  rel RMS 1.11e-05
+== A100-80GB, NumPy AVX2 path vs A100-40GB canary03
+101 fields  min corr 0.999999999892  max rel RMS 1.47e-05  median rel RMS 1.48e-06  NaN masks equal: True
+  vertical_velocity@50             corr 0.9999999999  rel RMS 1.47e-05
+  vertical_velocity@100            corr 0.9999999999  rel RMS 1.10e-05
+  vertical_velocity@150            corr 0.9999999999  rel RMS 1.06e-05
+== A100-80GB, NumPy AVX2 path vs the same card with NumPy's default (AVX-512) path
+101 fields  min corr 0.999913071891  max rel RMS 1.32e-02  median rel RMS 6.21e-04  NaN masks equal: True
+  cyclone_usa_rmw_disc             corr 0.9999130719  rel RMS 1.32e-02
+  vertical_velocity@50             corr 0.9999802987  rel RMS 6.28e-03
+  vertical_velocity@100            corr 0.9999813399  rel RMS 6.11e-03

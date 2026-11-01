@@ -1,0 +1,14 @@
+831,832c831,832
+< %_pad.26 (Arg_0.35: f32[1618832,1,4], Arg_1.25: s32[]) -> f32[1638400,1,4] {
+<   %Arg_0.35 = f32[1618832,1,4]{2,1,0} parameter(0)
+---
+> %_pad.26 (Arg_0.35: f32[1618841,1,4], Arg_1.25: s32[]) -> f32[1638400,1,4] {
+>   %Arg_0.35 = f32[1618841,1,4]{2,1,0} parameter(0)
+835c835
+<   ROOT %pad.1 = f32[1638400,1,4]{2,1,0} pad(%Arg_0.35, %convert_element_type.5), padding=0_19568x0_0x0_0, metadata={op_name="pad"}
+---
+>   ROOT %pad.1 = f32[1638400,1,4]{2,1,0} pad(%Arg_0.35, %convert_element_type.5), padding=0_19559x0_0x0_0, metadata={op_name="pad"}
+5235c5235
+<   %constant.976 = f32[1618832,1,4]{2,1,0} constant({...})
+---
+>   %constant.976 = f32[1618841,1,4]{2,1,0} constant({...})

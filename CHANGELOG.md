@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+- The A100 fp32 deviation in the canaries (1.3e-2 max rel RMS vs the RTX 5090) is explained, and
+  it is not GPU precision. The official code builds its grid↔mesh graphs with NumPy on the host
+  CPU, and Modal's A100-40GB hosts (AVX2 only) build a slightly different graph than AVX-512
+  hosts. `cloud/canary_run.py` records the graph hashes and NumPy's SIMD targets, runs on
+  another machine's graph with `--edges`, and skips the rollout with `--steps 0`. New
+  `scripts/graph_edges.py` counts and saves the graphs on the CPU; new `cloud/modal_a100_tf32.py`
+  and `cloud/modal_graph_hosts.py` are the probes. Validation: docs/validation.md §4, A100 note.
+
 ## 0.2.0 — 2026-11-01
 
 Fine-tuning (experimental), IFS open-data mirror fallback, Intel Arc. Inference is unchanged:
