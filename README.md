@@ -42,7 +42,7 @@ Same model · same checkpoints · same results · **6.4 GiB instead of 34 GiB** 
 ## Quick start
 
 ```bash
-pip install "faster-weathernext[cuda12,weathernext] @ git+https://github.com/Raymondlol/Faster-WeatherNext.git@v0.1.1"
+pip install "faster-weathernext[cuda12,weathernext] @ git+https://github.com/Raymondlol/Faster-WeatherNext.git@v0.2.0"
 ```
 <sub>Python 3.12. Use `[cuda13]` with a CUDA 13 driver. The `[weathernext]` extra installs the official code at the validated commit; leave it out if `weathernext` is already installed (e.g. with earth2studio). Weights (~735 MB per checkpoint) come from Google's public bucket, initial conditions from ECMWF open data (AWS, falling back to the Google Cloud and ECMWF mirrors); both are cached in `~/.cache/faster-weathernext`.</sub>
 
@@ -148,7 +148,7 @@ The same patch makes WeatherNext 2 trainable on one GPU. The fused attention ker
 <sub>¹ Measured by capping the JAX pool on an RTX 5090 at what a 24 GB card gets at `XLA_PYTHON_CLIENT_MEM_FRACTION=0.9`; no real 24 GB card tried yet.</sub>
 
 ```bash
-pip install "faster-weathernext[cuda12,weathernext,train] @ git+https://github.com/Raymondlol/Faster-WeatherNext.git"
+pip install "faster-weathernext[cuda12,weathernext,train] @ git+https://github.com/Raymondlol/Faster-WeatherNext.git@v0.2.0"
 python scripts/finetune.py --train 2026101912 2026101918 2026102000 --eval 2026103012 \
     --steps 30 --mask sea_surface_temperature --out head.npz
 ```

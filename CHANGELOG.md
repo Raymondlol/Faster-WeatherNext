@@ -1,6 +1,9 @@
 # Changelog
 
-## Unreleased
+## 0.2.0 — 2026-11-01
+
+Fine-tuning (experimental), IFS open-data mirror fallback, Intel Arc. Inference is unchanged:
+re-validated against the reference at both precisions and on A100 / A10G / L4 / T4.
 
 - Head-only fine-tuning (prototype): `faster_weathernext.finetune` trains the mesh→grid GNN and
   grid decoder (5.6M of WeatherNext 2's 184M parameters) with the official training loss (fair
