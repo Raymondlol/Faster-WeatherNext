@@ -1,0 +1,52 @@
+example 2026100412 built in 2.2s
+WeatherNext2 ckpt 1: training 183.79M of 183.8M params; masked targets: 18 (cyclone channels, sea_surface_temperature)
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 1, channels: 1, noise_channels: 32)> Size: 128B
+JitTracer(float32[1,1,32])
+Dimensions without coordinates: batch, channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+W1101 01:14:04.838198  134248 hlo_rematerialization.cc:3363] Can't reduce memory use below 25.87GiB (27782055658 bytes) by rematerialization; only reduced to 60.88GiB (65367275125 bytes), down from 64.04GiB (68764898983 bytes) originally
+train step compiled in 122s: temp 25.45 GiB, arguments 3.12 GiB
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 1, channels: 1, noise_channels: 32)> Size: 128B
+JitTracer(float32[1,1,32])
+Dimensions without coordinates: batch, channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+W1101 01:15:23.382879  134248 hlo_rematerialization.cc:3363] Can't reduce memory use below 25.12GiB (26978079655 bytes) by rematerialization; only reduced to 31.11GiB (33406662528 bytes), down from 31.99GiB (34353549912 bytes) originally
+eval before (74s): 2026102800 1.04095  2026102812 1.05584  2026103000 1.00725  2026103012 1.02891
+W1101 01:15:49.189661  134248 bfc_allocator.cc:598] Allocator (GPU_0_bfc) ran out of memory trying to allocate 25.45GiB (rounded to 27324783104) from the lower end requested by op 
+If this is caused by memory fragmentation, the environment variable 'TF_GPU_ALLOCATOR=cuda_malloc_async' may improve the situation.
+Current allocation summary follows.
+W1101 01:15:49.190765  134248 bfc_allocator.cc:609] ************________________________________________________________________________________________
+Traceback (most recent call last):
+  File "/home/raymxnd/Workspace/faster-weathernext/scripts/finetune_head.py", line 182, in <module>
+    main()
+  File "/home/raymxnd/Workspace/faster-weathernext/scripts/finetune_head.py", line 150, in main
+    metrics = jax.device_get(metrics)
+              ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/jax/_src/api.py", line 2592, in device_get
+    return tree_map(_device_get, x)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/jax/_src/tree_util.py", line 406, in tree_map
+    return treedef.unflatten(f(*xs) for xs in zip(*all_leaves))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/jax/_src/tree_util.py", line 406, in <genexpr>
+    return treedef.unflatten(f(*xs) for xs in zip(*all_leaves))
+                             ^^^^^^
+  File "/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/jax/_src/api.py", line 2553, in _device_get
+    return toarray()
+           ^^^^^^^^^
+  File "/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/jax/_src/array.py", line 409, in __array__
+    return np.asarray(self._value, dtype=dtype, **kwds)  # pyrefly: ignore[no-matching-overload]
+                      ^^^^^^^^^^^
+  File "/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/jax/_src/profiler.py", line 420, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/jax/_src/array.py", line 637, in _value
+    npy_value, did_copy = self._single_device_array_to_np_array_did_copy()
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jax.errors.JaxRuntimeError: RESOURCE_EXHAUSTED: Out of memory while trying to allocate 25.45GiB with allocator GPU_0_bfc on device 0. [executable_name='jit_step'] [tf-allocator-allocation-error='']

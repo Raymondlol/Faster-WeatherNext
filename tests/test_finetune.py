@@ -23,6 +23,10 @@ def test_split_selects_mesh_to_grid_and_decoder_only():
   assert not any(finetune.is_head(m) for m in frozen)
   assert finetune.merge(frozen, head).keys() == PARAMS.keys()
   assert finetune.head_size(PARAMS) == 4 + 4
+  trained, frozen = finetune.split(PARAMS, "all")
+  assert trained.keys() == PARAMS.keys() and not frozen
+  trained, _ = finetune.split(PARAMS, ("mesh_transformer", *finetune.HEAD_MODULES))
+  assert len(trained) == 3
 
 
 def test_masked_variables_get_zero_weight_and_nan_masking():
@@ -106,3 +110,21 @@ def test_save_roundtrip_and_shape_check(tmp_path, monkeypatch):
   bad = finetune.merge(frozen, jax.tree.map(lambda v: v[..., :1], head))
   with pytest.raises(ValueError, match="do not match"):
     finetune.save(str(tmp_path / "bad.npz"), bad)
+
+
+def test_take_slices_one_stacked_member_and_keeps_static_fields():
+  import xarray
+  import xarray_jax
+  a = np.arange(2 * 3 * 4, dtype=np.float32).reshape(1, 2, 3, 4)  # batch, sample, lat, lon
+  ds = xarray.Dataset({"x": (("batch", "sample", "lat", "lon"), a),
+                       "static": (("lat", "lon"), np.ones((3, 4), np.float32))},
+                      coords={"lat": np.arange(3.0), "lon": np.arange(4.0)})
+  st = ds.rename({"batch": "_batch"}).stack(batch=("_batch", "sample")).transpose("batch", ...)
+
+  def f(i):
+    one = patch._take(st, i)
+    assert dict(one["x"].sizes) == {"batch": 1, "lat": 3, "lon": 4} and "batch" not in one["static"].dims
+    return xarray_jax.unwrap_data(one["x"])
+
+  np.testing.assert_array_equal(jax.jit(f)(1)[0], a[0, 1])
+  np.testing.assert_array_equal(jax.jit(f)(0)[0], a[0, 0])

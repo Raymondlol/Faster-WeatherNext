@@ -1,7 +1,8 @@
-"""Head-only fine-tuning of WeatherNext 2 at 0.25° on IFS open data (prototype).
+"""Fine-tuning of WeatherNext 2 at 0.25° on IFS open data (prototype).
 
-Trains the mesh->grid GNN and grid decoder (finetune.HEAD_MODULES) of one checkpoint with the
-official training loss (fair CRPS over 2 members) on one-step examples from IFS open-data analyses
+Trains the head (mesh->grid GNN and grid decoder, finetune.HEAD_MODULES; `--modules all` trains
+every parameter, through the attention kernel's backward) of one checkpoint with the official
+training loss (fair CRPS over 2 members) on one-step examples from IFS open-data analyses
 (ifs.training_example: inputs at T-6h and T; targets the analysis at T+6h and the 0-6 h
 precipitation of the T run; the cyclone channels have no targets and are masked). One example per
 optimizer step; the next example is built on the CPU while the GPU trains on the current one.
@@ -13,6 +14,8 @@ skill evaluation.
   python scripts/finetune_head.py --train 2026101912 2026101918 2026102000 --eval 2026103012 \
       --steps 30 --mask sea_surface_temperature --out head.npz --log finetune_run.json
   python scripts/finetune_head.py --train 2026102200 --compile-only   # memory of one training step
+  XLA_PYTHON_CLIENT_MEM_FRACTION=0.95 python scripts/finetune_head.py --modules all ...
+      # every parameter: a 25.5 GiB temp buffer + 3.1 GiB of arguments, too much for the 0.9 pool
 """
 import argparse
 import concurrent.futures
@@ -50,6 +53,12 @@ def main():
   p.add_argument("--precision", default="default")
   p.add_argument("--seed", type=int, default=0)
   p.add_argument("--no-precip", action="store_true", help="mask precipitation instead of fetching its target")
+  p.add_argument("--modules", nargs="+", default=None,
+                 help='module names to train (default: the head, finetune.HEAD_MODULES); "all" trains every '
+                      "parameter, through the attention backward")
+  p.add_argument("--sequential-samples", choices=["auto", "on", "off"], default="auto",
+                 help="run the 2 ensemble members one at a time (half the activation memory; auto: on "
+                      "when every parameter is trained, where the batched step needs 45.8 GiB at 0.25°)")
   p.add_argument("--mask", nargs="*", default=[],
                  help="extra target variables to leave out of the loss, e.g. sea_surface_temperature: open data "
                       "has no SST, and its stand-in (skin temperature) has a diurnal cycle real SST lacks")
@@ -65,7 +74,8 @@ def main():
   import faster_weathernext
   from faster_weathernext import finetune, ifs, model
 
-  faster_weathernext.enable(remat=not args.no_remat)
+  sequential = args.sequential_samples == "on" or (args.sequential_samples == "auto" and args.modules == ["all"])
+  faster_weathernext.enable(remat=not args.no_remat, sequential_samples=sequential)
   task, _ = model.build(args.model)
   load = lambda s: ifs.training_example(parse_init(s), task, precip=not args.no_precip)
   t0 = time.time()
@@ -74,7 +84,8 @@ def main():
   masked = sorted(set(finetune.all_nan_vars(first[1])) | set(args.mask))
   _, loss_fn = finetune.build_loss(args.model, masked=masked)
   params = model.load_params(args.model, args.checkpoint, args.weights_dir)
-  head, frozen = finetune.split(params)
+  modules = finetune.HEAD_MODULES if not args.modules else "all" if args.modules == ["all"] else tuple(args.modules)
+  head, frozen = finetune.split(params, modules)
   head = jax.device_put(head)
   frozen = jax.device_put(frozen)
   lr = (optax.join_schedules([optax.linear_schedule(0.0, args.lr, args.warmup), optax.constant_schedule(args.lr)],
@@ -85,7 +96,7 @@ def main():
   dev = jax.devices()[0]
   log = dict(model=args.model, checkpoint=args.checkpoint, device=dev.device_kind, jax=jax.__version__,
              faster_weathernext=faster_weathernext.__version__, args=vars(args), masked=masked,
-             head_params=finetune.head_size(params),
+             modules=modules, head_params=finetune.head_size(params, modules),
              total_params=int(sum(np.size(v) for v in jax.tree.leaves(params))))
   print(f"{args.model} ckpt {args.checkpoint}: training {log['head_params'] / 1e6:.2f}M of "
         f"{log['total_params'] / 1e6:.1f}M params; masked targets: {len(masked)} "

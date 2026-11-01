@@ -1,0 +1,57 @@
+WARNING:absl:Skipping gradient checkpointing for sequence length of 1
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 1, channels: 1, noise_channels: 32)> Size: 128B
+JitTracer(float32[1,1,32])
+Dimensions without coordinates: batch, channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+W1101 01:09:22.845838  176910 hlo_rematerialization.cc:3363] Can't reduce memory use below 21.08GiB (22629749965 bytes) by rematerialization; only reduced to 24.29GiB (26085976296 bytes), down from 24.29GiB (26086000776 bytes) originally
+highest  reference  temp 20.79 GiB  step  9.10s  compile   62s  attention=xla
+WARNING:absl:Skipping gradient checkpointing for sequence length of 1
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 1, channels: 1, noise_channels: 32)> Size: 128B
+JitTracer(float32[1,1,32])
+Dimensions without coordinates: batch, channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+W1101 01:10:58.924915  176910 hlo_rematerialization.cc:3363] Can't reduce memory use below 21.08GiB (22629749965 bytes) by rematerialization; only reduced to 28.82GiB (30943716076 bytes), down from 28.82GiB (30943728380 bytes) originally
+highest  faster_weathernext temp  4.14 GiB  step  1.49s  compile   78s  attention=pallas
+highest  faster-weathernext vs reference: min corr 0.9999999998  max rel RMS 1.97e-05  median 2.14e-06  NaN masks equal True  (101 fields)
+WARNING:absl:Skipping gradient checkpointing for sequence length of 1
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 1, channels: 1, noise_channels: 32)> Size: 128B
+JitTracer(float32[1,1,32])
+Dimensions without coordinates: batch, channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+W1101 01:12:04.476291  176910 hlo_rematerialization.cc:3363] Can't reduce memory use below 21.08GiB (22629749965 bytes) by rematerialization; only reduced to 24.29GiB (26085976296 bytes), down from 24.29GiB (26086000776 bytes) originally
+default  reference  temp 20.79 GiB  step  5.42s  compile   61s  attention=xla
+WARNING:absl:Skipping gradient checkpointing for sequence length of 1
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 1, channels: 1, noise_channels: 32)> Size: 128B
+JitTracer(float32[1,1,32])
+Dimensions without coordinates: batch, channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+W1101 01:13:22.252941  176910 hlo_rematerialization.cc:3363] Can't reduce memory use below 21.08GiB (22629749965 bytes) by rematerialization; only reduced to 28.82GiB (30943716076 bytes), down from 28.82GiB (30943728380 bytes) originally
+default  faster_weathernext temp  3.79 GiB  step  0.78s  compile   67s  attention=pallas
+default  faster-weathernext vs reference: min corr 0.9999801944  max rel RMS 6.54e-03  median 5.24e-04  NaN masks equal True  (101 fields)
+wrote docs/results/finetune/equivalence_rtx5090_attention_bwd.json

@@ -1,0 +1,499 @@
+{
+ "model": "WeatherNextCyclones_Mini",
+ "device": "NVIDIA H200",
+ "jax": "0.11.2",
+ "faster_weathernext": "0.1.1",
+ "blocks": {
+  "grid_chunk": 8192,
+  "edge_chunk": 16384
+ },
+ "masked": [],
+ "modules": "all",
+ "loss": "linear",
+ "head_params": 56684133,
+ "precisions": {
+  "highest": {
+   "official": {
+    "temp_gib": 51.412283167243004,
+    "compile_s": 66.12185215950012,
+    "step_s": 0.5073494911193848
+   },
+   "official_mha": {
+    "temp_gib": 61.79655335843563,
+    "compile_s": 34.418456077575684,
+    "step_s": 0.5334434509277344
+   },
+   "fwn": {
+    "temp_gib": 3.299081988632679,
+    "compile_s": 59.250096797943115,
+    "step_s": 0.6724720001220703
+   },
+   "fwn_xla": {
+    "temp_gib": 3.397009789943695,
+    "compile_s": 38.46831464767456,
+    "step_s": 0.7373757362365723
+   },
+   "fwn_strict": {
+    "temp_gib": 3.299081988632679,
+    "compile_s": 27.501341581344604,
+    "step_s": 0.8596265316009521
+   },
+   "fwn_noremat": {
+    "temp_gib": 19.658946715295315,
+    "compile_s": 29.531001091003418
+   },
+   "reference": "official",
+   "checks": {
+    "fwn vs official": {
+     "loss": {
+      "official": 506.6861267089844,
+      "other": 506.6861877441406,
+      "rel_diff": 1.204594975718678e-07,
+      "max_per_var_rel_diff": 8.950924192513153e-05
+     },
+     "grads": {
+      "global_rel_l2": 0.000244263538666221,
+      "global_cos": 0.99999997710036,
+      "max_rel_l2": 0.0012532542184612884,
+      "n_params": 376,
+      "n_compared": 315,
+      "n_zero_both": 6,
+      "n_zero_ref_only": 0,
+      "all_finite": true,
+      "worst": [
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_06/mha_proj_k/w",
+        "size": 262144,
+        "ref_norm": 2.712203724691543,
+        "got_norm": 2.713650678091154,
+        "finite": true,
+        "rel_l2": 0.0012532542184612884
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_02/block_02_norm_conditioning_1/linear/w",
+        "size": 32768,
+        "ref_norm": 0.6123149424207489,
+        "got_norm": 0.6127483205407561,
+        "finite": true,
+        "rel_l2": 0.0008091081465632556
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_02/block_02_norm_conditioning_1/linear/b",
+        "size": 1024,
+        "ref_norm": 0.7095075457226626,
+        "got_norm": 0.710009713073801,
+        "finite": true,
+        "rel_l2": 0.0008091076612630029
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_07/block_07_norm_conditioning/linear/b",
+        "size": 1024,
+        "ref_norm": 0.5724014032691926,
+        "got_norm": 0.5726062563797046,
+        "finite": true,
+        "rel_l2": 0.0007411735720147313
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_07/block_07_norm_conditioning/linear/w",
+        "size": 32768,
+        "ref_norm": 0.49399042167722107,
+        "got_norm": 0.49416721330425006,
+        "finite": true,
+        "rel_l2": 0.0007411733653940433
+       }
+      ]
+     }
+    },
+    "fwn_strict vs official": {
+     "loss": {
+      "official": 506.6861267089844,
+      "other": 506.6861572265625,
+      "rel_diff": 6.02297487859339e-08,
+      "max_per_var_rel_diff": 0.00011490809404406726
+     },
+     "grads": {
+      "global_rel_l2": 0.00013237493740884075,
+      "global_cos": 0.9999999915392175,
+      "max_rel_l2": 0.0005106505240174063,
+      "n_params": 376,
+      "n_compared": 315,
+      "n_zero_both": 6,
+      "n_zero_ref_only": 0,
+      "all_finite": true,
+      "worst": [
+       {
+        "param": "multimodality_forward/grid_to_mesh_gnn/edge_encoder/shared_dense/mlp/linear_0/b",
+        "size": 32,
+        "ref_norm": 5.1305898520590665,
+        "got_norm": 5.1326292854528335,
+        "finite": true,
+        "rel_l2": 0.0005106505240174063
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_01/block_01_norm_conditioning/linear/b",
+        "size": 1024,
+        "ref_norm": 0.9516581900491706,
+        "got_norm": 0.9514998551362546,
+        "finite": true,
+        "rel_l2": 0.000506067362620046
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_01/block_01_norm_conditioning/linear/w",
+        "size": 32768,
+        "ref_norm": 0.8212943374960904,
+        "got_norm": 0.8211576926596661,
+        "finite": true,
+        "rel_l2": 0.0005060658502279332
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_04/mha_proj_k/w",
+        "size": 262144,
+        "ref_norm": 7.420814979710817,
+        "got_norm": 7.418814862699009,
+        "finite": true,
+        "rel_l2": 0.00046718644322505293
+       },
+       {
+        "param": "multimodality_forward/mesh_encoder/split_input_matmul/w_spatial_feature=sin_lat,sin_lon,cos_lon",
+        "size": 1536,
+        "ref_norm": 15.961098272402646,
+        "got_norm": 15.955721873132726,
+        "finite": true,
+        "rel_l2": 0.00045288540773069256
+       }
+      ]
+     }
+    },
+    "fwn_xla vs official": {
+     "loss": {
+      "official": 506.6861267089844,
+      "other": 506.6861267089844,
+      "rel_diff": 0.0,
+      "max_per_var_rel_diff": 0.00011274816746429155
+     },
+     "grads": {
+      "global_rel_l2": 0.00011762606096105297,
+      "global_cos": 0.9999999933447786,
+      "max_rel_l2": 0.0007699412451052978,
+      "n_params": 376,
+      "n_compared": 315,
+      "n_zero_both": 6,
+      "n_zero_ref_only": 0,
+      "all_finite": true,
+      "worst": [
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_04/block_04_norm_conditioning/linear/b",
+        "size": 1024,
+        "ref_norm": 0.7266956977515365,
+        "got_norm": 0.7268171072822894,
+        "finite": true,
+        "rel_l2": 0.0007699412451052978
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_04/block_04_norm_conditioning/linear/w",
+        "size": 32768,
+        "ref_norm": 0.627148557590409,
+        "got_norm": 0.6272533354652043,
+        "finite": true,
+        "rel_l2": 0.0007699393066329524
+       },
+       {
+        "param": "multimodality_forward/mesh_encoder/split_input_matmul/w_spatial_feature=sin_lat,sin_lon,cos_lon",
+        "size": 1536,
+        "ref_norm": 15.961098272402646,
+        "got_norm": 15.954829243577963,
+        "finite": true,
+        "rel_l2": 0.0005351237024151522
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_01/block_01_norm_conditioning/linear/b",
+        "size": 1024,
+        "ref_norm": 0.9516581900491706,
+        "got_norm": 0.9515533263912913,
+        "finite": true,
+        "rel_l2": 0.0005235584090649549
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_01/block_01_norm_conditioning/linear/w",
+        "size": 32768,
+        "ref_norm": 0.8212943374960904,
+        "got_norm": 0.8212038346395856,
+        "finite": true,
+        "rel_l2": 0.0005235580009717514
+       }
+      ]
+     }
+    },
+    "official_mha vs official (floor)": {
+     "loss": {
+      "official": 506.6861267089844,
+      "other": 506.68609619140625,
+      "rel_diff": 6.02297487859339e-08,
+      "max_per_var_rel_diff": 3.446105814117564e-05
+     },
+     "grads": {
+      "global_rel_l2": 0.00012651098564520421,
+      "global_cos": 0.9999999921673326,
+      "max_rel_l2": 0.0008345211820504494,
+      "n_params": 376,
+      "n_compared": 315,
+      "n_zero_both": 6,
+      "n_zero_ref_only": 0,
+      "all_finite": true,
+      "worst": [
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_04/block_04_norm_conditioning/linear/b",
+        "size": 1024,
+        "ref_norm": 0.7266956977515365,
+        "got_norm": 0.7268135631996993,
+        "finite": true,
+        "rel_l2": 0.0008345211820504494
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_04/block_04_norm_conditioning/linear/w",
+        "size": 32768,
+        "ref_norm": 0.627148557590409,
+        "got_norm": 0.6272502768693304,
+        "finite": true,
+        "rel_l2": 0.0008345193395550328
+       },
+       {
+        "param": "multimodality_forward/mesh_encoder/split_input_matmul/w_spatial_feature=sin_lat,sin_lon,cos_lon",
+        "size": 1536,
+        "ref_norm": 15.961098272402646,
+        "got_norm": 15.95528512486742,
+        "finite": true,
+        "rel_l2": 0.0005456942304003171
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_04/mha_proj_k/w",
+        "size": 262144,
+        "ref_norm": 7.420814979710817,
+        "got_norm": 7.418794954355552,
+        "finite": true,
+        "rel_l2": 0.000537533317943353
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_04/mha_proj_q/w",
+        "size": 262144,
+        "ref_norm": 7.8224458328154975,
+        "got_norm": 7.820655928372033,
+        "finite": true,
+        "rel_l2": 0.0004883501030633923
+       }
+      ]
+     }
+    }
+   }
+  },
+  "default": {
+   "official": {
+    "temp_gib": 51.38774202764034,
+    "compile_s": 32.51545262336731,
+    "step_s": 0.2796788215637207
+   },
+   "official_mha": {
+    "temp_gib": 61.772008404135704,
+    "compile_s": 22.377246379852295,
+    "step_s": 0.31437110900878906
+   },
+   "fwn": {
+    "temp_gib": 3.2990810349583626,
+    "compile_s": 34.207173109054565,
+    "step_s": 0.24166154861450195
+   },
+   "fwn_xla": {
+    "temp_gib": 3.396993577480316,
+    "compile_s": 31.51302194595337,
+    "step_s": 0.4486827850341797
+   },
+   "fwn_noremat": {
+    "temp_gib": 19.658945761621,
+    "compile_s": 25.49704933166504
+   },
+   "reference": "official",
+   "checks": {
+    "fwn vs official": {
+     "loss": {
+      "official": 506.6874084472656,
+      "other": 506.6866760253906,
+      "rel_diff": 1.4455103142280436e-06,
+      "max_per_var_rel_diff": 0.11206645425551767
+     },
+     "grads": {
+      "global_rel_l2": 0.044117534887844354,
+      "global_cos": 0.9990361813716523,
+      "max_rel_l2": 0.22349852491558603,
+      "n_params": 376,
+      "n_compared": 315,
+      "n_zero_both": 6,
+      "n_zero_ref_only": 0,
+      "all_finite": true,
+      "worst": [
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_01/block_01_norm_conditioning/linear/b",
+        "size": 1024,
+        "ref_norm": 1.0117770591990807,
+        "got_norm": 1.156332303299948,
+        "finite": true,
+        "rel_l2": 0.22349852491558603
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_01/block_01_norm_conditioning/linear/w",
+        "size": 32768,
+        "ref_norm": 0.8731777646209737,
+        "got_norm": 0.9979309599064247,
+        "finite": true,
+        "rel_l2": 0.22349851854323546
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_02/block_02_norm_conditioning/linear/b",
+        "size": 1024,
+        "ref_norm": 0.5947899211484378,
+        "got_norm": 0.6545359508285181,
+        "finite": true,
+        "rel_l2": 0.1701816422646175
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_02/block_02_norm_conditioning/linear/w",
+        "size": 32768,
+        "ref_norm": 0.5133120270896127,
+        "got_norm": 0.5648736861383704,
+        "finite": true,
+        "rel_l2": 0.17018164137891015
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_03/block_03_norm_conditioning/linear/b",
+        "size": 1024,
+        "ref_norm": 0.7167292689831924,
+        "got_norm": 0.796003374445032,
+        "finite": true,
+        "rel_l2": 0.16284349983095633
+       }
+      ]
+     }
+    },
+    "fwn_xla vs official": {
+     "loss": {
+      "official": 506.6874084472656,
+      "other": 506.6881103515625,
+      "rel_diff": 1.385280717801875e-06,
+      "max_per_var_rel_diff": 0.08084677316850619
+     },
+     "grads": {
+      "global_rel_l2": 0.019679887946770405,
+      "global_cos": 0.9998077940339737,
+      "max_rel_l2": 0.059476224600919315,
+      "n_params": 376,
+      "n_compared": 315,
+      "n_zero_both": 6,
+      "n_zero_ref_only": 0,
+      "all_finite": true,
+      "worst": [
+       {
+        "param": "multimodality_forward/grid_to_mesh_gnn/edge_encoder/shared_dense/mlp/linear_0/b",
+        "size": 32,
+        "ref_norm": 5.441638744526304,
+        "got_norm": 5.68977024596661,
+        "finite": true,
+        "rel_l2": 0.059476224600919315
+       },
+       {
+        "param": "multimodality_forward/grid_to_mesh_gnn/edge_encoder/shared_dense/normalization/linear_norm_conditioning/linear/w",
+        "size": 2048,
+        "ref_norm": 0.23800722621596107,
+        "got_norm": 0.24467928565487893,
+        "finite": true,
+        "rel_l2": 0.05608277617712862
+       },
+       {
+        "param": "multimodality_forward/grid_to_mesh_gnn/edge_encoder/shared_dense/normalization/linear_norm_conditioning/linear/b",
+        "size": 64,
+        "ref_norm": 0.2757860559578531,
+        "got_norm": 0.2835171695923799,
+        "finite": true,
+        "rel_l2": 0.05608275600530208
+       },
+       {
+        "param": "multimodality_forward/grid_to_mesh_gnn/edge_encoder/shared_dense/mlp/linear_1/b",
+        "size": 32,
+        "ref_norm": 24.851766528252575,
+        "got_norm": 25.61888271096121,
+        "finite": true,
+        "rel_l2": 0.05511299698737055
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_06/mha_proj_k/w",
+        "size": 262144,
+        "ref_norm": 2.8108629946526866,
+        "got_norm": 2.787529759983267,
+        "finite": true,
+        "rel_l2": 0.0542160190231521
+       }
+      ]
+     }
+    },
+    "official_mha vs official (floor)": {
+     "loss": {
+      "official": 506.6874084472656,
+      "other": 506.6858215332031,
+      "rel_diff": 3.1319390141607612e-06,
+      "max_per_var_rel_diff": 0.1407590322703549
+     },
+     "grads": {
+      "global_rel_l2": 0.044800067284372115,
+      "global_cos": 0.9990057146368683,
+      "max_rel_l2": 0.1750765677236349,
+      "n_params": 376,
+      "n_compared": 315,
+      "n_zero_both": 6,
+      "n_zero_ref_only": 0,
+      "all_finite": true,
+      "worst": [
+       {
+        "param": "multimodality_forward/grid_to_mesh_gnn/edge_encoder/shared_dense/mlp/linear_0/b",
+        "size": 32,
+        "ref_norm": 5.441638744526304,
+        "got_norm": 6.210838741861778,
+        "finite": true,
+        "rel_l2": 0.1750765677236349
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_07/block_07_norm_conditioning/linear/b",
+        "size": 1024,
+        "ref_norm": 0.5897101140845485,
+        "got_norm": 0.5897953663132253,
+        "finite": true,
+        "rel_l2": 0.16793897090657076
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_07/block_07_norm_conditioning/linear/w",
+        "size": 32768,
+        "ref_norm": 0.508928081428834,
+        "got_norm": 0.5090016550054227,
+        "finite": true,
+        "rel_l2": 0.16793897087111273
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_04/block_04_norm_conditioning/linear/w",
+        "size": 32768,
+        "ref_norm": 0.672737338310035,
+        "got_norm": 0.7184029175034351,
+        "finite": true,
+        "rel_l2": 0.1673825597292103
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_04/block_04_norm_conditioning/linear/b",
+        "size": 1024,
+        "ref_norm": 0.7795207748498905,
+        "got_norm": 0.8324348396954653,
+        "finite": true,
+        "rel_l2": 0.16738255742938324
+       }
+      ]
+     }
+    }
+   }
+  }
+ }
+}

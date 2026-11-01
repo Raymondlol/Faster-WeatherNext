@@ -1,8 +1,10 @@
-"""Head-only fine-tuning: gradients through faster-weathernext vs the official GPU path.
+"""Fine-tuning gradients through faster-weathernext vs the official GPU path.
 
 Mini model (1°) on Google's sample data; same checkpoint, inputs, targets and noise (same PRNG key).
 The loss is the official training loss (fair CRPS over 2 members, finetune.build_loss) and the
-gradients are taken w.r.t. the head only (mesh->grid GNN + grid decoder), at both matmul precisions:
+gradients are taken w.r.t. the head (mesh->grid GNN + grid decoder; default) or, with
+`--modules all`, every parameter (through the fused attention kernel's backward), at both matmul
+precisions. Paths:
 
   official   patch disabled, attention_type="triblockdiag_mha" (the official GPU path)
   official_mha  patch disabled, attention_type="mha" (the official dense masked attention): a second
@@ -13,10 +15,20 @@ gradients are taken w.r.t. the head only (mesh->grid GNN + grid decoder), at bot
   fwn        patch enabled, remat=True, small blocks (grid_chunk 8192, edge_chunk 16384) so the
              65,160-point 1° grid runs through several encoder / decoder / GNN blocks (with the
              default 32,768-point blocks the encoder and decoder would take the stock path)
-  fwn_noremat  the same without remat, compiled only: what rematerialisation saves
+  fwn_xla      fwn with the XLA attention path, whose backward is JAX autodiff (with --modules all:
+             an independent reference for the Pallas backward kernels)
+  fwn_noremat  fwn without remat, compiled only: what rematerialisation saves
   fwn_strict   (highest only) fwn with IEEE fp32 attention dots instead of the kernel's 3xTF32
 
+`--loss linear` replaces the CRPS by a smooth one: a fixed random linear functional of all output
+fields (one member, no sample dimension). With no sign terms, implementation differences show at
+rounding level; use it where no second official implementation fits as a floor (--modules all).
+
+A case that runs out of GPU memory is recorded as such (the official path's full backward may not
+fit); the comparisons then use the official path if it ran, else fwn_xla, as the reference.
+
   python scripts/verify_head_grads.py --data ".../source-hres_forecast_init-2024-10-07 00:00:00_res-1.0_levels-13_steps-04.nc"
+  python scripts/verify_head_grads.py --modules all --data ... --out full_grads_mini.json
 """
 import argparse
 import dataclasses
@@ -43,7 +55,22 @@ def example(path, task):
   return tuple(x.drop_vars("datetime", errors="ignore").compute() for x in parts)
 
 
-def run_case(params, ex, masked, precision, path, compile_only=False):
+def linear_loss(attention_type, weights):
+  """loss_fn with the CRPS replaced by sum_v mean(prediction_v * weights_v) (one member)."""
+  import jax.numpy as jnp
+  import xarray_jax
+  from faster_weathernext import model
+  _, forward = model.build(MODEL, attention_type=attention_type)
+
+  def loss_fn(params, rng, inputs, targets, forcings):
+    preds = forward(params, rng, inputs, targets, forcings)
+    terms = {v: jnp.mean(jnp.nan_to_num(xarray_jax.unwrap_data(preds[v])) * w) for v, w in weights.items()}
+    return sum(terms.values()), terms
+
+  return loss_fn
+
+
+def run_case(params, ex, masked, precision, path, modules, compile_only=False, weights=None):
   import jax
   import faster_weathernext
   from faster_weathernext import finetune
@@ -51,27 +78,39 @@ def run_case(params, ex, masked, precision, path, compile_only=False):
     faster_weathernext.disable()
     attention_type = "mha" if path == "official_mha" else "triblockdiag_mha"
   else:
-    faster_weathernext.enable(remat=(path != "fwn_noremat"), strict_fp32=(path == "fwn_strict"), **BLOCKS)
+    faster_weathernext.enable(remat=(path != "fwn_noremat"), strict_fp32=(path == "fwn_strict"),
+                              attention="xla" if path == "fwn_xla" else "auto", **BLOCKS)
     attention_type = "chunked_mha"
-  _, loss_fn = finetune.build_loss(MODEL, masked=masked, attention_type=attention_type)
-  head, frozen = finetune.split(params)
+  if weights is None:
+    _, loss_fn = finetune.build_loss(MODEL, masked=masked, attention_type=attention_type)
+  else:
+    loss_fn = linear_loss(attention_type, weights)
+  head, frozen = finetune.split(params, modules)
   fn = finetune.loss_and_grads(loss_fn)
   call = (head, frozen, jax.random.PRNGKey(0), *ex)
-  with jax.default_matmul_precision(precision):
-    t0 = time.time()
-    compiled = fn.lower(*call).compile()
-    info = dict(temp_gib=compiled.memory_analysis().temp_size_in_bytes / 2**30, compile_s=time.time() - t0)
-    out = None
-    if not compile_only:
-      jax.block_until_ready(compiled(*call))
+  out, info = None, {}
+  try:
+    with jax.default_matmul_precision(precision):
       t0 = time.time()
-      out = jax.device_get(jax.block_until_ready(compiled(*call)))
-      info["step_s"] = time.time() - t0
-  del compiled
+      compiled = fn.lower(*call).compile()
+      info = dict(temp_gib=compiled.memory_analysis().temp_size_in_bytes / 2**30, compile_s=time.time() - t0)
+      if not compile_only:
+        jax.block_until_ready(compiled(*call))
+        t0 = time.time()
+        out = jax.device_get(jax.block_until_ready(compiled(*call)))
+        info["step_s"] = time.time() - t0
+      del compiled
+  except jax.errors.JaxRuntimeError as e:
+    if "RESOURCE_EXHAUSTED" not in str(e):
+      raise
+    info["oom"] = str(e).splitlines()[0][:300]
+    out = None
   gc.collect()
   jax.clear_caches()
-  print(f"  {path:12s} {precision:8s} temp {info['temp_gib']:5.2f} GiB"
-        + (f"  step {info['step_s']:.2f}s  loss {float(out[0][0]):.6f}" if out else "  (compile only)"), flush=True)
+  temp = f"temp {info['temp_gib']:5.2f} GiB" if "temp_gib" in info else "temp   n/a"
+  status = ("  OUT OF MEMORY" if "oom" in info else "  (compile only)" if compile_only
+            else f"  step {info['step_s']:.2f}s  loss {float(out[0][0]):.6f}")
+  print(f"  {path:12s} {precision:8s} {temp}{status}", flush=True)
   return out, info
 
 
@@ -102,6 +141,8 @@ def main():
   p = argparse.ArgumentParser()
   p.add_argument("--data", required=True, help="local path of Google's 1° steps-04 sample")
   p.add_argument("--precisions", default="highest,default")
+  p.add_argument("--modules", nargs="+", default=None, help='modules to differentiate (default: head); "all"')
+  p.add_argument("--loss", choices=["crps", "linear"], default="crps")
   p.add_argument("--weights-dir")
   p.add_argument("--out", default="head_grads_mini.json")
   args = p.parse_args()
@@ -110,30 +151,39 @@ def main():
   import faster_weathernext
   from faster_weathernext import finetune, model
 
+  modules = finetune.HEAD_MODULES if not args.modules else "all" if args.modules == ["all"] else tuple(args.modules)
   task, _ = finetune.build_loss(MODEL)
   params = model.load_params(MODEL, 1, args.weights_dir)
   ex = example(args.data, task)
   masked = finetune.all_nan_vars(ex[1])
+  weights = None
+  if args.loss == "linear":  # fixed random weights per output field (NaN predictions count as 0)
+    rng = np.random.default_rng(0)
+    weights = {v: rng.standard_normal(da.shape[:1] + da.shape[2:]).astype(np.float32)[:, None]
+               for v, da in ex[1].data_vars.items()}
   result = dict(model=MODEL, device=jax.devices()[0].device_kind, jax=jax.__version__,
                 faster_weathernext=faster_weathernext.__version__, blocks=BLOCKS, masked=masked,
-                head_params=finetune.head_size(params), precisions={})
-  print(f"{MODEL}: head {result['head_params'] / 1e6:.2f}M params; masked targets: {masked}", flush=True)
+                modules=modules, loss=args.loss, head_params=finetune.head_size(params, modules), precisions={})
+  print(f"{MODEL}: differentiating {result['head_params'] / 1e6:.2f}M params ({modules}); "
+        f"masked targets: {masked}", flush=True)
   for precision in args.precisions.split(","):
     print(f"[{precision}]", flush=True)
-    r = {}
-    (off_loss, off_grads), r["official"] = run_case(params, ex, masked, precision, "official")
-    (mha_loss, mha_grads), r["official_mha"] = run_case(params, ex, masked, precision, "official_mha")
-    (fwn_loss, fwn_grads), r["fwn"] = run_case(params, ex, masked, precision, "fwn")
-    _, r["fwn_noremat"] = run_case(params, ex, masked, precision, "fwn_noremat", compile_only=True)
-    pairs = [("fwn vs official", (fwn_loss, fwn_grads)),
-             ("official_mha vs official (floor)", (mha_loss, mha_grads))]
-    if precision == "highest":  # the Pallas kernel's default under `highest` is 3xTF32, not IEEE fp32
-      strict, r["fwn_strict"] = run_case(params, ex, masked, precision, "fwn_strict")
-      pairs.insert(1, ("fwn strict_fp32 vs official", strict))
+    r, outs = {}, {}
+    cases = ["official", "official_mha", "fwn", "fwn_xla"] + (["fwn_strict"] if precision == "highest" else [])
+    for path in cases:  # fwn_strict: the Pallas kernel's default under `highest` is 3xTF32, not IEEE fp32
+      outs[path], r[path] = run_case(params, ex, masked, precision, path, modules, weights=weights)
+    _, r["fwn_noremat"] = run_case(params, ex, masked, precision, "fwn_noremat", modules, compile_only=True,
+                                   weights=weights)
+    ref_name = "official" if outs["official"] is not None else "fwn_xla"
+    off_loss, off_grads = outs[ref_name]
+    pairs = [(f"{p} vs {ref_name}" + (" (floor)" if p == "official_mha" else ""), outs[p])
+             for p in ("fwn", "fwn_strict", "fwn_xla", "official_mha") if p != ref_name and outs.get(p) is not None]
+    r["reference"] = ref_name
     r["checks"] = {}
     for label, (loss, grads) in pairs:
       lo, lg = float(off_loss[0]), float(loss[0])
       per_var = {k: abs(float(loss[1][k]) - float(v)) / abs(float(v)) for k, v in off_loss[1].items() if float(v) != 0}
+      per_var = per_var or {"-": 0.0}
       g = compare(grads, off_grads)
       r["checks"][label] = dict(loss=dict(official=lo, other=lg, rel_diff=abs(lg - lo) / abs(lo),
                                           max_per_var_rel_diff=max(per_var.values())), grads=g)

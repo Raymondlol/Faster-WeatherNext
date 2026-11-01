@@ -9,8 +9,14 @@ handles one (query block, head): it walks only its active tiles with an online s
 Numerics match the masked softmax of the stock paths up to summation order: masked logits
 are set to -1e30 before the softmax (exp underflows to exactly 0), matmuls are TF32 under
 JAX's default matmul precision and full fp32 under jax.default_matmul_precision("highest").
+
+The kernel is differentiable (jax.custom_vjp, FlashAttention-2 backward): the forward also stores
+each row's log-sum-exp, and two more tiled kernels compute dQ (per query block, over the same tile
+list) and dK/dV (per key block, over the transposed mask's tile list, which for the symmetric k-hop
+mask is the same list). Without differentiation the forward is unchanged.
 """
 
+import dataclasses
 import functools
 
 import jax
@@ -25,6 +31,7 @@ BLOCK_Q = 64
 BLOCK_K = 32  # one uint32 mask word per query row per tile
 NUM_WARPS = 4
 NUM_STAGES = 1
+BWD_NUM_WARPS = 4  # tuned on the GPU (docs/validation.md §9)
 MASK_VALUE = -1e30
 # Under jax.default_matmul_precision("highest"): Triton's strict-fp32 ("ieee") dot does not use
 # tensor cores and is ~10x slower on consumer Blackwell (sm_120), so by default use 3xTF32
@@ -102,7 +109,7 @@ def build_tile_mask(mask: sparse.spmatrix, block_q: int = BLOCK_Q, block_k: int 
   return tile_ptr.astype(np.int32), tile_kb.astype(np.int32), bits
 
 
-def _kernel(q_ref, k_ref, v_ref, ptr_ref, kb_ref, bits_ref, o_ref, *, block_k, scale, precision):
+def _kernel(q_ref, k_ref, v_ref, ptr_ref, kb_ref, bits_ref, o_ref, *lse_ref, block_k, scale, precision):
   qb = pl.program_id(0)
   q = plgpu.load(q_ref)                                    # [BQ, D]
   block_q, head_dim = q.shape
@@ -127,15 +134,198 @@ def _kernel(q_ref, k_ref, v_ref, ptr_ref, kb_ref, bits_ref, o_ref, *, block_k, s
   init = (jnp.zeros((block_q, head_dim), jnp.float32),
           jnp.full((block_q,), -jnp.inf, jnp.float32),
           jnp.zeros((block_q,), jnp.float32))
-  acc, _, l = lax.fori_loop(ptr_ref[qb], ptr_ref[qb + 1], body, init)
+  acc, m, l = lax.fori_loop(ptr_ref[qb], ptr_ref[qb + 1], body, init)
   # Every real query attends at least to itself; the guard only affects padding rows.
   o_ref[...] = (acc / jnp.maximum(l, 1e-30)[:, None]).astype(o_ref.dtype)
+  if lse_ref:  # training: per-row log-sum-exp for the backward pass (padding rows: finite garbage)
+    lse_ref[0][...] = m + jnp.log(jnp.maximum(l, 1e-30))
+
+
+# Backward (FlashAttention-2): dS = P * (dP - delta), delta = rowsum(dO * O). Both kernels recompute
+# P = exp(S - lse) tile by tile from the forward's log-sum-exp, so no attention matrix is stored.
+# Masked entries are zeroed with `where` rather than through exp underflow, so the finite garbage
+# that padding rows carry (padded dO is 0) cannot leak into real rows.
+# With split = 2 each program takes half of a 64-row tile-list block (32 rows): it walks the
+# block's tiles and reads its half of each tile's mask words, which halves the operands a program
+# keeps in shared memory without a second tile list (tiles empty for that half are just masked).
+
+
+def _row_words(bits_ref, t, split, part):
+  """This program's rows of tile t's mask words (`part`: which of the block's `split` parts)."""
+  if split == 1:
+    return plgpu.load(bits_ref.at[t, :])
+  rows = bits_ref.shape[1] // split
+  return plgpu.load(bits_ref.at[t, pl.ds(part * rows, rows)])
+
+
+def _bwd_dq_kernel(q_ref, k_ref, v_ref, do_ref, lse_ref, delta_ref, ptr_ref, kb_ref, bits_ref, dq_ref,
+                   *, block_k, split, scale, precision):
+  """dQ for one (query block, head): walks the query block's key tiles, as the forward does."""
+  qb, part = pl.program_id(0) // split, pl.program_id(0) % split
+  q = plgpu.load(q_ref)                                    # [BQ, D]
+  do = plgpu.load(do_ref)                                  # [BQ, D]
+  lse = plgpu.load(lse_ref)                                # [BQ]
+  delta = plgpu.load(delta_ref)                            # [BQ]
+  cols = lax.broadcasted_iota(jnp.uint32, (1, block_k), 1)
+
+  def body(t, dq):
+    keys = pl.ds(kb_ref[t] * block_k, block_k)
+    k = plgpu.load(k_ref.at[keys, :])                      # [BK, D]
+    v = plgpu.load(v_ref.at[keys, :])
+    s = plgpu.dot(q, k, trans_b=True, precision=precision) * scale
+    words = _row_words(bits_ref, t, split, part)
+    valid = ((words[:, None] >> cols) & jnp.uint32(1)) != 0
+    p = jnp.where(valid, jnp.exp(s - lse[:, None]), 0.0)
+    dp = plgpu.dot(do, v, trans_b=True, precision=precision)
+    ds = p * (dp - delta[:, None])
+    return dq + plgpu.dot(ds, k, precision=precision) * scale
+
+  dq = lax.fori_loop(ptr_ref[qb], ptr_ref[qb + 1], body, jnp.zeros(q.shape, jnp.float32))
+  dq_ref[...] = dq.astype(dq_ref.dtype)
+
+
+def _bwd_dkv_kernel(q_ref, k_ref, v_ref, do_ref, lse_ref, delta_ref, ptr_ref, kb_ref, bits_ref,
+                    dk_ref, dv_ref, *, block_q, split, scale, precision):
+  """dK, dV for one (key block, head): walks the key block's query tiles (the transposed tile list)."""
+  kb, part = pl.program_id(0) // split, pl.program_id(0) % split
+  k = plgpu.load(k_ref)                                    # [BKV, D]
+  v = plgpu.load(v_ref)
+  cols = lax.broadcasted_iota(jnp.uint32, (1, block_q), 1)
+
+  def body(t, carry):
+    dk, dv = carry
+    queries = pl.ds(kb_ref[t] * block_q, block_q)
+    q = plgpu.load(q_ref.at[queries, :])                   # [BQT, D]
+    do = plgpu.load(do_ref.at[queries, :])
+    lse = plgpu.load(lse_ref.at[queries])                  # [BQT]
+    delta = plgpu.load(delta_ref.at[queries])
+    st = plgpu.dot(k, q, trans_b=True, precision=precision) * scale  # [BKV, BQT] = S^T
+    words = _row_words(bits_ref, t, split, part)                 # bit j of row r: mask[query j, key r]
+    valid = ((words[:, None] >> cols) & jnp.uint32(1)) != 0
+    pt = jnp.where(valid, jnp.exp(st - lse[None, :]), 0.0)
+    dv = dv + plgpu.dot(pt, do, precision=precision)
+    dpt = plgpu.dot(v, do, trans_b=True, precision=precision)
+    dst = pt * (dpt - delta[None, :])
+    dk = dk + plgpu.dot(dst, q, precision=precision) * scale
+    return dk, dv
+
+  zeros = jnp.zeros(k.shape, jnp.float32)
+  dk, dv = lax.fori_loop(ptr_ref[kb], ptr_ref[kb + 1], body, (zeros, zeros))
+  dk_ref[...] = dk.astype(dk_ref.dtype)
+  dv_ref[...] = dv.astype(dv_ref.dtype)
+
+
+@dataclasses.dataclass(frozen=True)
+class _Config:
+  scale: float
+  precision: object
+  block_q: int
+  block_k: int
+  num_warps: int
+  num_stages: int
+  bwd_num_warps: int
+  bwd_split: int
+  interpret: bool
+
+
+def _full(a):
+  return pl.BlockSpec(a.shape, lambda i, h, b: (0,) * a.ndim)
+
+
+def _forward(qh, kh, vh, tiles, cfg, with_lse):
+  batch, heads, n_q, head_dim = qh.shape
+  n_k = kh.shape[2]
+  out_shape = jax.ShapeDtypeStruct((batch, heads, n_q, head_dim), qh.dtype)
+  out_specs = pl.BlockSpec((None, None, cfg.block_q, head_dim), lambda i, h, b: (b, h, i, 0))
+  if with_lse:
+    out_shape = (out_shape, jax.ShapeDtypeStruct((batch, heads, n_q), jnp.float32))
+    out_specs = (out_specs, pl.BlockSpec((None, None, cfg.block_q), lambda i, h, b: (b, h, i)))
+  return pl.pallas_call(
+      functools.partial(_kernel, block_k=cfg.block_k, scale=cfg.scale, precision=cfg.precision),
+      grid=(n_q // cfg.block_q, heads, batch),
+      in_specs=[
+          pl.BlockSpec((None, None, cfg.block_q, head_dim), lambda i, h, b: (b, h, i, 0)),
+          pl.BlockSpec((None, None, n_k, head_dim), lambda i, h, b: (b, h, 0, 0)),
+          pl.BlockSpec((None, None, n_k, head_dim), lambda i, h, b: (b, h, 0, 0)),
+          *(_full(t) for t in tiles),
+      ],
+      out_specs=out_specs,
+      out_shape=out_shape,
+      compiler_params=plgpu.CompilerParams(num_warps=cfg.num_warps, num_stages=cfg.num_stages),
+      name="wn2_tiled_flash_attention",
+      interpret=cfg.interpret,
+  )(qh, kh, vh, *tiles)
+
+
+@functools.partial(jax.custom_vjp, nondiff_argnums=(5,))
+def _attention(qh, kh, vh, tiles, tiles_t, cfg):
+  """Head-major padded attention: qh [B, H, n_q, D], kh/vh [B, H, n_k, D] -> [B, H, n_q, D]."""
+  del tiles_t
+  return _forward(qh, kh, vh, tiles, cfg, with_lse=False)
+
+
+def _attention_fwd(qh, kh, vh, tiles, tiles_t, cfg):
+  # The backward recomputes the logits and normalises them with this pass's log-sum-exp; all
+  # kernels use one dot precision, so the recomputed P is the forward's.
+  out, lse = _forward(qh, kh, vh, tiles, cfg, with_lse=True)
+  return out, (qh, kh, vh, out, lse, tiles, tiles_t)
+
+
+def _attention_bwd(cfg, res, dout):
+  qh, kh, vh, out, lse, tiles, tiles_t = res
+  batch, heads, n_q, head_dim = qh.shape
+  n_k = kh.shape[2]
+  delta = jnp.sum(out * dout, axis=-1)                     # [B, H, n_q]
+  split = cfg.bwd_split
+  rows_per = cfg.block_q // split
+  params = plgpu.CompilerParams(num_warps=cfg.bwd_num_warps, num_stages=cfg.num_stages)
+  rows = lambda size: pl.BlockSpec((None, None, size, head_dim), lambda i, h, b: (b, h, i, 0))
+  vec = lambda size: pl.BlockSpec((None, None, size), lambda i, h, b: (b, h, i))
+  whole = lambda x: pl.BlockSpec((None, None, *x.shape[2:]), lambda i, h, b: (b, h) + (0,) * (x.ndim - 2))
+
+  dq = pl.pallas_call(
+      functools.partial(_bwd_dq_kernel, block_k=cfg.block_k, split=split, scale=cfg.scale,
+                        precision=cfg.precision),
+      grid=(n_q // rows_per, heads, batch),
+      in_specs=[rows(rows_per), whole(kh), whole(vh), rows(rows_per), vec(rows_per), vec(rows_per),
+                *(_full(t) for t in tiles)],
+      out_specs=rows(rows_per),
+      out_shape=jax.ShapeDtypeStruct(qh.shape, qh.dtype),
+      compiler_params=params, name="wn2_tiled_flash_attention_dq", interpret=cfg.interpret,
+  )(qh, kh, vh, dout, lse, delta, *tiles)
+
+  # Key blocks of block_q rows walk query tiles of block_k: the transposed mask in the forward's
+  # tile layout. Keys are padded to whole key blocks; queries already span whole query tiles.
+  n_kb = tiles_t[0].shape[0] - 1
+  pad = lambda x: jnp.pad(x, ((0, 0), (0, 0), (0, n_kb * cfg.block_q - n_k), (0, 0)))
+  dk, dv = pl.pallas_call(
+      functools.partial(_bwd_dkv_kernel, block_q=cfg.block_k, split=split, scale=cfg.scale,
+                        precision=cfg.precision),
+      grid=(n_kb * split, heads, batch),
+      in_specs=[whole(qh), rows(rows_per), rows(rows_per), whole(dout), whole(lse), whole(delta),
+                *(_full(t) for t in tiles_t)],
+      out_specs=(rows(rows_per), rows(rows_per)),
+      out_shape=(jax.ShapeDtypeStruct((batch, heads, n_kb * cfg.block_q, head_dim), kh.dtype),) * 2,
+      compiler_params=params, name="wn2_tiled_flash_attention_dkv", interpret=cfg.interpret,
+  )(qh, pad(kh), pad(vh), dout, lse, delta, *tiles_t)
+  return dq, dk[:, :, :n_k], dv[:, :, :n_k], None, None
+
+
+_attention.defvjp(_attention_fwd, _attention_bwd)
 
 
 def tiled_flash_attention(q, k, v, tile_ptr, tile_kb, tile_bits, *, scale, strict_fp32=False,
-                          block_q=BLOCK_Q, block_k=BLOCK_K, num_warps=NUM_WARPS,
-                          num_stages=NUM_STAGES, interpret=False):
-  """q, k, v: [batch, n, heads, head_dim] float32 -> [batch, n, heads, head_dim]."""
+                          tiles_t=None, block_q=BLOCK_Q, block_k=BLOCK_K, num_warps=NUM_WARPS,
+                          num_stages=NUM_STAGES, bwd_num_warps=BWD_NUM_WARPS, bwd_split=None,
+                          interpret=False):
+  """q, k, v: [batch, n, heads, head_dim] float32 -> [batch, n, heads, head_dim].
+
+  Differentiable: the backward pass runs two more tiled kernels (dQ per query block; dK and dV per
+  key block). The dK/dV kernel needs the tile list of the transposed mask (`tiles_t`, from
+  build_tile_mask(mask.T)); it defaults to the forward's, which is correct for symmetric masks
+  such as the k-hop mesh neighbourhoods. bwd_split (1 or 2; default: 2 under `highest`, else 1) is
+  the number of backward programs per 64-row block.
+  """
   batch, n, heads, head_dim = q.shape
   n_qblocks = tile_ptr.shape[0] - 1
   n_q = n_qblocks * block_q
@@ -150,21 +340,15 @@ def tiled_flash_attention(q, k, v, tile_ptr, tile_kb, tile_bits, *, scale, stric
                  else lax.DotAlgorithmPreset.TF32_TF32_F32_X3)
   else:
     precision = lax.DotAlgorithmPreset.TF32_TF32_F32
-  kernel = functools.partial(_kernel, block_k=block_k, scale=scale, precision=precision)
-  full = lambda a: pl.BlockSpec(a.shape, lambda i, h, b: (0,) * a.ndim)
-  out = pl.pallas_call(
-      kernel,
-      grid=(n_qblocks, heads, batch),
-      in_specs=[
-          pl.BlockSpec((None, None, block_q, head_dim), lambda i, h, b: (b, h, i, 0)),
-          pl.BlockSpec((None, None, n_k, head_dim), lambda i, h, b: (b, h, 0, 0)),
-          pl.BlockSpec((None, None, n_k, head_dim), lambda i, h, b: (b, h, 0, 0)),
-          full(tile_ptr), full(tile_kb), full(tile_bits),
-      ],
-      out_specs=pl.BlockSpec((None, None, block_q, head_dim), lambda i, h, b: (b, h, i, 0)),
-      out_shape=jax.ShapeDtypeStruct((batch, heads, n_q, head_dim), q.dtype),
-      compiler_params=plgpu.CompilerParams(num_warps=num_warps, num_stages=num_stages),
-      name="wn2_tiled_flash_attention",
-      interpret=interpret,
-  )(qh, kh, vh, jnp.asarray(tile_ptr), jnp.asarray(tile_kb), jnp.asarray(tile_bits))
+  # 3xTF32 (and IEEE fp32) dots keep extra operand copies in shared memory: the forward (2 dots
+  # per tile) fits sm_120's 99 KB in 64-row programs, the backward kernels (3-4 dots) asked for
+  # 147 KB, so under `highest` they run in 32-row programs (bwd_split=2).
+  if bwd_split is None:
+    bwd_split = 1 if precision in (None, lax.DotAlgorithmPreset.TF32_TF32_F32) else 2
+  cfg = _Config(scale=scale, precision=precision, block_q=block_q, block_k=block_k,
+                num_warps=num_warps, num_stages=num_stages, bwd_num_warps=bwd_num_warps, bwd_split=bwd_split,
+                interpret=interpret)
+  tiles = tuple(jnp.asarray(t) for t in (tile_ptr, tile_kb, tile_bits))
+  tiles_t = tiles if tiles_t is None else tuple(jnp.asarray(t) for t in tiles_t)
+  out = _attention(qh, kh, vh, tiles, tiles_t, cfg)
   return out[:, :, :n].transpose(0, 2, 1, 3)

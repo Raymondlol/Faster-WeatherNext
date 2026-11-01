@@ -1,0 +1,93 @@
+WeatherNextCyclones_Mini: differentiating 56.68M params (all); masked targets: []
+[highest]
+  official     highest  temp 51.41 GiB  step 0.48s  loss 506.686066
+  official_mha highest  temp 61.80 GiB  step 0.54s  loss 506.686066
+  fwn          highest  temp  3.30 GiB  step 0.49s  loss 506.686096
+  fwn_xla      highest  temp  3.40 GiB  step 0.77s  loss 506.686096
+  fwn_strict   highest  temp  3.30 GiB  step 0.84s  loss 506.686096
+  fwn_noremat  highest  temp 19.66 GiB  (compile only)
+  fwn vs official                    loss rel diff 6.02e-08 (per var max 9.51e-05)  grads: global rel L2 1.36e-04  cos 0.9999999908  max per-param rel L2 5.56e-04 (315/376 params; zero in both 6, zero only in official 0)  finite True
+      5.56e-04  multimodality_forward/mesh_encoder/split_input_matmul/w_spatial_feature=sin_lat,sin_lon,cos_lon
+      5.23e-04  multimodality_forward/mesh_transformer/transformer/block_04/mha_proj_k/w
+      5.09e-04  multimodality_forward/mesh_transformer/transformer/block_04/block_04_norm_conditioning/linear/w
+  fwn_strict vs official             loss rel diff 6.02e-08 (per var max 1.29e-04)  grads: global rel L2 9.01e-05  cos 0.9999999959  max per-param rel L2 4.99e-04 (315/376 params; zero in both 6, zero only in official 0)  finite True
+      4.99e-04  multimodality_forward/mesh_transformer/transformer/block_04/block_04_norm_conditioning/linear/b
+      4.99e-04  multimodality_forward/mesh_transformer/transformer/block_04/block_04_norm_conditioning/linear/w
+      4.20e-04  multimodality_forward/mesh_encoder/split_input_matmul/w_spatial_feature=sin_lat,sin_lon,cos_lon
+  fwn_xla vs official                loss rel diff 6.02e-08 (per var max 1.86e-04)  grads: global rel L2 7.60e-05  cos 0.9999999972  max per-param rel L2 2.74e-04 (315/376 params; zero in both 6, zero only in official 0)  finite True
+      2.74e-04  multimodality_forward/mesh_encoder/split_input_matmul/w_spatial_feature=sin_lat,sin_lon,cos_lon
+      2.53e-04  multimodality_forward/mesh_transformer/transformer/block_06/mha_proj_k/w
+      2.31e-04  multimodality_forward/mesh_transformer/transformer/block_04/mha_proj_k/w
+  official_mha vs official (floor)   loss rel diff 0.00e+00 (per var max 8.88e-05)  grads: global rel L2 8.13e-05  cos 0.9999999967  max per-param rel L2 2.87e-04 (315/376 params; zero in both 6, zero only in official 0)  finite True
+      2.87e-04  multimodality_forward/mesh_transformer/transformer/block_04/block_04_norm_conditioning/linear/b
+      2.87e-04  multimodality_forward/mesh_transformer/transformer/block_04/block_04_norm_conditioning/linear/w
+      2.84e-04  multimodality_forward/mesh_encoder/split_input_matmul/w_spatial_feature=sin_lat,sin_lon,cos_lon
+wrote /data/results/grads03/full_grads_mini_linear_h200.json
+WARNING:absl:Skipping gradient checkpointing for sequence length of 1
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 1, channels: 1, noise_channels: 32)> Size: 128B
+JitTracer(float32[1,1,32])
+Dimensions without coordinates: batch, channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/usr/local/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+WARNING:absl:Skipping gradient checkpointing for sequence length of 1
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 1, channels: 1, noise_channels: 32)> Size: 128B
+JitTracer(float32[1,1,32])
+Dimensions without coordinates: batch, channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/usr/local/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+WARNING:absl:Skipping gradient checkpointing for sequence length of 1
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 1, channels: 1, noise_channels: 32)> Size: 128B
+JitTracer(float32[1,1,32])
+Dimensions without coordinates: batch, channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/usr/local/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+WARNING:absl:Skipping gradient checkpointing for sequence length of 1
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 1, channels: 1, noise_channels: 32)> Size: 128B
+JitTracer(float32[1,1,32])
+Dimensions without coordinates: batch, channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/usr/local/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+WARNING:absl:Skipping gradient checkpointing for sequence length of 1
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 1, channels: 1, noise_channels: 32)> Size: 128B
+JitTracer(float32[1,1,32])
+Dimensions without coordinates: batch, channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/usr/local/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+WARNING:absl:Skipping gradient checkpointing for sequence length of 1
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 1, channels: 1, noise_channels: 32)> Size: 128B
+JitTracer(float32[1,1,32])
+Dimensions without coordinates: batch, channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/usr/local/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+
+exit 0  wall 309s

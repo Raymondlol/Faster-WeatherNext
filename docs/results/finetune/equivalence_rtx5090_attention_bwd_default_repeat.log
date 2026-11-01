@@ -1,0 +1,29 @@
+WARNING:absl:Skipping gradient checkpointing for sequence length of 1
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 1, channels: 1, noise_channels: 32)> Size: 128B
+JitTracer(float32[1,1,32])
+Dimensions without coordinates: batch, channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+W1101 01:15:02.817995  183688 hlo_rematerialization.cc:3363] Can't reduce memory use below 21.08GiB (22629749965 bytes) by rematerialization; only reduced to 24.29GiB (26085976296 bytes), down from 24.29GiB (26086000776 bytes) originally
+default  reference  temp 20.79 GiB  step  5.42s  compile   61s  attention=xla
+WARNING:absl:Skipping gradient checkpointing for sequence length of 1
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 1, channels: 1, noise_channels: 32)> Size: 128B
+JitTracer(float32[1,1,32])
+Dimensions without coordinates: batch, channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+W1101 01:16:21.302678  183688 hlo_rematerialization.cc:3363] Can't reduce memory use below 21.08GiB (22629749965 bytes) by rematerialization; only reduced to 28.82GiB (30943716076 bytes), down from 28.82GiB (30943728380 bytes) originally
+default  faster_weathernext temp  3.79 GiB  step  0.92s  compile   67s  attention=pallas
+default  faster-weathernext vs reference: min corr 0.9999887672  max rel RMS 4.74e-03  median 5.07e-04  NaN masks equal True  (101 fields)
+wrote /tmp/claude-1000/-home-raymxnd-Workspace-WeatherForcast/d4a93a6d-df87-4c4c-b7ce-cc8b5b5265d2/scratchpad/equiv_run_b.json

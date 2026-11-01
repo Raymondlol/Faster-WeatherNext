@@ -1,0 +1,259 @@
+{
+ "model": "WeatherNextCyclones_Mini",
+ "device": "NVIDIA GeForce RTX 5090",
+ "jax": "0.11.2",
+ "faster_weathernext": "0.1.1",
+ "blocks": {
+  "grid_chunk": 8192,
+  "edge_chunk": 16384
+ },
+ "masked": [],
+ "modules": "all",
+ "loss": "crps",
+ "head_params": 56684133,
+ "precisions": {
+  "highest": {
+   "official": {
+    "temp_gib": 83.65751740336418,
+    "compile_s": 82.9094603061676,
+    "oom": "RESOURCE_EXHAUSTED: Out of memory while trying to allocate 83.66GiB with allocator GPU_0_bfc on device 0. [tf-allocator-allocation-error=''] [executable_name='jit_fn']"
+   },
+   "official_mha": {
+    "temp_gib": 115.73732301592827,
+    "compile_s": 40.991973876953125,
+    "oom": "RESOURCE_EXHAUSTED: Out of memory while trying to allocate 115.74GiB with allocator GPU_0_bfc on device 0. [tf-allocator-allocation-error=''] [executable_name='jit_fn']"
+   },
+   "fwn": {
+    "temp_gib": 3.9292222931981087,
+    "compile_s": 57.98857641220093,
+    "step_s": 0.8979263305664062
+   },
+   "fwn_xla": {
+    "temp_gib": 4.046475827693939,
+    "compile_s": 32.29124569892883,
+    "step_s": 1.1193935871124268
+   },
+   "fwn_strict": {
+    "temp_gib": 3.9292222931981087,
+    "compile_s": 20.617359161376953,
+    "step_s": 3.3168978691101074
+   },
+   "fwn_noremat": {
+    "temp_gib": 38.95218490809202,
+    "compile_s": 25.933741569519043
+   },
+   "reference": "fwn_xla",
+   "checks": {
+    "fwn vs fwn_xla": {
+     "loss": {
+      "official": 1.2029576301574707,
+      "other": 1.2029577493667603,
+      "rel_diff": 9.909683147791032e-08,
+      "max_per_var_rel_diff": 8.181437953570938e-06
+     },
+     "grads": {
+      "global_rel_l2": 0.001152629461458604,
+      "global_cos": 0.9999993373931454,
+      "max_rel_l2": 0.005396667036540233,
+      "n_params": 376,
+      "n_compared": 335,
+      "n_zero_both": 6,
+      "n_zero_ref_only": 0,
+      "all_finite": true,
+      "worst": [
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_04/mha_proj_k/w",
+        "size": 262144,
+        "ref_norm": 0.15890459470408802,
+        "got_norm": 0.1586603189070189,
+        "finite": true,
+        "rel_l2": 0.005396667036540233
+       },
+       {
+        "param": "multimodality_forward/mesh_encoder/split_input_matmul/w_spatial_feature=sin_lat,sin_lon,cos_lon",
+        "size": 1536,
+        "ref_norm": 0.36128790869721605,
+        "got_norm": 0.3616580282111332,
+        "finite": true,
+        "rel_l2": 0.005370125279633845
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_01/block_01_norm_conditioning/linear/w",
+        "size": 32768,
+        "ref_norm": 0.05497876121409077,
+        "got_norm": 0.054763677476260694,
+        "finite": true,
+        "rel_l2": 0.005128952604055275
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_04/mha_proj_q/w",
+        "size": 262144,
+        "ref_norm": 0.16822486075147752,
+        "got_norm": 0.16798405898640578,
+        "finite": true,
+        "rel_l2": 0.004761338941207865
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_01/block_01_norm_conditioning/linear/b",
+        "size": 1024,
+        "ref_norm": 0.03666123682218743,
+        "got_norm": 0.03655480898292301,
+        "finite": true,
+        "rel_l2": 0.0043501316204721495
+       }
+      ]
+     }
+    },
+    "fwn_strict vs fwn_xla": {
+     "loss": {
+      "official": 1.2029576301574707,
+      "other": 1.2029575109481812,
+      "rel_diff": 9.909683147791032e-08,
+      "max_per_var_rel_diff": 1.2444388266032497e-05
+     },
+     "grads": {
+      "global_rel_l2": 0.0007352196909427228,
+      "global_cos": 0.9999997309546174,
+      "max_rel_l2": 0.0023494882522781283,
+      "n_params": 376,
+      "n_compared": 335,
+      "n_zero_both": 6,
+      "n_zero_ref_only": 0,
+      "all_finite": true,
+      "worst": [
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_07/block_07_norm_conditioning/linear/w",
+        "size": 32768,
+        "ref_norm": 0.01885554025288714,
+        "got_norm": 0.018866430856829746,
+        "finite": true,
+        "rel_l2": 0.0023494882522781283
+       },
+       {
+        "param": "multimodality_forward/grid_decoder/split_output_linear/w_specific_humidity_level=50,100,150,200,250,300,400,500,600,700,850,925,1000_time=21600",
+        "size": 6656,
+        "ref_norm": 0.06549569836271832,
+        "got_norm": 0.06549132880851923,
+        "finite": true,
+        "rel_l2": 0.0022983905501291883
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_07/block_07_norm_conditioning/linear/b",
+        "size": 1024,
+        "ref_norm": 0.011977532343040461,
+        "got_norm": 0.011976822276668487,
+        "finite": true,
+        "rel_l2": 0.0019974693193459117
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_04/block_04_norm_conditioning_1/linear/w",
+        "size": 32768,
+        "ref_norm": 0.018693075444248905,
+        "got_norm": 0.01869524516062543,
+        "finite": true,
+        "rel_l2": 0.0017746622603545985
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_06/mha_proj_k/w",
+        "size": 262144,
+        "ref_norm": 0.08019847974205342,
+        "got_norm": 0.08021715963376236,
+        "finite": true,
+        "rel_l2": 0.0015166800874850351
+       }
+      ]
+     }
+    }
+   }
+  },
+  "default": {
+   "official": {
+    "temp_gib": 82.17185494303703,
+    "compile_s": 47.40474319458008,
+    "oom": "RESOURCE_EXHAUSTED: Out of memory while trying to allocate 82.17GiB with allocator GPU_0_bfc on device 0. [tf-allocator-allocation-error=''] [executable_name='jit_fn']"
+   },
+   "official_mha": {
+    "temp_gib": 106.66842457652092,
+    "compile_s": 28.64564847946167,
+    "oom": "RESOURCE_EXHAUSTED: Out of memory while trying to allocate 106.67GiB with allocator GPU_0_bfc on device 0. [tf-allocator-allocation-error=''] [executable_name='jit_fn']"
+   },
+   "fwn": {
+    "temp_gib": 4.007309623062611,
+    "compile_s": 36.81330490112305,
+    "step_s": 0.4123044013977051
+   },
+   "fwn_xla": {
+    "temp_gib": 4.162897050380707,
+    "compile_s": 27.714158058166504,
+    "step_s": 0.8910126686096191
+   },
+   "fwn_noremat": {
+    "temp_gib": 38.952152244746685,
+    "compile_s": 20.89156484603882
+   },
+   "reference": "fwn_xla",
+   "checks": {
+    "fwn vs fwn_xla": {
+     "loss": {
+      "official": 1.2031620740890503,
+      "other": 1.2031536102294922,
+      "rel_diff": 7.034679483654526e-06,
+      "max_per_var_rel_diff": 0.0028837358039602396
+     },
+     "grads": {
+      "global_rel_l2": 0.044134135651816876,
+      "global_cos": 0.9990259515397509,
+      "max_rel_l2": 0.18180455021771114,
+      "n_params": 376,
+      "n_compared": 335,
+      "n_zero_both": 6,
+      "n_zero_ref_only": 0,
+      "all_finite": true,
+      "worst": [
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_07/block_07_norm_conditioning/linear/b",
+        "size": 1024,
+        "ref_norm": 0.01253671756174312,
+        "got_norm": 0.012857313685722162,
+        "finite": true,
+        "rel_l2": 0.18180455021771114
+       },
+       {
+        "param": "multimodality_forward/mesh_transformer/transformer/block_01/block_01_norm_conditioning/linear/b",
+        "size": 1024,
+        "ref_norm": 0.03141792291414201,
+        "got_norm": 0.03467389298263372,
+        "finite": true,
+        "rel_l2": 0.17160785316338278
+       },
+       {
+        "param": "multimodality_forward/grid_to_mesh_gnn/edge_encoder/shared_dense/mlp/linear_0/b",
+        "size": 32,
+        "ref_norm": 0.2904886811726889,
+        "got_norm": 0.25693576863629586,
+        "finite": true,
+        "rel_l2": 0.15031464004877826
+       },
+       {
+        "param": "multimodality_forward/mesh_encoder/split_input_matmul/w_forcing_year_progress_cos_time=21600",
+        "size": 512,
+        "ref_norm": 0.029876893921651937,
+        "got_norm": 0.03038230986338254,
+        "finite": true,
+        "rel_l2": 0.14808206528931833
+       },
+       {
+        "param": "multimodality_forward/mesh_encoder/split_input_matmul/w_forcing_year_progress_sin_time=21600",
+        "size": 512,
+        "ref_norm": 0.26616761879382167,
+        "got_norm": 0.2706703007440032,
+        "finite": true,
+        "rel_l2": 0.1480820277472271
+       }
+      ]
+     }
+    }
+   }
+  }
+ }
+}
