@@ -1,0 +1,98 @@
+example 2026100412 built in 2.2s
+WeatherNext2 ckpt 1: training 5.57M of 183.8M params; masked targets: 18 (cyclone channels, sea_surface_temperature)
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 2, channels: 1, noise_channels: 32)> Size: 256B
+JitTracer(float32[2,1,32])
+Coordinates:
+  * batch    (batch) object 16B MultiIndex
+  * _batch   (batch) int64 16B 0 0
+  * sample   (batch) int64 16B 0 1
+Dimensions without coordinates: channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+/home/raymxnd/Workspace/WeatherForcast/weathernext/weathernext/weathernext2/architecture.py:286: FutureWarning: Deleting a single level of a MultiIndex is deprecated. Previously, this deleted all levels of a MultiIndex. Please also drop the following variables: {'batch'} to avoid an error in the future.
+  predictions[var] = xarray_jax.apply_ufunc(activation_fn, predictions[var])
+W1031 13:16:55.643671 1640757 hlo_rematerialization.cc:3363] Can't reduce memory use below 25.14GiB (26997919705 bytes) by rematerialization; only reduced to 63.07GiB (67717567744 bytes), down from 63.07GiB (67717567744 bytes) originally
+train step compiled in 85s: temp 20.03 GiB, arguments 1.79 GiB
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 2, channels: 1, noise_channels: 32)> Size: 256B
+JitTracer(float32[2,1,32])
+Coordinates:
+  * batch    (batch) object 16B MultiIndex
+  * _batch   (batch) int64 16B 0 0
+  * sample   (batch) int64 16B 0 1
+Dimensions without coordinates: channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+/home/raymxnd/Workspace/WeatherForcast/weathernext/weathernext/weathernext2/architecture.py:286: FutureWarning: Deleting a single level of a MultiIndex is deprecated. Previously, this deleted all levels of a MultiIndex. Please also drop the following variables: {'batch'} to avoid an error in the future.
+  predictions[var] = xarray_jax.apply_ufunc(activation_fn, predictions[var])
+W1031 13:18:05.723884 1640757 hlo_rematerialization.cc:3363] Can't reduce memory use below 25.12GiB (26978079655 bytes) by rematerialization; only reduced to 56.83GiB (61019999108 bytes), down from 56.83GiB (61020035972 bytes) originally
+eval before (77s): 2026102800 1.04093  2026102812 1.05581  2026103000 1.00725  2026103012 1.02891
+step    0 2026101006  loss 1.11923  |g| 3.305e+00  3.99s
+step    1 2026102406  loss 1.08439  |g| 5.549e+00  3.83s
+step    2 2026101206  loss 1.16080  |g| 4.804e+00  3.83s
+step    3 2026100612  loss 1.00675  |g| 5.488e+00  3.83s
+step    4 2026101900  loss 1.04612  |g| 6.701e+00  3.83s
+step    5 2026101906  loss 1.07503  |g| 4.786e+00  3.83s
+step    6 2026102300  loss 1.14829  |g| 7.357e+00  3.84s
+step    7 2026100512  loss 1.05961  |g| 4.752e+00  3.83s
+step    8 2026101806  loss 1.10100  |g| 4.622e+00  3.83s
+step    9 2026102200  loss 0.98473  |g| 5.492e+00  3.84s
+step   10 2026101500  loss 1.10565  |g| 5.595e+00  3.84s
+step   11 2026100700  loss 1.06021  |g| 4.758e+00  3.84s
+step   12 2026100912  loss 1.01424  |g| 4.618e+00  3.83s
+step   13 2026100500  loss 1.00385  |g| 4.672e+00  3.84s
+step   14 2026101812  loss 1.07445  |g| 5.497e+00  3.84s
+step   15 2026101612  loss 0.96566  |g| 4.952e+00  3.84s
+step   16 2026101112  loss 1.00062  |g| 6.518e+00  3.84s
+step   17 2026102006  loss 1.06404  |g| 5.840e+00  3.84s
+step   18 2026100706  loss 1.11928  |g| 4.643e+00  3.84s
+step   19 2026102312  loss 0.96902  |g| 5.100e+00  3.84s
+step   20 2026102106  loss 1.07974  |g| 3.516e+00  3.84s
+step   21 2026101606  loss 1.18351  |g| 6.615e+00  3.84s
+step   22 2026101000  loss 1.02760  |g| 8.481e+00  3.84s
+step   23 2026101600  loss 0.95806  |g| 6.062e+00  3.84s
+step   24 2026100506  loss 1.06458  |g| 7.789e+00  3.84s
+step   25 2026100418  loss 1.23303  |g| 8.857e+00  3.84s
+step   26 2026101412  loss 0.96055  |g| 5.476e+00  3.84s
+step   27 2026102306  loss 1.05333  |g| 5.438e+00  3.84s
+step   28 2026101212  loss 0.94020  |g| 4.737e+00  3.84s
+step   29 2026100918  loss 1.13005  |g| 5.310e+00  3.84s
+step   30 2026101306  loss 1.02735  |g| 5.324e+00  3.84s
+step   31 2026101800  loss 0.92229  |g| 5.552e+00  3.84s
+step   32 2026101118  loss 1.02643  |g| 4.691e+00  3.84s
+step   33 2026100412  loss 1.04726  |g| 5.719e+00  3.84s
+step   34 2026100600  loss 1.17547  |g| 1.351e+01  3.84s
+step   35 2026101200  loss 1.04362  |g| 9.135e+00  3.84s
+step   36 2026101300  loss 0.87426  |g| 6.315e+00  3.84s
+step   37 2026101618  loss 1.03966  |g| 7.777e+00  3.84s
+step   38 2026102318  loss 1.03753  |g| 6.237e+00  3.84s
+step   39 2026102012  loss 0.96616  |g| 9.837e+00  3.84s
+step   40 2026100806  loss 1.46045  |g| 2.030e+01  3.84s
+step   41 2026101512  loss 0.86261  |g| 8.777e+00  3.84s
+step   42 2026101218  loss 1.31508  |g| 1.834e+01  3.84s
+step   43 2026102212  loss 1.24633  |g| 1.669e+01  3.84s
+step   44 2026100618  loss 0.97079  |g| 7.846e+00  3.84s
+step   45 2026101700  loss 1.18442  |g| 1.552e+01  3.84s
+step   46 2026102018  loss 1.01903  |g| 7.789e+00  3.84s
+step   47 2026102218  loss 0.99029  |g| 6.681e+00  3.84s
+step   48 2026102000  loss 1.32733  |g| 2.056e+01  3.84s
+step   49 2026101712  loss 0.93829  |g| 9.626e+00  3.84s
+step   50 2026101912  loss 1.14219  |g| 1.493e+01  3.84s
+step   51 2026100718  loss 0.99721  |g| 9.966e+00  3.84s
+step   52 2026100712  loss 1.20846  |g| 1.509e+01  3.84s
+step   53 2026100606  loss 0.96969  |g| 7.181e+00  3.84s
+step   54 2026101818  loss 1.28913  |g| 1.491e+01  3.84s
+step   55 2026101706  loss 0.96458  |g| 7.333e+00  3.84s
+step   56 2026101506  loss 1.17777  |g| 1.025e+01  3.84s
+step   57 2026100518  loss 0.97768  |g| 7.030e+00  3.84s
+step   58 2026101918  loss 0.92066  |g| 7.428e+00  3.84s
+step   59 2026102118  loss 1.18482  |g| 1.205e+01  3.83s
+median step 3.84s, device peak 21.82 GiB
+eval 2026102800: 1.04093 -> 1.16054 (+11.49 %)
+eval 2026102812: 1.05581 -> 1.16849 (+10.67 %)
+eval 2026103000: 1.00725 -> 1.12482 (+11.67 %)
+eval 2026103012: 1.02891 -> 1.14093 (+10.89 %)
+wrote docs/results/finetune/finetune_masksst_rtx5090.json

@@ -244,6 +244,29 @@ def rollout_inputs(init: dt.datetime, n_steps: int, task):
   return inputs.compute(), targets, forcings
 
 
+def training_example(init: dt.datetime, task, precip: bool = True):
+  """(inputs, targets, forcings) for one 6 h training step from IFS open data.
+
+  Inputs are the analyses at init-6h and init (as in `rollout_inputs`); targets are the analysis at
+  init+6h and, with precip=True, the 0-6 h precipitation of the run started at init (the same
+  source `truth_fields` verifies against). Target fields open data does not provide (the cyclone
+  channels; precipitation with precip=False) stay NaN: mask them out of the loss
+  (`finetune.all_nan_vars`). The `datetime` coordinate is dropped so that examples from different
+  init times share one compiled training step.
+  """
+  import dataclasses
+  from weathernext.utils import data_utils
+  ds = build_example(init, 1, task.target_variables)
+  truth = analysis_state(init + dt.timedelta(hours=6))
+  for name in list(PL_VARS) + list(SFC_VARS):
+    ds[name].values[0, 2] = truth[name]
+  if precip and "total_precipitation_6hr" in ds:
+    ds["total_precipitation_6hr"].values[0, 2] = fetch_fields(init, 6, {("tp", "sfc", 0)})[("tp", 0)]
+  inputs, targets, forcings = data_utils.extract_inputs_targets_forcings(
+      ds, target_lead_times=slice("6h", "6h"), **dataclasses.asdict(task))
+  return tuple(x.drop_vars("datetime", errors="ignore").compute() for x in (inputs, targets, forcings))
+
+
 def truth_fields(t: dt.datetime) -> dict:
   """Verification at valid time t: IFS analysis msl/10u/10v and the 0-6h IFS precip ending at t."""
   f = fetch_fields(t, 0, {("msl", "sfc", 0), ("10u", "sfc", 0), ("10v", "sfc", 0)})

@@ -1,0 +1,847 @@
+{
+ "model": "WeatherNext2",
+ "checkpoint": 1,
+ "device": "NVIDIA GeForce RTX 5090",
+ "jax": "0.11.2",
+ "faster_weathernext": "0.1.1",
+ "args": {
+  "model": "WeatherNext2",
+  "checkpoint": 1,
+  "train": [
+   "2026100412",
+   "2026100418",
+   "2026100500",
+   "2026100506",
+   "2026100512",
+   "2026100518",
+   "2026100600",
+   "2026100606",
+   "2026100612",
+   "2026100618",
+   "2026100700",
+   "2026100706",
+   "2026100712",
+   "2026100718",
+   "2026100800",
+   "2026100806",
+   "2026100912",
+   "2026100918",
+   "2026101000",
+   "2026101006",
+   "2026101112",
+   "2026101118",
+   "2026101200",
+   "2026101206",
+   "2026101212",
+   "2026101218",
+   "2026101300",
+   "2026101306",
+   "2026101412",
+   "2026101418",
+   "2026101500",
+   "2026101506",
+   "2026101512",
+   "2026101518",
+   "2026101600",
+   "2026101606",
+   "2026101612",
+   "2026101618",
+   "2026101700",
+   "2026101706",
+   "2026101712",
+   "2026101718",
+   "2026101800",
+   "2026101806",
+   "2026101812",
+   "2026101818",
+   "2026101900",
+   "2026101906",
+   "2026101912",
+   "2026101918",
+   "2026102000",
+   "2026102006",
+   "2026102012",
+   "2026102018",
+   "2026102100",
+   "2026102106",
+   "2026102112",
+   "2026102118",
+   "2026102200",
+   "2026102206",
+   "2026102212",
+   "2026102218",
+   "2026102300",
+   "2026102306",
+   "2026102312",
+   "2026102318",
+   "2026102400",
+   "2026102406"
+  ],
+  "eval": [
+   "2026102800",
+   "2026102812",
+   "2026103000",
+   "2026103012"
+  ],
+  "steps": 60,
+  "lr": 3e-05,
+  "weight_decay": 0.0,
+  "clip": 1.0,
+  "eval_keys": 2,
+  "precision": "default",
+  "seed": 0,
+  "no_precip": false,
+  "mask": [
+   "sea_surface_temperature"
+  ],
+  "compile_only": false,
+  "no_remat": false,
+  "weights_dir": "/home/raymxnd/Workspace/WeatherForcast/weights",
+  "out": null,
+  "log": "docs/results/finetune/finetune_masksst_rtx5090.json"
+ },
+ "masked": [
+  "cyclone_all_wind_disc",
+  "cyclone_exists_gaussian_unit_mode",
+  "cyclone_usa_pres_disc",
+  "cyclone_usa_r34_ne_radius_disc",
+  "cyclone_usa_r34_nw_radius_disc",
+  "cyclone_usa_r34_se_radius_disc",
+  "cyclone_usa_r34_sw_radius_disc",
+  "cyclone_usa_r50_ne_radius_disc",
+  "cyclone_usa_r50_nw_radius_disc",
+  "cyclone_usa_r50_se_radius_disc",
+  "cyclone_usa_r50_sw_radius_disc",
+  "cyclone_usa_r64_ne_radius_disc",
+  "cyclone_usa_r64_nw_radius_disc",
+  "cyclone_usa_r64_se_radius_disc",
+  "cyclone_usa_r64_sw_radius_disc",
+  "cyclone_usa_rmw_disc",
+  "cyclone_usa_wind_disc",
+  "sea_surface_temperature"
+ ],
+ "head_params": 5572967,
+ "total_params": 183785575,
+ "compile": {
+  "seconds": 85.42077422142029,
+  "temp_gib": 20.031021110713482,
+  "argument_gib": 1.7898386642336845,
+  "output_gib": 0.062285151332616806
+ },
+ "eval_before": {
+  "2026102800": {
+   "loss": 1.0409315824508667,
+   "per_var": {
+    "100m_u_component_of_wind": 0.13943974673748016,
+    "100m_v_component_of_wind": 0.1279769241809845,
+    "10m_u_component_of_wind": 0.14852724969387054,
+    "10m_v_component_of_wind": 0.13638198375701904,
+    "2m_temperature": 0.0990767851471901,
+    "cyclone_all_wind_disc": 0.0,
+    "cyclone_exists_gaussian_unit_mode": 0.0,
+    "cyclone_usa_pres_disc": 0.0,
+    "cyclone_usa_r34_ne_radius_disc": 0.0,
+    "cyclone_usa_r34_nw_radius_disc": 0.0,
+    "cyclone_usa_r34_se_radius_disc": 0.0,
+    "cyclone_usa_r34_sw_radius_disc": 0.0,
+    "cyclone_usa_r50_ne_radius_disc": 0.0,
+    "cyclone_usa_r50_nw_radius_disc": 0.0,
+    "cyclone_usa_r50_se_radius_disc": 0.0,
+    "cyclone_usa_r50_sw_radius_disc": 0.0,
+    "cyclone_usa_r64_ne_radius_disc": 0.0,
+    "cyclone_usa_r64_nw_radius_disc": 0.0,
+    "cyclone_usa_r64_se_radius_disc": 0.0,
+    "cyclone_usa_r64_sw_radius_disc": 0.0,
+    "cyclone_usa_rmw_disc": 0.0,
+    "cyclone_usa_wind_disc": 0.0,
+    "geopotential": 0.06217426806688309,
+    "mean_sea_level_pressure": 0.06353595107793808,
+    "sea_surface_temperature": 1.588623285293579,
+    "specific_humidity": 0.21853123605251312,
+    "temperature": 0.12121684104204178,
+    "total_precipitation_6hr": 0.12706270813941956,
+    "u_component_of_wind": 0.13052809238433838,
+    "v_component_of_wind": 0.11552539467811584,
+    "vertical_velocity": 0.27828991413116455
+   }
+  },
+  "2026102812": {
+   "loss": 1.0558079481124878,
+   "per_var": {
+    "100m_u_component_of_wind": 0.1422329545021057,
+    "100m_v_component_of_wind": 0.13159945607185364,
+    "10m_u_component_of_wind": 0.1497618854045868,
+    "10m_v_component_of_wind": 0.13811764121055603,
+    "2m_temperature": 0.1023666113615036,
+    "cyclone_all_wind_disc": 0.0,
+    "cyclone_exists_gaussian_unit_mode": 0.0,
+    "cyclone_usa_pres_disc": 0.0,
+    "cyclone_usa_r34_ne_radius_disc": 0.0,
+    "cyclone_usa_r34_nw_radius_disc": 0.0,
+    "cyclone_usa_r34_se_radius_disc": 0.0,
+    "cyclone_usa_r34_sw_radius_disc": 0.0,
+    "cyclone_usa_r50_ne_radius_disc": 0.0,
+    "cyclone_usa_r50_nw_radius_disc": 0.0,
+    "cyclone_usa_r50_se_radius_disc": 0.0,
+    "cyclone_usa_r50_sw_radius_disc": 0.0,
+    "cyclone_usa_r64_ne_radius_disc": 0.0,
+    "cyclone_usa_r64_nw_radius_disc": 0.0,
+    "cyclone_usa_r64_se_radius_disc": 0.0,
+    "cyclone_usa_r64_sw_radius_disc": 0.0,
+    "cyclone_usa_rmw_disc": 0.0,
+    "cyclone_usa_wind_disc": 0.0,
+    "geopotential": 0.059477370232343674,
+    "mean_sea_level_pressure": 0.06731019914150238,
+    "sea_surface_temperature": 1.6101070642471313,
+    "specific_humidity": 0.22228027880191803,
+    "temperature": 0.12098342925310135,
+    "total_precipitation_6hr": 0.13529044389724731,
+    "u_component_of_wind": 0.13082188367843628,
+    "v_component_of_wind": 0.11493133008480072,
+    "vertical_velocity": 0.2863400876522064
+   }
+  },
+  "2026103000": {
+   "loss": 1.0072473287582397,
+   "per_var": {
+    "100m_u_component_of_wind": 0.13535073399543762,
+    "100m_v_component_of_wind": 0.12464098632335663,
+    "10m_u_component_of_wind": 0.14480449259281158,
+    "10m_v_component_of_wind": 0.13379283249378204,
+    "2m_temperature": 0.09720295667648315,
+    "cyclone_all_wind_disc": 0.0,
+    "cyclone_exists_gaussian_unit_mode": 0.0,
+    "cyclone_usa_pres_disc": 0.0,
+    "cyclone_usa_r34_ne_radius_disc": 0.0,
+    "cyclone_usa_r34_nw_radius_disc": 0.0,
+    "cyclone_usa_r34_se_radius_disc": 0.0,
+    "cyclone_usa_r34_sw_radius_disc": 0.0,
+    "cyclone_usa_r50_ne_radius_disc": 0.0,
+    "cyclone_usa_r50_nw_radius_disc": 0.0,
+    "cyclone_usa_r50_se_radius_disc": 0.0,
+    "cyclone_usa_r50_sw_radius_disc": 0.0,
+    "cyclone_usa_r64_ne_radius_disc": 0.0,
+    "cyclone_usa_r64_nw_radius_disc": 0.0,
+    "cyclone_usa_r64_se_radius_disc": 0.0,
+    "cyclone_usa_r64_sw_radius_disc": 0.0,
+    "cyclone_usa_rmw_disc": 0.0,
+    "cyclone_usa_wind_disc": 0.0,
+    "geopotential": 0.060380153357982635,
+    "mean_sea_level_pressure": 0.06656627357006073,
+    "sea_surface_temperature": 1.5575697422027588,
+    "specific_humidity": 0.21350151300430298,
+    "temperature": 0.11542178690433502,
+    "total_precipitation_6hr": 0.12492793798446655,
+    "u_component_of_wind": 0.1250949203968048,
+    "v_component_of_wind": 0.11082611978054047,
+    "vertical_velocity": 0.26893115043640137
+   }
+  },
+  "2026103012": {
+   "loss": 1.0289126634597778,
+   "per_var": {
+    "100m_u_component_of_wind": 0.138963520526886,
+    "100m_v_component_of_wind": 0.12912282347679138,
+    "10m_u_component_of_wind": 0.14678165316581726,
+    "10m_v_component_of_wind": 0.13630428910255432,
+    "2m_temperature": 0.09881569445133209,
+    "cyclone_all_wind_disc": 0.0,
+    "cyclone_exists_gaussian_unit_mode": 0.0,
+    "cyclone_usa_pres_disc": 0.0,
+    "cyclone_usa_r34_ne_radius_disc": 0.0,
+    "cyclone_usa_r34_nw_radius_disc": 0.0,
+    "cyclone_usa_r34_se_radius_disc": 0.0,
+    "cyclone_usa_r34_sw_radius_disc": 0.0,
+    "cyclone_usa_r50_ne_radius_disc": 0.0,
+    "cyclone_usa_r50_nw_radius_disc": 0.0,
+    "cyclone_usa_r50_se_radius_disc": 0.0,
+    "cyclone_usa_r50_sw_radius_disc": 0.0,
+    "cyclone_usa_r64_ne_radius_disc": 0.0,
+    "cyclone_usa_r64_nw_radius_disc": 0.0,
+    "cyclone_usa_r64_se_radius_disc": 0.0,
+    "cyclone_usa_r64_sw_radius_disc": 0.0,
+    "cyclone_usa_rmw_disc": 0.0,
+    "cyclone_usa_wind_disc": 0.0,
+    "geopotential": 0.05989435315132141,
+    "mean_sea_level_pressure": 0.06428782641887665,
+    "sea_surface_temperature": 1.6431219577789307,
+    "specific_humidity": 0.21590931713581085,
+    "temperature": 0.11675760895013809,
+    "total_precipitation_6hr": 0.14073795080184937,
+    "u_component_of_wind": 0.12529563903808594,
+    "v_component_of_wind": 0.11094693839550018,
+    "vertical_velocity": 0.2831791341304779
+   }
+  }
+ },
+ "steps": [
+  {
+   "step": 0,
+   "init": "2026101006",
+   "loss": 1.1192289590835571,
+   "grad_norm": 3.3050899505615234,
+   "seconds": 3.985809326171875
+  },
+  {
+   "step": 1,
+   "init": "2026102406",
+   "loss": 1.0843896865844727,
+   "grad_norm": 5.549214839935303,
+   "seconds": 3.8309130668640137
+  },
+  {
+   "step": 2,
+   "init": "2026101206",
+   "loss": 1.1607990264892578,
+   "grad_norm": 4.803843975067139,
+   "seconds": 3.831921339035034
+  },
+  {
+   "step": 3,
+   "init": "2026100612",
+   "loss": 1.0067498683929443,
+   "grad_norm": 5.488168239593506,
+   "seconds": 3.830737352371216
+  },
+  {
+   "step": 4,
+   "init": "2026101900",
+   "loss": 1.0461229085922241,
+   "grad_norm": 6.701242923736572,
+   "seconds": 3.8333256244659424
+  },
+  {
+   "step": 5,
+   "init": "2026101906",
+   "loss": 1.0750306844711304,
+   "grad_norm": 4.78563117980957,
+   "seconds": 3.8339226245880127
+  },
+  {
+   "step": 6,
+   "init": "2026102300",
+   "loss": 1.1482946872711182,
+   "grad_norm": 7.357048034667969,
+   "seconds": 3.83500337600708
+  },
+  {
+   "step": 7,
+   "init": "2026100512",
+   "loss": 1.0596120357513428,
+   "grad_norm": 4.752439022064209,
+   "seconds": 3.834677219390869
+  },
+  {
+   "step": 8,
+   "init": "2026101806",
+   "loss": 1.1010043621063232,
+   "grad_norm": 4.621790409088135,
+   "seconds": 3.8346645832061768
+  },
+  {
+   "step": 9,
+   "init": "2026102200",
+   "loss": 0.9847313761711121,
+   "grad_norm": 5.491550445556641,
+   "seconds": 3.8364791870117188
+  },
+  {
+   "step": 10,
+   "init": "2026101500",
+   "loss": 1.1056504249572754,
+   "grad_norm": 5.595157146453857,
+   "seconds": 3.836566209793091
+  },
+  {
+   "step": 11,
+   "init": "2026100700",
+   "loss": 1.0602140426635742,
+   "grad_norm": 4.758091449737549,
+   "seconds": 3.8355607986450195
+  },
+  {
+   "step": 12,
+   "init": "2026100912",
+   "loss": 1.014237880706787,
+   "grad_norm": 4.617791652679443,
+   "seconds": 3.8346872329711914
+  },
+  {
+   "step": 13,
+   "init": "2026100500",
+   "loss": 1.0038481950759888,
+   "grad_norm": 4.671819686889648,
+   "seconds": 3.835641860961914
+  },
+  {
+   "step": 14,
+   "init": "2026101812",
+   "loss": 1.074454426765442,
+   "grad_norm": 5.496978759765625,
+   "seconds": 3.8377368450164795
+  },
+  {
+   "step": 15,
+   "init": "2026101612",
+   "loss": 0.965660810470581,
+   "grad_norm": 4.952380180358887,
+   "seconds": 3.8387444019317627
+  },
+  {
+   "step": 16,
+   "init": "2026101112",
+   "loss": 1.0006184577941895,
+   "grad_norm": 6.517866134643555,
+   "seconds": 3.8362984657287598
+  },
+  {
+   "step": 17,
+   "init": "2026102006",
+   "loss": 1.0640418529510498,
+   "grad_norm": 5.840461730957031,
+   "seconds": 3.8375892639160156
+  },
+  {
+   "step": 18,
+   "init": "2026100706",
+   "loss": 1.119278073310852,
+   "grad_norm": 4.642729759216309,
+   "seconds": 3.8378124237060547
+  },
+  {
+   "step": 19,
+   "init": "2026102312",
+   "loss": 0.9690228700637817,
+   "grad_norm": 5.099659442901611,
+   "seconds": 3.837205648422241
+  },
+  {
+   "step": 20,
+   "init": "2026102106",
+   "loss": 1.07974112033844,
+   "grad_norm": 3.5158801078796387,
+   "seconds": 3.8357462882995605
+  },
+  {
+   "step": 21,
+   "init": "2026101606",
+   "loss": 1.1835076808929443,
+   "grad_norm": 6.615167617797852,
+   "seconds": 3.8376126289367676
+  },
+  {
+   "step": 22,
+   "init": "2026101000",
+   "loss": 1.0275977849960327,
+   "grad_norm": 8.481230735778809,
+   "seconds": 3.837085008621216
+  },
+  {
+   "step": 23,
+   "init": "2026101600",
+   "loss": 0.9580624103546143,
+   "grad_norm": 6.061651229858398,
+   "seconds": 3.8359456062316895
+  },
+  {
+   "step": 24,
+   "init": "2026100506",
+   "loss": 1.0645805597305298,
+   "grad_norm": 7.788820266723633,
+   "seconds": 3.83670973777771
+  },
+  {
+   "step": 25,
+   "init": "2026100418",
+   "loss": 1.2330278158187866,
+   "grad_norm": 8.857479095458984,
+   "seconds": 3.837568759918213
+  },
+  {
+   "step": 26,
+   "init": "2026101412",
+   "loss": 0.9605545997619629,
+   "grad_norm": 5.47609806060791,
+   "seconds": 3.8366336822509766
+  },
+  {
+   "step": 27,
+   "init": "2026102306",
+   "loss": 1.0533347129821777,
+   "grad_norm": 5.438162326812744,
+   "seconds": 3.838200569152832
+  },
+  {
+   "step": 28,
+   "init": "2026101212",
+   "loss": 0.9402004480361938,
+   "grad_norm": 4.736769199371338,
+   "seconds": 3.837575912475586
+  },
+  {
+   "step": 29,
+   "init": "2026100918",
+   "loss": 1.1300545930862427,
+   "grad_norm": 5.309725284576416,
+   "seconds": 3.835589647293091
+  },
+  {
+   "step": 30,
+   "init": "2026101306",
+   "loss": 1.027353048324585,
+   "grad_norm": 5.323559284210205,
+   "seconds": 3.8376591205596924
+  },
+  {
+   "step": 31,
+   "init": "2026101800",
+   "loss": 0.9222906827926636,
+   "grad_norm": 5.552150726318359,
+   "seconds": 3.835721492767334
+  },
+  {
+   "step": 32,
+   "init": "2026101118",
+   "loss": 1.0264267921447754,
+   "grad_norm": 4.69077730178833,
+   "seconds": 3.8362841606140137
+  },
+  {
+   "step": 33,
+   "init": "2026100412",
+   "loss": 1.0472629070281982,
+   "grad_norm": 5.718715667724609,
+   "seconds": 3.837327003479004
+  },
+  {
+   "step": 34,
+   "init": "2026100600",
+   "loss": 1.1754722595214844,
+   "grad_norm": 13.511990547180176,
+   "seconds": 3.836961030960083
+  },
+  {
+   "step": 35,
+   "init": "2026101200",
+   "loss": 1.0436232089996338,
+   "grad_norm": 9.135140419006348,
+   "seconds": 3.836928129196167
+  },
+  {
+   "step": 36,
+   "init": "2026101300",
+   "loss": 0.8742632865905762,
+   "grad_norm": 6.3150458335876465,
+   "seconds": 3.8381576538085938
+  },
+  {
+   "step": 37,
+   "init": "2026101618",
+   "loss": 1.0396636724472046,
+   "grad_norm": 7.777122497558594,
+   "seconds": 3.8379366397857666
+  },
+  {
+   "step": 38,
+   "init": "2026102318",
+   "loss": 1.0375274419784546,
+   "grad_norm": 6.237412929534912,
+   "seconds": 3.837449312210083
+  },
+  {
+   "step": 39,
+   "init": "2026102012",
+   "loss": 0.9661576747894287,
+   "grad_norm": 9.837079048156738,
+   "seconds": 3.837475538253784
+  },
+  {
+   "step": 40,
+   "init": "2026100806",
+   "loss": 1.4604496955871582,
+   "grad_norm": 20.2987003326416,
+   "seconds": 3.8390016555786133
+  },
+  {
+   "step": 41,
+   "init": "2026101512",
+   "loss": 0.8626143932342529,
+   "grad_norm": 8.777162551879883,
+   "seconds": 3.839458465576172
+  },
+  {
+   "step": 42,
+   "init": "2026101218",
+   "loss": 1.315075397491455,
+   "grad_norm": 18.344627380371094,
+   "seconds": 3.836446523666382
+  },
+  {
+   "step": 43,
+   "init": "2026102212",
+   "loss": 1.2463264465332031,
+   "grad_norm": 16.68795394897461,
+   "seconds": 3.8377444744110107
+  },
+  {
+   "step": 44,
+   "init": "2026100618",
+   "loss": 0.9707945585250854,
+   "grad_norm": 7.846063613891602,
+   "seconds": 3.837914228439331
+  },
+  {
+   "step": 45,
+   "init": "2026101700",
+   "loss": 1.184424877166748,
+   "grad_norm": 15.520648956298828,
+   "seconds": 3.8365509510040283
+  },
+  {
+   "step": 46,
+   "init": "2026102018",
+   "loss": 1.0190258026123047,
+   "grad_norm": 7.7886962890625,
+   "seconds": 3.838561773300171
+  },
+  {
+   "step": 47,
+   "init": "2026102218",
+   "loss": 0.9902896881103516,
+   "grad_norm": 6.681366920471191,
+   "seconds": 3.8372209072113037
+  },
+  {
+   "step": 48,
+   "init": "2026102000",
+   "loss": 1.327329397201538,
+   "grad_norm": 20.562637329101562,
+   "seconds": 3.83795166015625
+  },
+  {
+   "step": 49,
+   "init": "2026101712",
+   "loss": 0.9382866621017456,
+   "grad_norm": 9.62611198425293,
+   "seconds": 3.838214635848999
+  },
+  {
+   "step": 50,
+   "init": "2026101912",
+   "loss": 1.1421862840652466,
+   "grad_norm": 14.932365417480469,
+   "seconds": 3.839059591293335
+  },
+  {
+   "step": 51,
+   "init": "2026100718",
+   "loss": 0.9972145557403564,
+   "grad_norm": 9.965677261352539,
+   "seconds": 3.8382794857025146
+  },
+  {
+   "step": 52,
+   "init": "2026100712",
+   "loss": 1.2084567546844482,
+   "grad_norm": 15.09177303314209,
+   "seconds": 3.8382749557495117
+  },
+  {
+   "step": 53,
+   "init": "2026100606",
+   "loss": 0.9696911573410034,
+   "grad_norm": 7.181429386138916,
+   "seconds": 3.840169906616211
+  },
+  {
+   "step": 54,
+   "init": "2026101818",
+   "loss": 1.2891335487365723,
+   "grad_norm": 14.908720016479492,
+   "seconds": 3.837639808654785
+  },
+  {
+   "step": 55,
+   "init": "2026101706",
+   "loss": 0.9645771980285645,
+   "grad_norm": 7.332891464233398,
+   "seconds": 3.837045907974243
+  },
+  {
+   "step": 56,
+   "init": "2026101506",
+   "loss": 1.1777693033218384,
+   "grad_norm": 10.248461723327637,
+   "seconds": 3.8372743129730225
+  },
+  {
+   "step": 57,
+   "init": "2026100518",
+   "loss": 0.9776817560195923,
+   "grad_norm": 7.030047416687012,
+   "seconds": 3.8379814624786377
+  },
+  {
+   "step": 58,
+   "init": "2026101918",
+   "loss": 0.9206633567810059,
+   "grad_norm": 7.427570343017578,
+   "seconds": 3.838114023208618
+  },
+  {
+   "step": 59,
+   "init": "2026102118",
+   "loss": 1.184816598892212,
+   "grad_norm": 12.046716690063477,
+   "seconds": 3.834653615951538
+  }
+ ],
+ "peak_gib": 21.820898294448853,
+ "median_step_s": 3.8372209072113037,
+ "eval_after": {
+  "2026102800": {
+   "loss": 1.160541296005249,
+   "per_var": {
+    "100m_u_component_of_wind": 0.14024949073791504,
+    "100m_v_component_of_wind": 0.12892509996891022,
+    "10m_u_component_of_wind": 0.14835524559020996,
+    "10m_v_component_of_wind": 0.13673800230026245,
+    "2m_temperature": 0.09061406552791595,
+    "cyclone_all_wind_disc": 0.0,
+    "cyclone_exists_gaussian_unit_mode": 0.0,
+    "cyclone_usa_pres_disc": 0.0,
+    "cyclone_usa_r34_ne_radius_disc": 0.0,
+    "cyclone_usa_r34_nw_radius_disc": 0.0,
+    "cyclone_usa_r34_se_radius_disc": 0.0,
+    "cyclone_usa_r34_sw_radius_disc": 0.0,
+    "cyclone_usa_r50_ne_radius_disc": 0.0,
+    "cyclone_usa_r50_nw_radius_disc": 0.0,
+    "cyclone_usa_r50_se_radius_disc": 0.0,
+    "cyclone_usa_r50_sw_radius_disc": 0.0,
+    "cyclone_usa_r64_ne_radius_disc": 0.0,
+    "cyclone_usa_r64_nw_radius_disc": 0.0,
+    "cyclone_usa_r64_se_radius_disc": 0.0,
+    "cyclone_usa_r64_sw_radius_disc": 0.0,
+    "cyclone_usa_rmw_disc": 0.0,
+    "cyclone_usa_wind_disc": 0.0,
+    "geopotential": 0.06798189878463745,
+    "mean_sea_level_pressure": 0.0649193525314331,
+    "sea_surface_temperature": 1.5749677419662476,
+    "specific_humidity": 0.24997997283935547,
+    "temperature": 0.13978080451488495,
+    "total_precipitation_6hr": 0.11433413624763489,
+    "u_component_of_wind": 0.14928951859474182,
+    "v_component_of_wind": 0.13590960204601288,
+    "vertical_velocity": 0.3153376281261444
+   }
+  },
+  "2026102812": {
+   "loss": 1.168492078781128,
+   "per_var": {
+    "100m_u_component_of_wind": 0.14291316270828247,
+    "100m_v_component_of_wind": 0.1328369826078415,
+    "10m_u_component_of_wind": 0.14936333894729614,
+    "10m_v_component_of_wind": 0.13860516250133514,
+    "2m_temperature": 0.09147855639457703,
+    "cyclone_all_wind_disc": 0.0,
+    "cyclone_exists_gaussian_unit_mode": 0.0,
+    "cyclone_usa_pres_disc": 0.0,
+    "cyclone_usa_r34_ne_radius_disc": 0.0,
+    "cyclone_usa_r34_nw_radius_disc": 0.0,
+    "cyclone_usa_r34_se_radius_disc": 0.0,
+    "cyclone_usa_r34_sw_radius_disc": 0.0,
+    "cyclone_usa_r50_ne_radius_disc": 0.0,
+    "cyclone_usa_r50_nw_radius_disc": 0.0,
+    "cyclone_usa_r50_se_radius_disc": 0.0,
+    "cyclone_usa_r50_sw_radius_disc": 0.0,
+    "cyclone_usa_r64_ne_radius_disc": 0.0,
+    "cyclone_usa_r64_nw_radius_disc": 0.0,
+    "cyclone_usa_r64_se_radius_disc": 0.0,
+    "cyclone_usa_r64_sw_radius_disc": 0.0,
+    "cyclone_usa_rmw_disc": 0.0,
+    "cyclone_usa_wind_disc": 0.0,
+    "geopotential": 0.06400833278894424,
+    "mean_sea_level_pressure": 0.06866370886564255,
+    "sea_surface_temperature": 1.6096842288970947,
+    "specific_humidity": 0.25394320487976074,
+    "temperature": 0.13538530468940735,
+    "total_precipitation_6hr": 0.12010172009468079,
+    "u_component_of_wind": 0.15061742067337036,
+    "v_component_of_wind": 0.13568633794784546,
+    "vertical_velocity": 0.3223147988319397
+   }
+  },
+  "2026103000": {
+   "loss": 1.1248246431350708,
+   "per_var": {
+    "100m_u_component_of_wind": 0.13557814061641693,
+    "100m_v_component_of_wind": 0.1254660040140152,
+    "10m_u_component_of_wind": 0.1437649130821228,
+    "10m_v_component_of_wind": 0.13414902985095978,
+    "2m_temperature": 0.08912350237369537,
+    "cyclone_all_wind_disc": 0.0,
+    "cyclone_exists_gaussian_unit_mode": 0.0,
+    "cyclone_usa_pres_disc": 0.0,
+    "cyclone_usa_r34_ne_radius_disc": 0.0,
+    "cyclone_usa_r34_nw_radius_disc": 0.0,
+    "cyclone_usa_r34_se_radius_disc": 0.0,
+    "cyclone_usa_r34_sw_radius_disc": 0.0,
+    "cyclone_usa_r50_ne_radius_disc": 0.0,
+    "cyclone_usa_r50_nw_radius_disc": 0.0,
+    "cyclone_usa_r50_se_radius_disc": 0.0,
+    "cyclone_usa_r50_sw_radius_disc": 0.0,
+    "cyclone_usa_r64_ne_radius_disc": 0.0,
+    "cyclone_usa_r64_nw_radius_disc": 0.0,
+    "cyclone_usa_r64_se_radius_disc": 0.0,
+    "cyclone_usa_r64_sw_radius_disc": 0.0,
+    "cyclone_usa_rmw_disc": 0.0,
+    "cyclone_usa_wind_disc": 0.0,
+    "geopotential": 0.06485021114349365,
+    "mean_sea_level_pressure": 0.06466376781463623,
+    "sea_surface_temperature": 1.538600206375122,
+    "specific_humidity": 0.24350053071975708,
+    "temperature": 0.13352540135383606,
+    "total_precipitation_6hr": 0.11074448376893997,
+    "u_component_of_wind": 0.14339186251163483,
+    "v_component_of_wind": 0.13192090392112732,
+    "vertical_velocity": 0.3064485192298889
+   }
+  },
+  "2026103012": {
+   "loss": 1.140930414199829,
+   "per_var": {
+    "100m_u_component_of_wind": 0.13896304368972778,
+    "100m_v_component_of_wind": 0.12947028875350952,
+    "10m_u_component_of_wind": 0.14556588232517242,
+    "10m_v_component_of_wind": 0.13630226254463196,
+    "2m_temperature": 0.09075110405683517,
+    "cyclone_all_wind_disc": 0.0,
+    "cyclone_exists_gaussian_unit_mode": 0.0,
+    "cyclone_usa_pres_disc": 0.0,
+    "cyclone_usa_r34_ne_radius_disc": 0.0,
+    "cyclone_usa_r34_nw_radius_disc": 0.0,
+    "cyclone_usa_r34_se_radius_disc": 0.0,
+    "cyclone_usa_r34_sw_radius_disc": 0.0,
+    "cyclone_usa_r50_ne_radius_disc": 0.0,
+    "cyclone_usa_r50_nw_radius_disc": 0.0,
+    "cyclone_usa_r50_se_radius_disc": 0.0,
+    "cyclone_usa_r50_sw_radius_disc": 0.0,
+    "cyclone_usa_r64_ne_radius_disc": 0.0,
+    "cyclone_usa_r64_nw_radius_disc": 0.0,
+    "cyclone_usa_r64_se_radius_disc": 0.0,
+    "cyclone_usa_r64_sw_radius_disc": 0.0,
+    "cyclone_usa_rmw_disc": 0.0,
+    "cyclone_usa_wind_disc": 0.0,
+    "geopotential": 0.062267035245895386,
+    "mean_sea_level_pressure": 0.06503040343523026,
+    "sea_surface_temperature": 1.6432154178619385,
+    "specific_humidity": 0.24740362167358398,
+    "temperature": 0.132475346326828,
+    "total_precipitation_6hr": 0.12259252369403839,
+    "u_component_of_wind": 0.14381173253059387,
+    "v_component_of_wind": 0.13080573081970215,
+    "vertical_velocity": 0.3182721734046936
+   }
+  }
+ }
+}

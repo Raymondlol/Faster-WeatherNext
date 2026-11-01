@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Head-only fine-tuning (prototype): `faster_weathernext.finetune` trains the mesh→grid GNN and
+  grid decoder (5.6M of WeatherNext 2's 184M parameters) with the official training loss (fair
+  CRPS, 2 members) while the encoder, grid→mesh GNN and transformer stay frozen. Gradients never
+  enter the frozen part, so no attention backward pass is needed. New option `remat` (off by
+  default; inference unchanged) rematerialises each GNN / encoder / decoder block in the backward
+  pass. `ifs.training_example` builds one-step examples from IFS open data, and
+  `scripts/finetune_head.py` / `scripts/verify_head_grads.py` train and validate. New `[train]`
+  extra (optax). Validation and memory: docs/validation.md §8.
 - IFS open-data inputs fall back across mirrors: AWS, then Google Cloud
   (`storage.googleapis.com/ecmwf-open-data`), then ECMWF (`data.ecmwf.int`). The AWS bucket
   throttles a freshly published run with 503 SlowDown on every request, sometimes for hours;
