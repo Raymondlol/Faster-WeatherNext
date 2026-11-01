@@ -11,10 +11,10 @@ Before and after training the loss is evaluated on held-out init times with fixe
 both evaluations see the same ensemble noise. This checks that the pipeline learns; it is not a
 skill evaluation.
 
-  python scripts/finetune_head.py --train 2026101912 2026101918 2026102000 --eval 2026103012 \
+  python scripts/finetune.py --train 2026101912 2026101918 2026102000 --eval 2026103012 \
       --steps 30 --mask sea_surface_temperature --out head.npz --log finetune_run.json
-  python scripts/finetune_head.py --train 2026102200 --compile-only   # memory of one training step
-  XLA_PYTHON_CLIENT_MEM_FRACTION=0.95 python scripts/finetune_head.py --modules all ...
+  python scripts/finetune.py --train 2026102200 --compile-only   # memory of one training step
+  XLA_PYTHON_CLIENT_MEM_FRACTION=0.95 python scripts/finetune.py --modules all ...
       # every parameter: a 25.5 GiB temp buffer + 3.1 GiB of arguments, too much for the 0.9 pool
 """
 import argparse
@@ -56,9 +56,9 @@ def main():
   p.add_argument("--modules", nargs="+", default=None,
                  help='module names to train (default: the head, finetune.HEAD_MODULES); "all" trains every '
                       "parameter, through the attention backward")
-  p.add_argument("--sequential-samples", choices=["auto", "on", "off"], default="auto",
-                 help="run the 2 ensemble members one at a time (half the activation memory; auto: on "
-                      "when every parameter is trained, where the batched step needs 45.8 GiB at 0.25°)")
+  p.add_argument("--sequential-samples", choices=["on", "off"], default="on",
+                 help="run the 2 ensemble members one at a time: same loss, about half the activation "
+                      "memory (0.25°: head 20.0 -> 12.3 GiB temp, all parameters 45.8 -> 25.5 GiB), ~5 %% slower")
   p.add_argument("--mask", nargs="*", default=[],
                  help="extra target variables to leave out of the loss, e.g. sea_surface_temperature: open data "
                       "has no SST, and its stand-in (skin temperature) has a diurnal cycle real SST lacks")
@@ -74,8 +74,7 @@ def main():
   import faster_weathernext
   from faster_weathernext import finetune, ifs, model
 
-  sequential = args.sequential_samples == "on" or (args.sequential_samples == "auto" and args.modules == ["all"])
-  faster_weathernext.enable(remat=not args.no_remat, sequential_samples=sequential)
+  faster_weathernext.enable(remat=not args.no_remat, sequential_samples=args.sequential_samples == "on")
   task, _ = model.build(args.model)
   load = lambda s: ifs.training_example(parse_init(s), task, precip=not args.no_precip)
   t0 = time.time()

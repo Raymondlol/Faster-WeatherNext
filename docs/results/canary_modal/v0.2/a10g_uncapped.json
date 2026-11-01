@@ -1,0 +1,27 @@
+{
+ "label": "a10g_uncapped",
+ "env": {
+  "XLA_PYTHON_CLIENT_PREALLOCATE": "false"
+ },
+ "ok": true,
+ "device": "NVIDIA A10",
+ "jax": "0.11.2",
+ "faster_weathernext": "0.1.1",
+ "compute_capability": "8.6",
+ "attention": "pallas",
+ "pool_gib": 16.544921875,
+ "highest_first_call_s": 126.86918115615845,
+ "step_s": [
+  116.79271531105042,
+  2.430650472640991,
+  2.420816659927368,
+  2.4241998195648193
+ ],
+ "finite": [
+  true,
+  true,
+  true,
+  true
+ ],
+ "peak_gib": 6.527284860610962
+}

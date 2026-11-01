@@ -30,7 +30,7 @@ image = (
     .apt_install("git")
     .add_local_dir(REPO, "/opt/faster-weathernext", copy=True,
                    ignore=[".git", "**/__pycache__", "docs/results", "*.nc", "*.npz"])
-    .run_commands("pip install '/opt/faster-weathernext[cuda12]'")
+    .run_commands("pip install '/opt/faster-weathernext[cuda12,weathernext]'")
 )
 
 

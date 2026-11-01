@@ -1,0 +1,26 @@
+{
+ "label": "a10g_cap8",
+ "env": {
+  "XLA_PYTHON_CLIENT_MEM_FRACTION": "0.3113"
+ },
+ "ok": true,
+ "device": "NVIDIA A10",
+ "jax": "0.11.2",
+ "faster_weathernext": "0.1.1",
+ "compute_capability": "8.6",
+ "attention": "pallas",
+ "pool_gib": 6.8671875,
+ "step_s": [
+  129.14016127586365,
+  2.4310555458068848,
+  2.4261364936828613,
+  2.4280853271484375
+ ],
+ "finite": [
+  true,
+  true,
+  true,
+  true
+ ],
+ "peak_gib": 6.335774183273315
+}

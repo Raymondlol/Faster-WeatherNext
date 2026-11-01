@@ -27,8 +27,8 @@ rounding level; use it where no second official implementation fits as a floor (
 A case that runs out of GPU memory is recorded as such (the official path's full backward may not
 fit); the comparisons then use the official path if it ran, else fwn_xla, as the reference.
 
-  python scripts/verify_head_grads.py --data ".../source-hres_forecast_init-2024-10-07 00:00:00_res-1.0_levels-13_steps-04.nc"
-  python scripts/verify_head_grads.py --modules all --data ... --out full_grads_mini.json
+  python scripts/verify_grads.py --data ".../source-hres_forecast_init-2024-10-07 00:00:00_res-1.0_levels-13_steps-04.nc"
+  python scripts/verify_grads.py --modules all --data ... --out full_grads_mini.json
 """
 import argparse
 import dataclasses
@@ -144,7 +144,7 @@ def main():
   p.add_argument("--modules", nargs="+", default=None, help='modules to differentiate (default: head); "all"')
   p.add_argument("--loss", choices=["crps", "linear"], default="crps")
   p.add_argument("--weights-dir")
-  p.add_argument("--out", default="head_grads_mini.json")
+  p.add_argument("--out", default="grads_mini.json")
   args = p.parse_args()
 
   import jax

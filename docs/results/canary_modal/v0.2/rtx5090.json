@@ -1,0 +1,27 @@
+{
+ "label": "rtx5090",
+ "env": {
+  "XLA_PYTHON_CLIENT_PREALLOCATE": "false"
+ },
+ "ok": true,
+ "device": "NVIDIA GeForce RTX 5090",
+ "jax": "0.11.2",
+ "faster_weathernext": "0.1.1",
+ "compute_capability": "12.0",
+ "attention": "pallas",
+ "pool_gib": 23.494140625,
+ "highest_first_call_s": 81.99931263923645,
+ "step_s": [
+  67.39950156211853,
+  0.7325632572174072,
+  0.7271003723144531,
+  0.7285873889923096
+ ],
+ "finite": [
+  true,
+  true,
+  true,
+  true
+ ],
+ "peak_gib": 6.400768518447876
+}
