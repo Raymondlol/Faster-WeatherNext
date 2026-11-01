@@ -65,6 +65,10 @@ class Options:
   edge_chunk: int = 65536
   # Run the transformer layers as a loop (hk.scan + hk.switch) instead of unrolled.
   layer_loop: bool = True
+  # Rematerialise each grid/edge block (GNNs, encoder, decoder) in the backward pass. Without it,
+  # differentiating the blocked scans stores every block's intermediates, i.e. exactly the
+  # whole-grid tensors the blocking avoids. Has no effect on code that is not differentiated.
+  remat: bool = False
 
 
 OPTIONS = Options()
@@ -297,8 +301,15 @@ def _pad_rows(x, rows):
   return x if x.shape[0] == rows else jnp.pad(x, [(0, rows - x.shape[0])] + [(0, 0)] * (x.ndim - 1))
 
 
+def _maybe_remat(fn):
+  # prevent_cse=False: these functions run as scan/map bodies, where XLA cannot CSE the
+  # recomputation away across iterations.
+  return hk.remat(fn, prevent_cse=False) if OPTIONS.remat else fn
+
+
 def _update_blocks_in_place(fn, blocks, xs=()):
   """blocks[i] <- fn(blocks[i], *xs[i]), as a scan whose carry XLA updates in place."""
+  fn = _maybe_remat(fn)
 
   def body(buf, args):
     i, *rest = args
@@ -441,14 +452,21 @@ class ChunkedDeepGNN(_ORIG["DeepGNN"]):
     mesh_rcv_proj = f["pre_gather_receivers_for_edges_fn"][name](mesh) if gather_rcv else None
     acc_dtype = jnp.float32 if self._f32_aggregation else mesh.dtype
 
-    def one_block(acc, xs):
-      e, s, r = xs
+    def messages(e, s, r):
       # Row-wise matmul commutes with the gather; gathering first avoids a [points, F] buffer.
       sent = f["pre_gather_senders_for_edges_fn"][name](gather_scatter_ops.gather_with_fill(pts, s))
       recv = gather_scatter_ops.gather_with_fill(mesh_rcv_proj, r) if gather_rcv else None
-      msg = f["update_edge_fn"][name](
+      return f["update_edge_fn"][name](
           f["pre_gather_edges_for_edges_fn"][name](self._encode_edges(e)), sent, recv,
           graph.context.features)
+
+    # Only the messages are rematerialised: the accumulation is linear, so the backward pass
+    # needs no per-block copy of the [num_mesh, B, F] accumulator.
+    messages = _maybe_remat(messages)
+
+    def one_block(acc, xs):
+      e, s, r = xs
+      msg = messages(e, s, r)
       acc = acc + jax.ops.segment_sum(msg.astype(acc_dtype), r, num_mesh, indices_are_sorted=True)
       return acc, None
 
@@ -576,7 +594,7 @@ class ChunkedDenseEncoder(_ORIG["Encoder"]):
       # grid afterwards is free at batch 1 (size-1 axes) but a second 6 GiB copy at batch 2.
       return jnp.moveaxis(out.reshape(out.shape[0], block, out.shape[-1]), 0, 1)  # [block, batch, latent]
 
-    stacked = hk.map(one_block, jnp.arange(nb))  # [nb, block, batch, latent]
+    stacked = hk.map(_maybe_remat(one_block), jnp.arange(nb))  # [nb, block, batch, latent]
     points = stacked.reshape((nb * block,) + stacked.shape[2:])[:n]
     batch, latent = points.shape[1], points.shape[2]
     # Back to the [batch, lat, lon, latent] contract; the model flattens it to points-major again
@@ -615,7 +633,7 @@ class ChunkedDenseDecoder(_ORIG["Decoder"]):
       out = stock_call(jnp.moveaxis(b, 0, 1).reshape(batch, 1, block, feat), block_template)
       return tuple(xarray_jax.unwrap_data(out[name]) for name in names)
 
-    outs = hk.map(one_block, jnp.arange(nb))
+    outs = hk.map(_maybe_remat(one_block), jnp.arange(nb))
     result = {}
     for name, o in zip(names, outs):
       da = output_template[name]

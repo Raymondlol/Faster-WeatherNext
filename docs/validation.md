@@ -226,6 +226,87 @@ One WN2 layer's masked mesh attention (40,962 nodes, 6 heads × 128 dim, 32-hop 
 
 Files: [`results/intel_b580/`](results/intel_b580/) (`fwn_info.txt`, `attn_bench.txt`). All unit tests pass (`pytest -q`).
 
+## 8. Head-only fine-tuning (prototype)
+
+`faster_weathernext.finetune` trains the head (mesh→grid GNN + grid decoder) with the official
+training loss: the config's full predictor stack and FGN's fair CRPS over 2 members, i.e. an
+effective batch of 2. Gradients are taken w.r.t. the head only, so the frozen encoder, grid→mesh
+GNN and transformer run as in inference. The new option `remat` rematerialises each blocked
+GNN / encoder / decoder step in the backward pass. Results here: RTX 5090, JAX 0.11.2.
+
+**Inference is unchanged by the patch edit** (`remat` defaults to off; `scripts/verify_equivalence.py`
+re-run as in §2): `highest` max rel RMS 1.98e-5, default 4.87e-3 (v0.1.1: 2.00e-5, 4.93e-3); temp
+memory and step time unchanged (4.14 / 4.02 GiB, 1.49 / 0.77 s).
+Files: [`results/finetune/equivalence_rtx5090_remat_option.json`](results/finetune/equivalence_rtx5090_remat_option.json).
+
+**Head gradients vs the official GPU path** (`scripts/verify_head_grads.py`, WeatherNextCyclones_Mini
+at 1°, Google's sample, same inputs / targets / noise). faster-weathernext runs with remat and
+small blocks (8,192 grid points, 16,384 edges), so the 1° grid passes through 8 blocks in every
+blocked module. The fair CRPS has sign terms (|pred − target|, |pred_i − pred_j|): rounding-level
+forward differences flip individual gradient contributions, so gradient agreement is judged
+against a floor, a second official implementation (dense `mha` instead of `triblockdiag_mha`),
+not against zero. Head: 2.54M parameters in 86 tensors; per-tensor errors are over the 58 tensors
+whose gradient norm exceeds 1e-3 of the largest (the others enter the global numbers).
+
+| precision | comparison | loss rel diff | grad global rel L2 | cosine | max per-tensor rel L2 |
+|---|---|---|---|---|---|
+| highest | fwn vs official | 9.9e-8 | 1.00e-3 | 0.99999950 | 2.3e-3 |
+| highest | fwn (`strict_fp32` attention) vs official | 0 | 8.9e-4 | 0.99999962 | 1.4e-3 |
+| highest | official `mha` vs official (floor) | 0 | 5.7e-4 | 0.99999984 | 2.4e-3 |
+| default | fwn vs official | 1.1e-5 | 1.62e-2 | 0.99987 | 0.21 |
+| default | official `mha` vs official (floor) | 1.4e-5 | 1.58e-2 | 0.99988 | 0.21 |
+
+At fp32 the global error is within 2× of the floor (which itself moved from 4.3e-4 to 5.7e-4
+between two runs: XLA autotuning) and the worst tensor is no worse than the floor's; at TF32 the
+two rows are the same. The worst tensors are output layers of individual variables (10 m wind,
+upper-level u; at TF32 the cyclone channels, whose loss terms are tiny). All gradients finite.
+Temp memory per step (Mini, effective batch 2): official 7.36 GiB (`highest`), faster-weathernext
+1.48 GiB with remat and 9.91 GiB without; 0.22 s vs 0.42 s per step.
+Files: [`results/finetune/head_grads_mini_rtx5090.json`](results/finetune/head_grads_mini_rtx5090.json) (+ `.log`).
+
+**WeatherNext 2 at 0.25°** (`scripts/finetune_head.py`, IFS open data). Compiled training step:
+20.03 GiB temp + 1.79 GiB arguments (default precision). Rematerialisation is what makes this
+fit: compiled for the CPU backend (whose buffer assignment is larger; the loss forward alone is
+21.1 GiB there vs 8.3 GiB on the GPU), the step needs 34.3 GiB temp with remat and 249.6 GiB
+without ([`results/finetune/cpu_compile_*.json`](results/finetune/)). The step needs one
+contiguous 20 GiB buffer: in a JAX pool that grows on demand, an evaluation pass run first left
+regions too small for it and the step failed with RESOURCE_EXHAUSTED
+([`results/finetune/finetune_smoke_rtx5090_oom_growing_pool.log`](results/finetune/finetune_smoke_rtx5090_oom_growing_pool.log));
+`finetune_head.py` therefore preallocates 90 % of the card.
+
+**Training runs** (checkpoint 1; 60 steps of one example each, 3.84 s per step, device peak
+21.8 GiB; Adam, gradient-norm clip 1). Training examples: 60 of 68 IFS open-data init times
+2026-10-04 12Z – 10-24 06Z, each used once; held out: 10-28 00Z/12Z and 10-30 00Z/12Z, a later
+week. The held-out
+loss is the training loss, evaluated before and after with the same two noise keys per example,
+so both evaluations see the same ensemble noise. Targets: the IFS analysis at +6 h, and the 0–6 h
+precipitation of the IFS run; the cyclone channels have no targets and are masked.
+
+| run | held-out loss change (4 inits) | per variable (mean of the 4) |
+|---|---|---|
+| lr 3e-5, no warmup | +6.6 … +7.1 % | 2 m T −8.9 %, precip −11.2 %, SST −15.4 %; pressure-level T/u/v/q/w +12 … +17 % |
+| lr 3e-5, no warmup, SST masked | +10.7 … +11.7 % | 2 m T −8.9 %, precip −11.4 %; pressure-level T/u/v/q/w +13 … +18 % |
+| **lr 3e-6, 10-step warmup, SST masked** | **−1.5 … −1.6 %** | 2 m T −8.4 %, precip −4.5 %, T −2.6 %, z −2.1 %, MSLP −1.7 %; 13 of 14 variables lower, v wind ±0.0 % |
+
+At 3e-5 the gradient norm grew from ~5 to ~13 within 50 steps and every pressure-level variable got
+worse, while the variables where IFS open data differs most from the model's training data
+(2 m temperature, precipitation, and SST, which open data replaces with skin temperature) improved
+on held-out days. At 3e-6 with warmup the gradient norm fell (3.7 → 2.9) and the held-out loss
+dropped on all four days. SST is masked in the last two runs because its open-data stand-in has a
+diurnal cycle real SST does not; masking it is not what fixed the first run (the learning rate was).
+The saved checkpoint (first run) loads with the stock `weathernext` loader and differs from the
+base checkpoint only in head modules: 15 of the 18. The other 3 are the mesh→grid GNN's mesh-node
+update (1.2M of the 5.6M head parameters), whose output the model discards, so they get no gradient.
+
+What this shows: the pipeline runs at 0.25° on a 32 GB GPU and lowers a held-out one-step loss.
+What it does not show: forecast skill. This is one checkpoint, 60 steps, one week of held-out
+6-hour steps, and the loss of a 2-member sample; rollouts, ensemble spread and lead times beyond
+6 h were not evaluated.
+Files: [`results/finetune/finetune_smoke_rtx5090.json`](results/finetune/finetune_smoke_rtx5090.json),
+[`finetune_masksst_rtx5090.json`](results/finetune/finetune_masksst_rtx5090.json),
+[`finetune_lr3e-6_rtx5090.json`](results/finetune/finetune_lr3e-6_rtx5090.json) (+ `.log`; per-variable
+losses before and after for each held-out init).
+
 ## Limitations
 
 - Single-step equivalence (§1, §2) used one initialisation (2024-10-07) and the
@@ -236,6 +317,9 @@ Files: [`results/intel_b580/`](results/intel_b580/) (`fwn_info.txt`, `attn_bench
 - Without a fixed autotune cache, results are not bitwise reproducible between runs (§4 note).
 - TPU (`splash_mha`) numerics were not compared; TPU matmuls use bf16 passes by default and
   differ from any of the GPU paths above.
+- Fine-tuning (§8) covers the head only; gradients were compared with the official path on the
+  Mini model at 1° (the official path does not fit at 0.25°). The fused attention kernel has no
+  backward pass, so the transformer and everything before it cannot be trained yet.
 
 ## README figures
 

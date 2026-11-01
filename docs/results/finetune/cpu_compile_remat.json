@@ -1,0 +1,55 @@
+{
+ "model": "WeatherNext2",
+ "checkpoint": 1,
+ "device": "cpu",
+ "jax": "0.11.2",
+ "faster_weathernext": "0.1.1",
+ "args": {
+  "model": "WeatherNext2",
+  "checkpoint": 1,
+  "train": [
+   "2026102200"
+  ],
+  "eval": [],
+  "steps": 10,
+  "lr": 1e-05,
+  "weight_decay": 0.0,
+  "clip": 1.0,
+  "eval_keys": 2,
+  "precision": "default",
+  "seed": 0,
+  "no_precip": false,
+  "compile_only": true,
+  "no_remat": false,
+  "weights_dir": "/home/raymxnd/Workspace/WeatherForcast/weights",
+  "out": null,
+  "log": "/tmp/claude-1000/-home-raymxnd-Workspace-WeatherForcast/d4a93a6d-df87-4c4c-b7ce-cc8b5b5265d2/scratchpad/cpu_compile_remat.json"
+ },
+ "masked": [
+  "cyclone_exists_gaussian_unit_mode",
+  "cyclone_all_wind_disc",
+  "cyclone_usa_wind_disc",
+  "cyclone_usa_r34_ne_radius_disc",
+  "cyclone_usa_r34_se_radius_disc",
+  "cyclone_usa_r34_sw_radius_disc",
+  "cyclone_usa_r34_nw_radius_disc",
+  "cyclone_usa_r50_ne_radius_disc",
+  "cyclone_usa_r50_se_radius_disc",
+  "cyclone_usa_r50_sw_radius_disc",
+  "cyclone_usa_r50_nw_radius_disc",
+  "cyclone_usa_r64_ne_radius_disc",
+  "cyclone_usa_r64_se_radius_disc",
+  "cyclone_usa_r64_sw_radius_disc",
+  "cyclone_usa_r64_nw_radius_disc",
+  "cyclone_usa_rmw_disc",
+  "cyclone_usa_pres_disc"
+ ],
+ "head_params": 5572967,
+ "total_params": 183785575,
+ "compile": {
+  "seconds": 60.59584712982178,
+  "temp_gib": 34.339843556284904,
+  "argument_gib": 1.7898386642336845,
+  "output_gib": 0.062285151332616806
+ }
+}

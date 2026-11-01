@@ -1,0 +1,94 @@
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_head_grad
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_head_grad
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_head_grad
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_head_grad
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_head_grad
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_head_grad
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_head_grad
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_head_grad
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_head_grad
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_head_grad
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_head_grad
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_head_grad
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_head_grad
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_head_grad
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_head_grad
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_head_grad
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_head_grad
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_head_grad
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_head_grad
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_head_grad
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_head_grad
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_head_grad
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_head_grad
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_head_grad
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_head_grad
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_head_grad
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_head_grad
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_head_grad
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_head_grad
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_head_grad
+example 2026100412 built in 3.4s
+WeatherNext2 ckpt 1: training 5.57M of 183.8M params; masked targets: 17 (cyclone channels only)
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 2, channels: 1, noise_channels: 32)> Size: 256B
+JitTracer(float32[2,1,32])
+Coordinates:
+  * batch    (batch) object 16B MultiIndex
+  * _batch   (batch) int64 16B 0 0
+  * sample   (batch) int64 16B 0 1
+Dimensions without coordinates: channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+/home/raymxnd/Workspace/WeatherForcast/weathernext/weathernext/weathernext2/architecture.py:286: FutureWarning: Deleting a single level of a MultiIndex is deprecated. Previously, this deleted all levels of a MultiIndex. Please also drop the following variables: {'batch'} to avoid an error in the future.
+  predictions[var] = xarray_jax.apply_ufunc(activation_fn, predictions[var])
+W1031 12:48:30.191703 1578596 hlo_rematerialization.cc:3363] Can't reduce memory use below 25.74GiB (27637446207 bytes) by rematerialization; only reduced to 63.07GiB (67717567744 bytes), down from 63.07GiB (67717567744 bytes) originally
+train step compiled in 86s: temp 20.03 GiB, arguments 1.79 GiB
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 2, channels: 1, noise_channels: 32)> Size: 256B
+JitTracer(float32[2,1,32])
+Coordinates:
+  * batch    (batch) object 16B MultiIndex
+  * _batch   (batch) int64 16B 0 0
+  * sample   (batch) int64 16B 0 1
+Dimensions without coordinates: channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+/home/raymxnd/Workspace/WeatherForcast/weathernext/weathernext/weathernext2/architecture.py:286: FutureWarning: Deleting a single level of a MultiIndex is deprecated. Previously, this deleted all levels of a MultiIndex. Please also drop the following variables: {'batch'} to avoid an error in the future.
+  predictions[var] = xarray_jax.apply_ufunc(activation_fn, predictions[var])
+W1031 12:49:47.404300 1578596 hlo_rematerialization.cc:3363] Can't reduce memory use below 25.72GiB (27617606157 bytes) by rematerialization; only reduced to 56.83GiB (61019999108 bytes), down from 56.83GiB (61020035972 bytes) originally
+eval before (80s): 2026102800 1.19979  2026102812 1.21682  2026103000 1.16299  2026103012 1.19323
+W1031 12:50:17.608056 1578596 bfc_allocator.cc:598] Allocator (GPU_0_bfc) ran out of memory trying to allocate 20.03GiB (rounded to 21508145408) from the lower end requested by op 
+If this is caused by memory fragmentation, the environment variable 'TF_GPU_ALLOCATOR=cuda_malloc_async' may improve the situation.
+Current allocation summary follows.
+W1031 12:50:17.608581 1578596 bfc_allocator.cc:609] *********__________________________________________________________________________________________*
+Traceback (most recent call last):
+  File "/home/raymxnd/Workspace/faster-weathernext/scripts/finetune_head.py", line 162, in <module>
+    main()
+  File "/home/raymxnd/Workspace/faster-weathernext/scripts/finetune_head.py", line 130, in main
+    metrics = jax.device_get(metrics)
+              ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/jax/_src/api.py", line 2592, in device_get
+    return tree_map(_device_get, x)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/jax/_src/tree_util.py", line 406, in tree_map
+    return treedef.unflatten(f(*xs) for xs in zip(*all_leaves))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/jax/_src/tree_util.py", line 406, in <genexpr>
+    return treedef.unflatten(f(*xs) for xs in zip(*all_leaves))
+                             ^^^^^^
+  File "/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/jax/_src/api.py", line 2553, in _device_get
+    return toarray()
+           ^^^^^^^^^
+  File "/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/jax/_src/array.py", line 409, in __array__
+    return np.asarray(self._value, dtype=dtype, **kwds)  # pyrefly: ignore[no-matching-overload]
+                      ^^^^^^^^^^^
+  File "/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/jax/_src/profiler.py", line 420, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/jax/_src/array.py", line 637, in _value
+    npy_value, did_copy = self._single_device_array_to_np_array_did_copy()
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jax.errors.JaxRuntimeError: RESOURCE_EXHAUSTED: Out of memory while trying to allocate 20.03GiB with allocator GPU_0_bfc on device 0. [executable_name='jit_step'] [tf-allocator-allocation-error='']

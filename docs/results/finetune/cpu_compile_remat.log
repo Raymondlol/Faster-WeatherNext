@@ -1,0 +1,32 @@
+example 2026102200 built in 2.1s
+WeatherNext2 ckpt 1: training 5.57M of 183.8M params; masked targets: 17 (cyclone channels only)
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 2, channels: 1, noise_channels: 32)> Size: 256B
+/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+/home/raymxnd/Workspace/WeatherForcast/weathernext/weathernext/weathernext2/architecture.py:286: FutureWarning: Deleting a single level of a MultiIndex is deprecated. Previously, this deleted all levels of a MultiIndex. Please also drop the following variables: {'batch'} to avoid an error in the future.
+train step compiled in 61s: temp 34.34 GiB, arguments 1.79 GiB
+wrote /tmp/claude-1000/-home-raymxnd-Workspace-WeatherForcast/d4a93a6d-df87-4c4c-b7ce-cc8b5b5265d2/scratchpad/cpu_compile_remat.json
+	Command being timed: "/home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/finetune_head.py --train 2026102200 --compile-only --weights-dir /home/raymxnd/Workspace/WeatherForcast/weights --log /tmp/claude-1000/-home-raymxnd-Workspace-WeatherForcast/d4a93a6d-df87-4c4c-b7ce-cc8b5b5265d2/scratchpad/cpu_compile_remat.json"
+	User time (seconds): 91.80
+	System time (seconds): 2.48
+	Percent of CPU this job got: 144%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:05.15
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 6840028
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 294
+	Minor (reclaiming a frame) page faults: 1550482
+	Voluntary context switches: 16666
+	Involuntary context switches: 4858
+	Swaps: 0
+	File system inputs: 1759536
+	File system outputs: 0
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

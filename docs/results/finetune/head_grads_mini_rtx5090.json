@@ -1,0 +1,365 @@
+{
+ "model": "WeatherNextCyclones_Mini",
+ "device": "NVIDIA GeForce RTX 5090",
+ "jax": "0.11.2",
+ "faster_weathernext": "0.1.1",
+ "blocks": {
+  "grid_chunk": 8192,
+  "edge_chunk": 16384
+ },
+ "masked": [],
+ "head_params": 2535781,
+ "precisions": {
+  "highest": {
+   "official": {
+    "temp_gib": 7.358244687318802,
+    "compile_s": 47.37564778327942,
+    "step_s": 0.4156680107116699
+   },
+   "official_mha": {
+    "temp_gib": 7.644339352846146,
+    "compile_s": 19.233081579208374,
+    "step_s": 0.33963489532470703
+   },
+   "fwn": {
+    "temp_gib": 1.4815475270152092,
+    "compile_s": 39.05863094329834,
+    "step_s": 0.2230541706085205
+   },
+   "fwn_noremat": {
+    "temp_gib": 9.911023788154125,
+    "compile_s": 14.838613748550415
+   },
+   "fwn_strict": {
+    "temp_gib": 1.4815475270152092,
+    "compile_s": 10.349909782409668,
+    "step_s": 1.4333524703979492
+   },
+   "checks": {
+    "fwn vs official": {
+     "loss": {
+      "official": 1.2029576301574707,
+      "other": 1.2029577493667603,
+      "rel_diff": 9.909683147791032e-08,
+      "max_per_var_rel_diff": 1.6190872747221507e-05
+     },
+     "grads": {
+      "global_rel_l2": 0.0010030226145246349,
+      "global_cos": 0.9999995042909823,
+      "max_rel_l2": 0.0022973047709093984,
+      "n_params": 86,
+      "n_compared": 58,
+      "n_zero_both": 6,
+      "n_zero_ref_only": 0,
+      "all_finite": true,
+      "worst": [
+       {
+        "param": "multimodality_forward/grid_decoder/split_output_linear/w_specific_humidity_level=50,100,150,200,250,300,400,500,600,700,850,925,1000_time=21600",
+        "size": 6656,
+        "ref_norm": 0.06548207335001195,
+        "got_norm": 0.06550444935382058,
+        "finite": true,
+        "rel_l2": 0.0022973047709093984
+       },
+       {
+        "param": "multimodality_forward/mesh_to_grid_gnn/deep_gnn/processor_edges_0_sender_mesh_to_points_nodes/w",
+        "size": 262144,
+        "ref_norm": 1.2613371802792945,
+        "got_norm": 1.2613660209182214,
+        "finite": true,
+        "rel_l2": 0.0013841510865577958
+       },
+       {
+        "param": "multimodality_forward/grid_decoder/split_output_linear/w_vertical_velocity_level=50,100,150,200,250,300,400,500,600,700,850,925,1000_time=21600",
+        "size": 6656,
+        "ref_norm": 0.1465138721253444,
+        "got_norm": 0.14647541911521744,
+        "finite": true,
+        "rel_l2": 0.0013532309792546483
+       },
+       {
+        "param": "multimodality_forward/grid_decoder/split_output_linear/w_v_component_of_wind_level=50,100,150,200,250,300,400,500,600,700,850,925,1000_time=21600",
+        "size": 6656,
+        "ref_norm": 0.07094115823576923,
+        "got_norm": 0.07093730177106626,
+        "finite": true,
+        "rel_l2": 0.0012752194701343797
+       },
+       {
+        "param": "multimodality_forward/mesh_to_grid_gnn/deep_gnn/processor_edges_0_mesh_to_points_nodes/mlp/linear_1/w",
+        "size": 262144,
+        "ref_norm": 1.5409242901568447,
+        "got_norm": 1.540869624167333,
+        "finite": true,
+        "rel_l2": 0.0011536157639586834
+       }
+      ]
+     }
+    },
+    "fwn strict_fp32 vs official": {
+     "loss": {
+      "official": 1.2029576301574707,
+      "other": 1.2029576301574707,
+      "rel_diff": 0.0,
+      "max_per_var_rel_diff": 1.1745324452003711e-05
+     },
+     "grads": {
+      "global_rel_l2": 0.000884629527042391,
+      "global_cos": 0.9999996163129573,
+      "max_rel_l2": 0.0014099353925182002,
+      "n_params": 86,
+      "n_compared": 58,
+      "n_zero_both": 6,
+      "n_zero_ref_only": 0,
+      "all_finite": true,
+      "worst": [
+       {
+        "param": "multimodality_forward/grid_decoder/split_output_linear/w_vertical_velocity_level=50,100,150,200,250,300,400,500,600,700,850,925,1000_time=21600",
+        "size": 6656,
+        "ref_norm": 0.1465138721253444,
+        "got_norm": 0.146483859000436,
+        "finite": true,
+        "rel_l2": 0.0014099353925182002
+       },
+       {
+        "param": "multimodality_forward/mesh_to_grid_gnn/deep_gnn/processor_edges_0_sender_mesh_to_points_nodes/w",
+        "size": 262144,
+        "ref_norm": 1.2613371802792945,
+        "got_norm": 1.261372757727361,
+        "finite": true,
+        "rel_l2": 0.0013158979378149725
+       },
+       {
+        "param": "multimodality_forward/grid_decoder/split_output_linear/w_u_component_of_wind_level=50,100,150,200,250,300,400,500,600,700,850,925,1000_time=21600",
+        "size": 6656,
+        "ref_norm": 0.06688905072453233,
+        "got_norm": 0.06687706374181301,
+        "finite": true,
+        "rel_l2": 0.0012721444743921035
+       },
+       {
+        "param": "multimodality_forward/grid_decoder/split_output_linear/w_specific_humidity_level=50,100,150,200,250,300,400,500,600,700,850,925,1000_time=21600",
+        "size": 6656,
+        "ref_norm": 0.06548207335001195,
+        "got_norm": 0.06548068947587456,
+        "finite": true,
+        "rel_l2": 0.0012458667873252699
+       },
+       {
+        "param": "multimodality_forward/grid_decoder/split_output_linear/w_v_component_of_wind_level=50,100,150,200,250,300,400,500,600,700,850,925,1000_time=21600",
+        "size": 6656,
+        "ref_norm": 0.07094115823576923,
+        "got_norm": 0.07093756859295751,
+        "finite": true,
+        "rel_l2": 0.001199071775250381
+       }
+      ]
+     }
+    },
+    "official_mha vs official (floor)": {
+     "loss": {
+      "official": 1.2029576301574707,
+      "other": 1.2029576301574707,
+      "rel_diff": 0.0,
+      "max_per_var_rel_diff": 1.2596844416374613e-05
+     },
+     "grads": {
+      "global_rel_l2": 0.0005659516072411567,
+      "global_cos": 0.9999998399315811,
+      "max_rel_l2": 0.002360288687931764,
+      "n_params": 86,
+      "n_compared": 58,
+      "n_zero_both": 6,
+      "n_zero_ref_only": 0,
+      "all_finite": true,
+      "worst": [
+       {
+        "param": "multimodality_forward/grid_decoder/split_output_linear/w_specific_humidity_level=50,100,150,200,250,300,400,500,600,700,850,925,1000_time=21600",
+        "size": 6656,
+        "ref_norm": 0.06548207335001195,
+        "got_norm": 0.06549532331003156,
+        "finite": true,
+        "rel_l2": 0.002360288687931764
+       },
+       {
+        "param": "multimodality_forward/grid_decoder/split_output_linear/w_10m_v_component_of_wind_time=21600",
+        "size": 512,
+        "ref_norm": 0.020083909136383356,
+        "got_norm": 0.020085930860498306,
+        "finite": true,
+        "rel_l2": 0.0013085319396149494
+       },
+       {
+        "param": "multimodality_forward/grid_decoder/split_output_linear/w_v_component_of_wind_level=50,100,150,200,250,300,400,500,600,700,850,925,1000_time=21600",
+        "size": 6656,
+        "ref_norm": 0.07094115823576923,
+        "got_norm": 0.07093550391452534,
+        "finite": true,
+        "rel_l2": 0.0012830016184828138
+       },
+       {
+        "param": "multimodality_forward/grid_decoder/split_output_linear/w_vertical_velocity_level=50,100,150,200,250,300,400,500,600,700,850,925,1000_time=21600",
+        "size": 6656,
+        "ref_norm": 0.1465138721253444,
+        "got_norm": 0.14648285970806105,
+        "finite": true,
+        "rel_l2": 0.0009228097704790526
+       },
+       {
+        "param": "multimodality_forward/mesh_to_grid_gnn/deep_gnn/processor_edges_0_mesh_to_points_nodes/mlp/linear_1/w",
+        "size": 262144,
+        "ref_norm": 1.5409242901568447,
+        "got_norm": 1.5408702641874212,
+        "finite": true,
+        "rel_l2": 0.0008855050422957197
+       }
+      ]
+     }
+    }
+   }
+  },
+  "default": {
+   "official": {
+    "temp_gib": 5.2644632160663605,
+    "compile_s": 26.895958185195923,
+    "step_s": 0.29421567916870117
+   },
+   "official_mha": {
+    "temp_gib": 7.644321233034134,
+    "compile_s": 14.141706943511963,
+    "step_s": 0.2723855972290039
+   },
+   "fwn": {
+    "temp_gib": 1.4815429970622063,
+    "compile_s": 22.251452445983887,
+    "step_s": 0.15200233459472656
+   },
+   "fwn_noremat": {
+    "temp_gib": 9.911010913550854,
+    "compile_s": 11.900716543197632
+   },
+   "checks": {
+    "fwn vs official": {
+     "loss": {
+      "official": 1.203136682510376,
+      "other": 1.2031503915786743,
+      "rel_diff": 1.1394439632357909e-05,
+      "max_per_var_rel_diff": 0.0032936017593938175
+     },
+     "grads": {
+      "global_rel_l2": 0.016157892048622315,
+      "global_cos": 0.9998696868389602,
+      "max_rel_l2": 0.21444993708984028,
+      "n_params": 86,
+      "n_compared": 58,
+      "n_zero_both": 6,
+      "n_zero_ref_only": 0,
+      "all_finite": true,
+      "worst": [
+       {
+        "param": "multimodality_forward/grid_decoder/split_output_linear/w_cyclone_usa_wind_disc_time=21600",
+        "size": 512,
+        "ref_norm": 0.07069019381708155,
+        "got_norm": 0.08089039318185927,
+        "finite": true,
+        "rel_l2": 0.21444993708984028
+       },
+       {
+        "param": "multimodality_forward/grid_decoder/split_output_linear/w_cyclone_usa_r34_nw_radius_disc_time=21600",
+        "size": 512,
+        "ref_norm": 0.006235716535720746,
+        "got_norm": 0.006682095378606407,
+        "finite": true,
+        "rel_l2": 0.11240171669931483
+       },
+       {
+        "param": "multimodality_forward/grid_decoder/split_output_linear/w_u_component_of_wind_level=50,100,150,200,250,300,400,500,600,700,850,925,1000_time=21600",
+        "size": 6656,
+        "ref_norm": 0.06715556666634775,
+        "got_norm": 0.06710388486504754,
+        "finite": true,
+        "rel_l2": 0.028785047480818227
+       },
+       {
+        "param": "multimodality_forward/grid_decoder/split_output_linear/w_10m_u_component_of_wind_time=21600",
+        "size": 512,
+        "ref_norm": 0.014901104500827768,
+        "got_norm": 0.014807208146547488,
+        "finite": true,
+        "rel_l2": 0.028554408893876525
+       },
+       {
+        "param": "multimodality_forward/grid_decoder/split_output_linear/w_specific_humidity_level=50,100,150,200,250,300,400,500,600,700,850,925,1000_time=21600",
+        "size": 6656,
+        "ref_norm": 0.06544624577926476,
+        "got_norm": 0.06550854734895428,
+        "finite": true,
+        "rel_l2": 0.02476407440764222
+       }
+      ]
+     }
+    },
+    "official_mha vs official (floor)": {
+     "loss": {
+      "official": 1.203136682510376,
+      "other": 1.2031195163726807,
+      "rel_diff": 1.4267820061387295e-05,
+      "max_per_var_rel_diff": 0.007055680412290095
+     },
+     "grads": {
+      "global_rel_l2": 0.015840275108020836,
+      "global_cos": 0.9998757501997555,
+      "max_rel_l2": 0.21433064957118533,
+      "n_params": 86,
+      "n_compared": 58,
+      "n_zero_both": 6,
+      "n_zero_ref_only": 0,
+      "all_finite": true,
+      "worst": [
+       {
+        "param": "multimodality_forward/grid_decoder/split_output_linear/w_cyclone_usa_wind_disc_time=21600",
+        "size": 512,
+        "ref_norm": 0.07069019381708155,
+        "got_norm": 0.0808980205235208,
+        "finite": true,
+        "rel_l2": 0.21433064957118533
+       },
+       {
+        "param": "multimodality_forward/grid_decoder/split_output_linear/w_cyclone_usa_r64_nw_radius_disc_time=21600",
+        "size": 512,
+        "ref_norm": 0.005471387150023349,
+        "got_norm": 0.005483216299158898,
+        "finite": true,
+        "rel_l2": 0.06063645607587121
+       },
+       {
+        "param": "multimodality_forward/grid_decoder/split_output_linear/w_10m_u_component_of_wind_time=21600",
+        "size": 512,
+        "ref_norm": 0.014901104500827768,
+        "got_norm": 0.014838145361377278,
+        "finite": true,
+        "rel_l2": 0.036706715477910504
+       },
+       {
+        "param": "multimodality_forward/grid_decoder/split_output_linear/w_10m_v_component_of_wind_time=21600",
+        "size": 512,
+        "ref_norm": 0.019737312712881868,
+        "got_norm": 0.01965782792484462,
+        "finite": true,
+        "rel_l2": 0.03295148927873153
+       },
+       {
+        "param": "multimodality_forward/grid_decoder/split_output_linear/w_u_component_of_wind_level=50,100,150,200,250,300,400,500,600,700,850,925,1000_time=21600",
+        "size": 6656,
+        "ref_norm": 0.06715556666634775,
+        "got_norm": 0.06710532828785284,
+        "finite": true,
+        "rel_l2": 0.026323949572432923
+       }
+      ]
+     }
+    }
+   }
+  }
+ }
+}

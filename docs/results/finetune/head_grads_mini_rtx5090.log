@@ -1,0 +1,181 @@
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_equivalen
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_equivalen
+gpu-run: queued behind /home/raymxnd/Workspace/WeatherForcast/.venv/bin/python scripts/verify_equivalen
+WeatherNextCyclones_Mini: head 2.54M params; masked targets: []
+[highest]
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 2, channels: 1, noise_channels: 32)> Size: 256B
+JitTracer(float32[2,1,32])
+Coordinates:
+  * batch    (batch) object 16B MultiIndex
+  * _batch   (batch) int64 16B 0 0
+  * sample   (batch) int64 16B 0 1
+Dimensions without coordinates: channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+/home/raymxnd/Workspace/WeatherForcast/weathernext/weathernext/weathernext2/architecture.py:286: FutureWarning: Deleting a single level of a MultiIndex is deprecated. Previously, this deleted all levels of a MultiIndex. Please also drop the following variables: {'batch'} to avoid an error in the future.
+  predictions[var] = xarray_jax.apply_ufunc(activation_fn, predictions[var])
+  official     highest  temp  7.36 GiB  step 0.42s  loss 1.202958
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 2, channels: 1, noise_channels: 32)> Size: 256B
+JitTracer(float32[2,1,32])
+Coordinates:
+  * batch    (batch) object 16B MultiIndex
+  * _batch   (batch) int64 16B 0 0
+  * sample   (batch) int64 16B 0 1
+Dimensions without coordinates: channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+/home/raymxnd/Workspace/WeatherForcast/weathernext/weathernext/weathernext2/architecture.py:286: FutureWarning: Deleting a single level of a MultiIndex is deprecated. Previously, this deleted all levels of a MultiIndex. Please also drop the following variables: {'batch'} to avoid an error in the future.
+  predictions[var] = xarray_jax.apply_ufunc(activation_fn, predictions[var])
+  official_mha highest  temp  7.64 GiB  step 0.34s  loss 1.202958
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 2, channels: 1, noise_channels: 32)> Size: 256B
+JitTracer(float32[2,1,32])
+Coordinates:
+  * batch    (batch) object 16B MultiIndex
+  * _batch   (batch) int64 16B 0 0
+  * sample   (batch) int64 16B 0 1
+Dimensions without coordinates: channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+/home/raymxnd/Workspace/WeatherForcast/weathernext/weathernext/weathernext2/architecture.py:286: FutureWarning: Deleting a single level of a MultiIndex is deprecated. Previously, this deleted all levels of a MultiIndex. Please also drop the following variables: {'batch'} to avoid an error in the future.
+  predictions[var] = xarray_jax.apply_ufunc(activation_fn, predictions[var])
+  fwn          highest  temp  1.48 GiB  step 0.22s  loss 1.202958
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 2, channels: 1, noise_channels: 32)> Size: 256B
+JitTracer(float32[2,1,32])
+Coordinates:
+  * batch    (batch) object 16B MultiIndex
+  * _batch   (batch) int64 16B 0 0
+  * sample   (batch) int64 16B 0 1
+Dimensions without coordinates: channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+/home/raymxnd/Workspace/WeatherForcast/weathernext/weathernext/weathernext2/architecture.py:286: FutureWarning: Deleting a single level of a MultiIndex is deprecated. Previously, this deleted all levels of a MultiIndex. Please also drop the following variables: {'batch'} to avoid an error in the future.
+  predictions[var] = xarray_jax.apply_ufunc(activation_fn, predictions[var])
+  fwn_noremat  highest  temp  9.91 GiB  (compile only)
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 2, channels: 1, noise_channels: 32)> Size: 256B
+JitTracer(float32[2,1,32])
+Coordinates:
+  * batch    (batch) object 16B MultiIndex
+  * _batch   (batch) int64 16B 0 0
+  * sample   (batch) int64 16B 0 1
+Dimensions without coordinates: channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+/home/raymxnd/Workspace/WeatherForcast/weathernext/weathernext/weathernext2/architecture.py:286: FutureWarning: Deleting a single level of a MultiIndex is deprecated. Previously, this deleted all levels of a MultiIndex. Please also drop the following variables: {'batch'} to avoid an error in the future.
+  predictions[var] = xarray_jax.apply_ufunc(activation_fn, predictions[var])
+  fwn_strict   highest  temp  1.48 GiB  step 1.43s  loss 1.202958
+  fwn vs official                    loss rel diff 9.91e-08 (per var max 1.62e-05)  grads: global rel L2 1.00e-03  cos 0.9999995043  max per-param rel L2 2.30e-03 (58/86 params; zero in both 6, zero only in official 0)  finite True
+      2.30e-03  multimodality_forward/grid_decoder/split_output_linear/w_specific_humidity_level=50,100,150,200,250,300,400,500,600,700,850,925,1000_time=21600
+      1.38e-03  multimodality_forward/mesh_to_grid_gnn/deep_gnn/processor_edges_0_sender_mesh_to_points_nodes/w
+      1.35e-03  multimodality_forward/grid_decoder/split_output_linear/w_vertical_velocity_level=50,100,150,200,250,300,400,500,600,700,850,925,1000_time=21600
+  fwn strict_fp32 vs official        loss rel diff 0.00e+00 (per var max 1.17e-05)  grads: global rel L2 8.85e-04  cos 0.9999996163  max per-param rel L2 1.41e-03 (58/86 params; zero in both 6, zero only in official 0)  finite True
+      1.41e-03  multimodality_forward/grid_decoder/split_output_linear/w_vertical_velocity_level=50,100,150,200,250,300,400,500,600,700,850,925,1000_time=21600
+      1.32e-03  multimodality_forward/mesh_to_grid_gnn/deep_gnn/processor_edges_0_sender_mesh_to_points_nodes/w
+      1.27e-03  multimodality_forward/grid_decoder/split_output_linear/w_u_component_of_wind_level=50,100,150,200,250,300,400,500,600,700,850,925,1000_time=21600
+  official_mha vs official (floor)   loss rel diff 0.00e+00 (per var max 1.26e-05)  grads: global rel L2 5.66e-04  cos 0.9999998399  max per-param rel L2 2.36e-03 (58/86 params; zero in both 6, zero only in official 0)  finite True
+      2.36e-03  multimodality_forward/grid_decoder/split_output_linear/w_specific_humidity_level=50,100,150,200,250,300,400,500,600,700,850,925,1000_time=21600
+      1.31e-03  multimodality_forward/grid_decoder/split_output_linear/w_10m_v_component_of_wind_time=21600
+      1.28e-03  multimodality_forward/grid_decoder/split_output_linear/w_v_component_of_wind_level=50,100,150,200,250,300,400,500,600,700,850,925,1000_time=21600
+[default]
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 2, channels: 1, noise_channels: 32)> Size: 256B
+JitTracer(float32[2,1,32])
+Coordinates:
+  * batch    (batch) object 16B MultiIndex
+  * _batch   (batch) int64 16B 0 0
+  * sample   (batch) int64 16B 0 1
+Dimensions without coordinates: channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+/home/raymxnd/Workspace/WeatherForcast/weathernext/weathernext/weathernext2/architecture.py:286: FutureWarning: Deleting a single level of a MultiIndex is deprecated. Previously, this deleted all levels of a MultiIndex. Please also drop the following variables: {'batch'} to avoid an error in the future.
+  predictions[var] = xarray_jax.apply_ufunc(activation_fn, predictions[var])
+  official     default  temp  5.26 GiB  step 0.29s  loss 1.203137
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 2, channels: 1, noise_channels: 32)> Size: 256B
+JitTracer(float32[2,1,32])
+Coordinates:
+  * batch    (batch) object 16B MultiIndex
+  * _batch   (batch) int64 16B 0 0
+  * sample   (batch) int64 16B 0 1
+Dimensions without coordinates: channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the static gather operation is being used, others are being ignored at runtime.
+WARNING:absl:Only the first input of the sorted segment sum operation is being used, others are being ignored at runtime.
+/home/raymxnd/Workspace/WeatherForcast/weathernext/weathernext/weathernext2/architecture.py:286: FutureWarning: Deleting a single level of a MultiIndex is deprecated. Previously, this deleted all levels of a MultiIndex. Please also drop the following variables: {'batch'} to avoid an error in the future.
+  predictions[var] = xarray_jax.apply_ufunc(activation_fn, predictions[var])
+  official_mha default  temp  7.64 GiB  step 0.27s  loss 1.203120
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 2, channels: 1, noise_channels: 32)> Size: 256B
+JitTracer(float32[2,1,32])
+Coordinates:
+  * batch    (batch) object 16B MultiIndex
+  * _batch   (batch) int64 16B 0 0
+  * sample   (batch) int64 16B 0 1
+Dimensions without coordinates: channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+/home/raymxnd/Workspace/WeatherForcast/weathernext/weathernext/weathernext2/architecture.py:286: FutureWarning: Deleting a single level of a MultiIndex is deprecated. Previously, this deleted all levels of a MultiIndex. Please also drop the following variables: {'batch'} to avoid an error in the future.
+  predictions[var] = xarray_jax.apply_ufunc(activation_fn, predictions[var])
+  fwn          default  temp  1.48 GiB  step 0.15s  loss 1.203150
+WARNING:root:No normalization location found for cyclone_exists_gaussian_unit_mode
+WARNING:root:No normalization scale found for cyclone_exists_gaussian_unit_mode
+WARNING:absl:No coordinates found for dim noise_channels of array <xarray.DataArray 'noise' (batch: 2, channels: 1, noise_channels: 32)> Size: 256B
+JitTracer(float32[2,1,32])
+Coordinates:
+  * batch    (batch) object 16B MultiIndex
+  * _batch   (batch) int64 16B 0 0
+  * sample   (batch) int64 16B 0 1
+Dimensions without coordinates: channels, noise_channels., using index for param name. This may make model surgery more error prone if changing coordinates at fine-tuning time.
+/home/raymxnd/Workspace/WeatherForcast/.venv/lib/python3.12/site-packages/scipy/sparse/_index.py:216: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+  self._set_arrayXarray(i, j, x)
+/home/raymxnd/Workspace/WeatherForcast/weathernext/weathernext/weathernext2/architecture.py:286: FutureWarning: Deleting a single level of a MultiIndex is deprecated. Previously, this deleted all levels of a MultiIndex. Please also drop the following variables: {'batch'} to avoid an error in the future.
+  predictions[var] = xarray_jax.apply_ufunc(activation_fn, predictions[var])
+  fwn_noremat  default  temp  9.91 GiB  (compile only)
+  fwn vs official                    loss rel diff 1.14e-05 (per var max 3.29e-03)  grads: global rel L2 1.62e-02  cos 0.9998696868  max per-param rel L2 2.14e-01 (58/86 params; zero in both 6, zero only in official 0)  finite True
+      2.14e-01  multimodality_forward/grid_decoder/split_output_linear/w_cyclone_usa_wind_disc_time=21600
+      1.12e-01  multimodality_forward/grid_decoder/split_output_linear/w_cyclone_usa_r34_nw_radius_disc_time=21600
+      2.88e-02  multimodality_forward/grid_decoder/split_output_linear/w_u_component_of_wind_level=50,100,150,200,250,300,400,500,600,700,850,925,1000_time=21600
+  official_mha vs official (floor)   loss rel diff 1.43e-05 (per var max 7.06e-03)  grads: global rel L2 1.58e-02  cos 0.9998757502  max per-param rel L2 2.14e-01 (58/86 params; zero in both 6, zero only in official 0)  finite True
+      2.14e-01  multimodality_forward/grid_decoder/split_output_linear/w_cyclone_usa_wind_disc_time=21600
+      6.06e-02  multimodality_forward/grid_decoder/split_output_linear/w_cyclone_usa_r64_nw_radius_disc_time=21600
+      3.67e-02  multimodality_forward/grid_decoder/split_output_linear/w_10m_u_component_of_wind_time=21600
+wrote docs/results/finetune/head_grads_mini_rtx5090.json

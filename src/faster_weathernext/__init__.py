@@ -16,7 +16,7 @@ def enable(force: bool = False, **options):
 
   Call before the model is first traced (e.g. before the first call of a jitted forward).
   Keyword options update `faster_weathernext.patch.Options` (attention, reorder, strict_fp32,
-  grid_chunk, edge_chunk, attn_chunk, layer_loop, replace_attention).
+  grid_chunk, edge_chunk, attn_chunk, layer_loop, replace_attention, remat).
   Returns the active Options.
   """
   from faster_weathernext import compat
