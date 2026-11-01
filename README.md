@@ -168,7 +168,9 @@ No. Weights are the official fp32 checkpoints, attention is exact, and every lay
 <details>
 <summary><b>Why aren't results bit-identical between runs?</b></summary>
 
-XLA picks GPU kernels by timing them, so kernel choices — and the last bits of the result — vary between runs, with or without this project. Use `fwn forecast --autotune-cache kernels.txt` to save the choices on the first run and reuse them. For strict fp32, use `--precision highest --no-autotune`.
+XLA picks GPU kernels by timing them, so kernel choices — and the last bits of the result — vary between runs, with or without this project. Use `fwn forecast --autotune-cache kernels.txt` to save the choices on the first run and reuse them (`--no-autotune` also fixes them; neither is needed for fp32-level results, which `--precision highest` gives).
+
+Between machines, results can differ by more than that: the official code builds its grid↔mesh graph on the CPU with NumPy, and CPUs with and without AVX-512 get a few different edges. In one fp32 step that is up to 1.3 × 10⁻² relative RMS in the most sensitive field (median 6 × 10⁻⁴), around those edges ([details](docs/validation.md#4-other-gpus-modal-vastai)).
 </details>
 
 <details>

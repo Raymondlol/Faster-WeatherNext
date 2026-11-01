@@ -9,6 +9,9 @@
   another machine's graph with `--edges`, and skips the rollout with `--steps 0`. New
   `scripts/graph_edges.py` counts and saves the graphs on the CPU; new `cloud/modal_a100_tf32.py`
   and `cloud/modal_graph_hosts.py` are the probes. Validation: docs/validation.md §4, A100 note.
+- README FAQ and `--no-autotune` help: no longer recommend `--no-autotune` for strict fp32
+  (`--precision highest` gives fp32-level results; autotuning was not the cause). The FAQ now
+  says why results can differ between machines.
 
 ## 0.2.0 — 2026-11-01
 

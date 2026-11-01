@@ -122,7 +122,7 @@ def main(argv=None):
   sub = p.add_subparsers(dest="cmd", required=True)
   common = argparse.ArgumentParser(add_help=False)
   common.add_argument("--no-autotune", action="store_true",
-                      help="XLA autotune off (deterministic kernel picks; recommended for strict fp32 on A100)")
+                      help="XLA autotune off (deterministic kernel picks)")
   common.add_argument("--autotune-cache", metavar="PATH",
                       help="save XLA's kernel picks here on the first run and reuse them afterwards")
   sub.add_parser("info", parents=[common], help="device, memory and compatibility check").set_defaults(fn=cmd_info)
